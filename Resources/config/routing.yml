@@ -1,0 +1,7 @@
+status:
+    type:     rest
+    resource: Ecentria\Libraries\CoreRestBundle\Controller\StatusController
+
+ping:
+    type:     rest
+    resource: Ecentria\Libraries\CoreRestBundle\Controller\PingController
