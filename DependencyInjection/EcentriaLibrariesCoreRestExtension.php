@@ -25,4 +25,9 @@ class EcentriaLibrariesCoreRestExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }
+
+    public function getAlias()
+    {
+        return 'ecentria_libraries_core_rest';
+    }
 }

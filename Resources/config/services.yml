@@ -1,7 +1,6 @@
 parameters:
-#    ecentria_libraries_core_rest.example.class: Ecentria\Libraries\CoreRestBundle\Example
+    ecentria_libraries_core_rest.object_handler_chain.class: Ecentria\Libraries\CoreRestBundle\HAL\ObjectHandlerChain
 
 services:
-#    ecentria_libraries_core_rest.example:
-#        class: %ecentria_libraries_core_rest.example.class%
-#        arguments: [@service_id, "plain_value", %parameter%]
+    ecentria_libraries_core_rest.object_handler_chain:
+        class: %ecentria_libraries_core_rest.object_handler_chain.class%
