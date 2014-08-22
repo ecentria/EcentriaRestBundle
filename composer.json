@@ -15,7 +15,7 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "http://bundles.srv-dev-60.usgroup.loc"
+            "url": "ssh://git@stash.dev.opticplanet.net/lib/corerestbundle.git"
         }
     ],
     "require": {
