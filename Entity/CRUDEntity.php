@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
@@ -19,8 +18,6 @@ use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
  * Abstract CRUD entity class
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
- *
- * @ORM\Entity()
  */
 class CRUDEntity implements CRUDEntityInterface
 {
