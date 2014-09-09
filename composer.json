@@ -23,7 +23,8 @@
         "friendsofsymfony/rest-bundle": "~1.4",
         "jms/serializer-bundle": "~0.13",
         "willdurand/rest-extra-bundle": "@stable",
-        "willdurand/hateoas-bundle": "~0.3"
+        "willdurand/hateoas-bundle": "~0.3",
+        "gedmo/doctrine-extensions": "v2.3.8"
     },
     "require-dev": {
         "symfony/framework-bundle": ">=2.1,<2.2-dev"
