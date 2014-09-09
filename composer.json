@@ -25,7 +25,7 @@
         "willdurand/rest-extra-bundle": "@stable",
         "willdurand/hateoas-bundle": "~0.3",
         "gedmo/doctrine-extensions": "v2.3.8",
-        "egulias/email-validator": "dev-master",
+        "egulias/email-validator": "1.0.x.dev",
         "nelmio/api-doc-bundle": "2.2.3"
     },
     "require-dev": {
