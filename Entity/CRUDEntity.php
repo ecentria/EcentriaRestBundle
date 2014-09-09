@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Bundle\SubscriptionsBundle\Entity;
+namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntityInterface;
 use Doctrine\ORM\Mapping as ORM;
