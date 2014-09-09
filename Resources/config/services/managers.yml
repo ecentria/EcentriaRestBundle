@@ -1,11 +1,14 @@
-# Managers
+parameters:
+    ecentria.crud.manager.class: Ecentria\Libraries\CoreRestBundle\Services\CRUDManager
+    ecentria.error.response.handler.class: Ecentria\Libraries\CoreRestBundle\Services\ErrorResponseHandler
+
 services:
     ecentria.crud.manager:
-        class: Ecentria\Libraries\CoreRestBundle\Services\CRUDManager
+        class: %ecentria.crud.manager.class%
         arguments:
             - @doctrine.orm.default_entity_manager
             - @ecentria.entity.validator
             - @event_dispatcher
 
     ecentria.error.response.handler:
-        class: Ecentria\Libraries\CoreRestBundle\Services\ErrorResponseHandler
+        class: %ecentria.error.response.handler.class%

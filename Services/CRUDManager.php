@@ -19,7 +19,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
-
 /**
  * CRUD Manager
  *
@@ -184,8 +183,6 @@ class CRUDManager
                 $entity->$method($value);
             }
         }
-
-
     }
 
     /**

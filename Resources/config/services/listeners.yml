@@ -1,6 +1,9 @@
+parameters:
+    gedmo.listener.timestampable.class: Gedmo\Timestampable\TimestampableListener
+
 services:
     gedmo.listener.timestampable:
-        class: Gedmo\Timestampable\TimestampableListener
+        class: %gedmo.listener.timestampable.class%
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
