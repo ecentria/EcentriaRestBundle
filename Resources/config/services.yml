@@ -1,6 +1,4 @@
-parameters:
-    ecentria_libraries_core_rest.object_handler_chain.class: Ecentria\Libraries\CoreRestBundle\HAL\ObjectHandlerChain
-
-services:
-    ecentria_libraries_core_rest.object_handler_chain:
-        class: %ecentria_libraries_core_rest.object_handler_chain.class%
+imports:
+    - { resource: services/managers.yml }
+    - { resource: services/validators.yml }
+    - { resource: services/converters.yml }

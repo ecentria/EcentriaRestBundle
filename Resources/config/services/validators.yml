@@ -1,0 +1,33 @@
+# Validators
+services:
+    ecentria.entity.validator:
+        class: Symfony\Component\Validator\Validator\RecursiveValidator
+        factory_service: validator.builder
+        factory_method: getValidator
+
+    # Constraints
+    ecentria.validator.constraints.circular_reference:
+        class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReferenceValidator
+        tags:
+            - { name: validator.constraint_validator, alias: circular_reference }
+        calls:
+            - [ setEntityManager, [ @doctrine.orm.default_entity_manager ] ]
+
+    ecentria.validator.constraints.in_array:
+        class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\InArrayValidator
+        tags:
+            - { name: validator.constraint_validator, alias: in_array }
+
+    ecentria.validator.constraints.email:
+        class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\EmailValidator
+        tags:
+            - { name: validator.constraint_validator, alias: email }
+
+    ecentria.validator.constraints.unique_entity:
+        arguments:
+            - @doctrine
+        class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntityValidator
+        tags:
+            - { name: validator.constraint_validator, alias: unique_entity }
+        calls:
+            - [ setEntityManager, [ @doctrine.orm.default_entity_manager ] ]
