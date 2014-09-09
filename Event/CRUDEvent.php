@@ -1,6 +1,6 @@
 <?php
 /*
- * This file is part of the OpCart software.
+ * This file is part of the Ecentria software.
  *
  * (c) 2014, OpticsPlanet, Inc
  *
