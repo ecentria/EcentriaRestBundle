@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Converter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\EntityManager;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,13 +34,20 @@ class ArrayCollectionConverter implements ParamConverterInterface
     private $entityManager;
 
     /**
+     * @var CRUDTransformer
+     */
+    private $crudTransformer;
+
+    /**
      * Constructor
      *
      * @param EntityManager $entityManager
+     * @param CRUDTransformer $crudTransformer
      */
-    function __construct(EntityManager $entityManager)
+    function __construct(EntityManager $entityManager, CRUDTransformer $crudTransformer)
     {
         $this->entityManager = $entityManager;
+        $this->crudTransformer = $crudTransformer;
     }
 
     /**
@@ -54,33 +62,11 @@ class ArrayCollectionConverter implements ParamConverterInterface
         if (!is_array($items)) {
             return false;
         }
+        $this->crudTransformer->initializeClassMetadata($class);
         foreach ($items as $item) {
             $object = new $class();
-            foreach ($item as $key => $value) {
-                $method = Inflector::camelize('set_' . $key);
-                if ($value !== null) {
-                    $classMetadata = $this->entityManager->getClassMetadata($class);
-                    $property = ucfirst(Inflector::camelize($key));
-                    if ($classMetadata->hasAssociation($property)) {
-                        $targetClass = $classMetadata->getAssociationTargetClass($property);
-                        $associatedObject = null;
-                        foreach ($collection as $collectionItem) {
-                            $identifierFieldName = $classMetadata->getSingleIdentifierFieldName();
-                            $identifierGetter = Inflector::camelize('get_' . $identifierFieldName);
-                            if ($collectionItem->$identifierGetter() === $value) {
-                                $associatedObject = $collectionItem;
-                            }
-                        }
-                        if (is_null($associatedObject)) {
-                            $associatedObject = $this->entityManager->getReference($targetClass, $value);
-                        }
-                        $value = $associatedObject;
-
-                    }
-                }
-                if (method_exists($object, $method)) {
-                    $object->$method($value);
-                }
+            foreach ($item as $property => $value) {
+                $this->crudTransformer->processPropertyValue($object, $property, $value, 'create', $collection);
             }
             $collection->add($object);
         }

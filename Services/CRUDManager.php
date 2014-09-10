@@ -10,8 +10,8 @@
 namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Inflector\Inflector;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManager;
+use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntityInterface;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -29,7 +29,7 @@ class CRUDManager
     /**
      * Entity manager
      *
-     * @var EntityManagerInterface
+     * @var EntityManager
      */
     private $entityManager;
 
@@ -48,20 +48,30 @@ class CRUDManager
     private $eventDispatcher;
 
     /**
+     * CRUDTransformer
+     *
+     * @var CRUDTransformer
+     */
+    private $crudTransformer;
+
+    /**
      * Constructor
      *
-     * @param EntityManagerInterface $entityManager
+     * @param EntityManager $entityManager
      * @param RecursiveValidator $validator
      * @param EventDispatcherInterface $eventDispatcher
+     * @param CRUDTransformer $crudTransformer
      */
     public function __construct(
-        EntityManagerInterface $entityManager,
+        EntityManager $entityManager,
         RecursiveValidator $validator,
-        EventDispatcherInterface $eventDispatcher
+        EventDispatcherInterface $eventDispatcher,
+        CRUDTransformer $crudTransformer
     ) {
         $this->entityManager = $entityManager;
         $this->validator = $validator;
         $this->eventDispatcher = $eventDispatcher;
+        $this->crudTransformer = $crudTransformer;
     }
 
     /**
@@ -128,6 +138,8 @@ class CRUDManager
     }
 
     /**
+     * Collection validation
+     *
      * @param ArrayCollection|object[] $collection
      * @return bool
      * @throws ValidationFailedException
@@ -141,6 +153,7 @@ class CRUDManager
                 $violations->addAll($itemViolations);
             }
         }
+
         if ($violations->count()) {
             throw new ValidationFailedException($violations);
         }
@@ -160,28 +173,19 @@ class CRUDManager
      * Updating one entity
      *
      * @param object $entity
-     * @param array  $data
+     * @param array $data
+     * @throws \Exception
      * @return void
      */
     public function setData($entity, array $data = array())
     {
         $data = reset($data);
-        foreach ($data as $name => $value) {
-            if ($name === 'id') {
-                continue;
-            }
-            if ($value !== null) {
-                $classMetadata = $this->entityManager->getClassMetadata(get_class($entity));
-                $property = ucfirst(Inflector::camelize($name));
-                if ($classMetadata->hasAssociation($property)) {
-                    $targetClass = $classMetadata->getAssociationTargetClass($property);
-                    $value = $this->entityManager->getReference($targetClass, $value);
-                }
-            }
-            $method = Inflector::camelize('set_' . $name);
-            if (method_exists($entity, $method)) {
-                $entity->$method($value);
-            }
+        if (!$entity instanceof CRUDEntityInterface) {
+            throw new \Exception('Entity must extend CRUDEntityInterface');
+        }
+        $this->crudTransformer->initializeClassMetadata(get_class($entity));
+        foreach ($data as $property => $value) {
+            $this->crudTransformer->processPropertyValue($entity, $property, $value, 'update');
         }
     }
 
