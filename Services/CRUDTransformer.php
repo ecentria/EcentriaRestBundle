@@ -68,20 +68,6 @@ class CRUDTransformer
         $this->classMetadata = $this->entityManager->getClassMetadata($className);
     }
 
-    /**
-     * ClassMetadata getter
-     *
-     * @throws \Exception
-     * @return ClassMetadata
-     */
-    private function getClassMetadata()
-    {
-        if (!$this->classMetadata instanceof ClassMetadata) {
-            throw new \Exception('You forgot to call initializeClassMetadata method.');
-        }
-        return $this->classMetadata;
-    }
-
 
     /**
      * Is property transform granted
@@ -132,36 +118,6 @@ class CRUDTransformer
     }
 
     /**
-     * @param ArrayCollection $collection
-     * @param $value
-     * @return null|object
-     */
-    private function findByIdentifier(ArrayCollection $collection, $value)
-    {
-        $object = null;
-        foreach ($collection as $collectionItem) {
-            $property = $this->getClassMetadata()->getSingleIdentifierFieldName();
-            $method = $this->getPropertyGetter($property);
-            if ($collectionItem->$method() === $value) {
-                $object = $collectionItem;
-            }
-        }
-        return $object;
-    }
-
-    /**
-     * Transformation needed?
-     *
-     * @param $property
-     * @param $value
-     * @return bool
-     */
-    private function transformationNeeded($property, $value)
-    {
-        return is_null($value) ? false : $this->getClassMetadata()->hasAssociation(ucfirst($property));
-    }
-
-    /**
      * Getter for property setter
      *
      * @param $property
@@ -202,5 +158,49 @@ class CRUDTransformer
         if (method_exists($object, $method)) {
             $object->$method($value);
         }
+    }
+
+    /**
+     * @param ArrayCollection $collection
+     * @param $value
+     * @return null|object
+     */
+    private function findByIdentifier(ArrayCollection $collection, $value)
+    {
+        $object = null;
+        foreach ($collection as $collectionItem) {
+            $property = $this->getClassMetadata()->getSingleIdentifierFieldName();
+            $method = $this->getPropertyGetter($property);
+            if ($collectionItem->$method() === $value) {
+                $object = $collectionItem;
+            }
+        }
+        return $object;
+    }
+
+    /**
+     * Transformation needed?
+     *
+     * @param $property
+     * @param $value
+     * @return bool
+     */
+    private function transformationNeeded($property, $value)
+    {
+        return is_null($value) ? false : $this->getClassMetadata()->hasAssociation(ucfirst($property));
+    }
+
+    /**
+     * ClassMetadata getter
+     *
+     * @throws \Exception
+     * @return ClassMetadata
+     */
+    private function getClassMetadata()
+    {
+        if (!$this->classMetadata instanceof ClassMetadata) {
+            throw new \Exception('You forgot to call initializeClassMetadata method.');
+        }
+        return $this->classMetadata;
     }
 }
