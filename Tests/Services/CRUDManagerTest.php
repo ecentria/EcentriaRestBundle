@@ -298,15 +298,4 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
         $violationList->add($violation);
         return $violationList;
     }
-
-    /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|ClassMetadata
-     */
-    private function prepareClassMetadata()
-    {
-        return $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadata')
-            ->disableOriginalConstructor()
-            ->setMethods(array('hasAssociation'))
-            ->getMock();
-    }
 }
