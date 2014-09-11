@@ -26,7 +26,7 @@ class CRUDEntity implements CRUDEntityInterface
      *
      * @var \DateTime
      *
-     * @ORM\Column(name="created_at", type="datetime", nullable=true)
+     * @ORM\Column(name="created_at", type="datetime")
      * @Gedmo\Timestampable(on="create")
      */
     protected $createdAt;
@@ -36,7 +36,7 @@ class CRUDEntity implements CRUDEntityInterface
      *
      * @var \DateTime
      *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @ORM\Column(name="updated_at", type="datetime")
      * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
