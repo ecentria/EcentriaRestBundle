@@ -52,6 +52,13 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
     private $dispatcher;
 
     /**
+     * Crud transformer
+     *
+     * @var \PHPUnit_Framework_MockObject_MockObject
+     */
+    private $crudTransformer;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
@@ -59,14 +66,16 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
     {
         $this->entityManager = $this->prepareEntityManager();
         $this->recursiveValidator = $this->prepareRecursiveValidator();
-        $this->dispatcher = $eventDispatcherMock = $this->getMock(
+        $this->dispatcher = $this->getMock(
             '\Symfony\Component\EventDispatcher\EventDispatcher',
             array('dispatch')
         );
+        $this->crudTransformer = $this->prepareCRUDTransformet();
         $this->crudManager = new CRUDManager(
             $this->entityManager,
             $this->recursiveValidator,
-            $this->dispatcher
+            $this->dispatcher,
+            $this->crudTransformer
         );
     }
 
@@ -75,24 +84,24 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidationCollectionFailed()
     {
-        $contact1 = $this->prepareEntity();
-        $contact2 = $this->prepareEntity();
-        $contacts = new ArrayCollection(
-            array($contact1, $contact2)
+        $entity1 = $this->prepareEntity();
+        $entity2 = $this->prepareEntity();
+        $entities = new ArrayCollection(
+            array($entity1, $entity2)
         );
         $violationList = $this->prepareViolationList();
         $this->recursiveValidator->expects($this->exactly(2))
             ->method('validate')
             ->withConsecutive(
-                array($this->equalTo($contact1)),
-                array($this->equalTo($contact2))
+                array($this->equalTo($entity1)),
+                array($this->equalTo($entity2))
             )
             ->willReturnOnConsecutiveCalls(
                 new ConstraintViolationList(),
                 $violationList
             );
         $this->setExpectedException('\JMS\Serializer\Exception\ValidationFailedException');
-        $this->crudManager->validateCollection($contacts);
+        $this->crudManager->validateCollection($entities);
     }
 
     /**
@@ -165,7 +174,6 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
     public function testSetData()
     {
         $contact = $this->prepareEntity();
-        $classMetadata = $this->prepareClassMetadata();
 
         $id = 'new.email@opticsplanet.com';
         $type = 'email';
@@ -174,21 +182,21 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
             'type' => $type
         ));
 
-        $classMetadata->expects($this->once())
-            ->method('hasAssociation')
-            ->willReturn(false);
-
-        $this->entityManager->expects($this->once())
-            ->method('getClassMetadata')
-            ->willReturn($classMetadata);
-
         $contact->expects($this->never())
             ->method('setId')
             ->with($id);
 
-        $contact->expects($this->once())
-            ->method('setType')
-            ->with($type);
+        $this->crudTransformer
+            ->expects($this->once())
+            ->method('initializeClassMetadata');
+
+        $this->crudTransformer
+            ->expects($this->exactly(2))
+            ->method('processPropertyValue')
+            ->withConsecutive(
+                $this->equalTo('id'),
+                $this->equalTo('type')
+            );
 
         $this->crudManager->setData($contact, $data);
     }
@@ -232,6 +240,19 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
+    private function prepareCRUDTransformet()
+    {
+        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer')
+            ->disableOriginalConstructor()
+            ->setMethods(array('initializeClassMetadata', 'processPropertyValue'))
+            ->getMock();
+    }
+
+    /**
+     * Preparing EntityRepository
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
     private function prepareRecursiveValidator()
     {
         return $this->getMockBuilder('\Symfony\Component\Validator\Validator\RecursiveValidator')
@@ -247,7 +268,7 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     private function prepareEntity()
     {
-        return $this->getMockBuilder('\stdClass')
+        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity')
             ->disableOriginalConstructor()
             ->setMethods(array('getId', 'getType', 'setType'))
             ->getMock();
