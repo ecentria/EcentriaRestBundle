@@ -109,12 +109,12 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidationItemSuccess()
     {
-        $contact = $this->prepareEntity();
+        $entity = $this->prepareEntity();
         $this->recursiveValidator->expects($this->once())
             ->method('validate')
-            ->with($this->equalTo($contact))
+            ->with($this->equalTo($entity))
             ->willReturn(new ConstraintViolationList());
-        $this->assertEquals(true, $this->crudManager->validate($contact));
+        $this->assertEquals(true, $this->crudManager->validate($entity));
     }
 
     /**
@@ -122,20 +122,20 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidationCollectionSuccess()
     {
-        $contact1 = $this->prepareEntity();
-        $contact2 = $this->prepareEntity();
-        $contacts = new ArrayCollection(array($contact1, $contact2));
+        $entity1 = $this->prepareEntity();
+        $entity2 = $this->prepareEntity();
+        $entitys = new ArrayCollection(array($entity1, $entity2));
         $this->recursiveValidator->expects($this->exactly(2))
             ->method('validate')
             ->withConsecutive(
-                array($this->equalTo($contact1)),
-                array($this->equalTo($contact2))
+                array($this->equalTo($entity1)),
+                array($this->equalTo($entity2))
             )
             ->willReturnOnConsecutiveCalls(
                 new ConstraintViolationList(),
                 new ConstraintViolationList()
             );
-        $this->assertEquals(true, $this->crudManager->validateCollection($contacts));
+        $this->assertEquals(true, $this->crudManager->validateCollection($entitys));
     }
 
     /**
@@ -143,14 +143,14 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateEntityPersist()
     {
-        $contact = $this->prepareEntity();
-        $contacts = new ArrayCollection(
-            array($contact, $contact)
+        $entity = $this->prepareEntity();
+        $entitys = new ArrayCollection(
+            array($entity, $entity)
         );
 
         $this->entityManager->expects($this->exactly(2))
             ->method('persist')
-            ->with($contact);
+            ->with($entity);
 
         $this->entityManager->expects($this->once())
             ->method('flush')
@@ -160,11 +160,11 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
             ->method('validate')
             ->willReturn(new ConstraintViolationList());
 
-        $this->crudManager->createCollection($contacts);
+        $this->crudManager->createCollection($entitys);
 
         $this->assertEquals(
-            new ArrayCollection(array($contact, $contact)),
-            $contacts
+            new ArrayCollection(array($entity, $entity)),
+            $entitys
         );
     }
 
@@ -173,7 +173,7 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetData()
     {
-        $contact = $this->prepareEntity();
+        $entity = $this->prepareEntity();
 
         $id = 'new.email@opticsplanet.com';
         $type = 'email';
@@ -182,7 +182,7 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
             'type' => $type
         ));
 
-        $contact->expects($this->never())
+        $entity->expects($this->never())
             ->method('setId')
             ->with($id);
 
@@ -198,7 +198,7 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
                 $this->equalTo('type')
             );
 
-        $this->crudManager->setData($contact, $data);
+        $this->crudManager->setData($entity, $data);
     }
 
 
@@ -207,19 +207,19 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateAndNotFlushEntity()
     {
-        $contact = $this->prepareEntity();
+        $entity = $this->prepareEntity();
 
         $this->entityManager->expects($this->once())
             ->method('persist')
-            ->with($contact)
+            ->with($entity)
             ->will($this->returnValue(null));
 
         $this->entityManager->expects($this->never())
             ->method('flush')
-            ->with($contact)
+            ->with($entity)
             ->will($this->returnValue(null));
 
-        $this->crudManager->create($contact, false);
+        $this->crudManager->create($entity, false);
     }
 
     /**
