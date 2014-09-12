@@ -4,7 +4,6 @@ namespace Ecentria\Libraries\CoreRestBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Ecentria\Libraries\CoreRestBundle\HAL\ObjectHandlerCompilerPass;
 
 class EcentriaLibrariesCoreRestBundle extends Bundle
 {
@@ -12,6 +11,5 @@ class EcentriaLibrariesCoreRestBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new ObjectHandlerCompilerPass());
     }
 }

@@ -1,0 +1,25 @@
+parameters:
+    ecentria.doctrine_param_converter.class: Ecentria\Libraries\CoreRestBundle\Converter\DoctrineParamConverter
+    ecentria.json_converter.class: Ecentria\Libraries\CoreRestBundle\Converter\JsonConverter
+    ecentria.array_collection_converter.class: Ecentria\Libraries\CoreRestBundle\Converter\ArrayCollectionConverter
+
+services:
+    ecentria.doctrine_param_converter:
+        class: %ecentria.doctrine_param_converter.class%
+        arguments:
+            - @doctrine
+        tags:
+            - { name: request.param_converter, priority: false, converter: ecentria.doctrine_param_converter }
+
+    ecentria.json_converter:
+        class: %ecentria.json_converter.class%
+        tags:
+            - { name: request.param_converter, priority: false, converter: ecentria.json_converter }
+
+    ecentria.array_collection_converter:
+        class: %ecentria.array_collection_converter.class%
+        arguments:
+            - @doctrine.orm.entity_manager
+            - @ecentria.crud.transformer
+        tags:
+            - { name: request.param_converter, priority: false, converter: ecentria.array_collection_converter }
