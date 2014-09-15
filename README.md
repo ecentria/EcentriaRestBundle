@@ -91,7 +91,10 @@ NelmioApiDocBundle:
 First of all you need to extend you entity from CRUDEntity.
 
 Controller for entity must be annotated as:
+
 ``` php
+<?php
+
 /**
  * @EcentriaAnnotation\Transactional(
  *      model="Your\Entity\Path",
@@ -101,12 +104,18 @@ Controller for entity must be annotated as:
  ```
 
 Every action that needs to work with transaction must end with:
+
 ``` php
+<?php
+
 return $this->viewTransaction(...);
 ```
 
 To avoid action working with transaction use annotation:
-```php
+
+``` php
+<?php
+
 @EcentriaAnnotation\AvoidTransaction()
 ```
 
