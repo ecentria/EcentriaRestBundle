@@ -85,5 +85,30 @@ NelmioApiDocBundle:
     prefix:   /api/doc
 ```
 
+
+## E) Using CRUDEntity with Transactions
+
+First of all you need to extend you entity from CRUDEntity.
+
+Controller for entity must be annotated as:
+``` php
+/**
+ * @EcentriaAnnotation\Transactional(
+ *      model="Your\Entity\Path",
+ *      relatedRoute="your_get_entity_route"
+ * )
+ */
+ ```
+
+Every action that needs to work with transaction must end with:
+``` php
+return $this->viewTransaction(...);
+```
+
+To avoid action working with transaction use annotation:
+```php
+@EcentriaAnnotation\AvoidTransaction()
+```
+
 ## That's it!
 Everything is in place to start building out REST services.
