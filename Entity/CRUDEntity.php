@@ -18,22 +18,28 @@ use JMS\Serializer\Annotation as Serializer;
 
 /**
  * @Hateoas\Relation(
- *      "self",
+ *      "service-transaction",
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(object.getTransaction() === null)"
+ *      ),
  *      href = @Hateoas\Route(
- *          "expr(object.getTransaction().getRelatedRoute())",
+ *          "get_transaction",
  *          parameters = {
- *              "id" = "expr(object.getId())"
+ *              "id" = "expr(object.getTransaction().getId())"
  *          },
  *          absolute = true
  *      )
  * )
  *
  * @Hateoas\Relation(
- *      "service-transaction",
+ *      "self",
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(object.getTransaction() === null)"
+ *      ),
  *      href = @Hateoas\Route(
- *          "get_transaction",
+ *          "expr(object.getTransaction().getRelatedRoute())",
  *          parameters = {
- *              "id" = "expr(object.getTransaction().getId())"
+ *              "id" = "expr(object.getId())"
  *          },
  *          absolute = true
  *      )
@@ -75,7 +81,7 @@ abstract class CRUDEntity implements CRUDEntityInterface
      *
      * @Serializer\Exclude
      */
-    protected $transaction;
+    protected $transaction = null;
 
     /**
      * {@inheritdoc}

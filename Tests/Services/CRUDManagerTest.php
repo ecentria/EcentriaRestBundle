@@ -11,6 +11,7 @@
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUDManager;
 use JMS\Serializer\Metadata\ClassMetadata;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -186,6 +187,18 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
             ->method('setId')
             ->with($id);
 
+        $unitOfWorkMock = $this->prepareUnitOfWork();
+
+        $unitOfWorkMock
+            ->expects($this->once())
+            ->method('getEntityState')
+            ->willReturn(UnitOfWork::STATE_MANAGED);
+
+        $this->entityManager
+            ->expects($this->once())
+            ->method('getUnitOfWork')
+            ->willReturn($unitOfWorkMock);
+
         $this->crudTransformer
             ->expects($this->once())
             ->method('initializeClassMetadata');
@@ -231,7 +244,20 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMockBuilder('\Doctrine\ORM\EntityManager')
             ->disableOriginalConstructor()
-            ->setMethods(array('persist', 'flush', 'getClassMetadata'))
+            ->setMethods(array('persist', 'flush', 'getClassMetadata', 'getUnitOfWork'))
+            ->getMock();
+    }
+
+    /**
+     * Preparing EntityManager
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function prepareUnitOfWork()
+    {
+        return $this->getMockBuilder('\Doctrine\ORM\UnitOfWork')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getEntityState'))
             ->getMock();
     }
 
@@ -268,7 +294,7 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     private function prepareEntity()
     {
-        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity')
+        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Tests\Entity\CircularReferenceEntity')
             ->disableOriginalConstructor()
             ->setMethods(array('getId', 'getType', 'setType'))
             ->getMock();

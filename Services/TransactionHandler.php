@@ -12,6 +12,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
+use Ecentria\Libraries\CoreRestBundle\Entity\NullEntity;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -67,7 +68,20 @@ class TransactionHandler
         }
 
         $this->transaction->setMessages($this->getMessages());
-        return $this->transaction;
+
+        $this->entityManager->persist($this->transaction);
+        $this->entityManager->flush($this->transaction);
+
+        if ($this->transaction->getSuccess()) {
+            if ($data instanceof ArrayCollection) {
+                $data = $data->toArray();
+            }
+        } else {
+            $data = new NullEntity();
+            $data->setTransaction($this->transaction);
+        }
+
+        return $data;
     }
 
     /**
@@ -76,9 +90,21 @@ class TransactionHandler
      * @param ArrayCollection $data
      * @param ConstraintViolationList $violations
      */
-    private function handleCollection(ArrayCollection $data, ConstraintViolationList $violations)
+    private function handleCollection(ArrayCollection $data, ConstraintViolationList $violations = null)
     {
+        if ($data->count() === 1) {
+            $data = $data->first();
+            $this->handleEntity($data, $violations);
+        }
 
+        foreach ($data as $item) {
+            if ($item instanceof CRUDEntity) {
+                $item->setTransaction($this->transaction);
+            }
+        }
+        if ($this->transaction->getMethod() === Transaction::METHOD_POST) {
+            $this->handlePost($violations);
+        }
     }
 
     /**
@@ -95,6 +121,42 @@ class TransactionHandler
         }
         if ($this->transaction->getMethod() === Transaction::METHOD_PATCH) {
             $this->handlePatch($violations);
+        }
+        $entity->setTransaction($this->transaction);
+    }
+
+    /**
+     * Handling PATCH method
+     *
+     * @param ConstraintViolationList|ConstraintViolation[] $violations
+     */
+    private function handlePost(ConstraintViolationList $violations = null)
+    {
+        if (is_null($violations)) {
+            $this->transaction->setStatus(Transaction::STATUS_CREATED);
+            $this->transaction->setSuccess(true);
+        } else {
+            $this->transaction->setSuccess(false);
+            $this->transaction->setStatus(Transaction::STATUS_CONFLICT);
+            foreach ($violations as $violation) {
+                $code = $violation->getCode();
+                if ($code && $this->transaction->getStatus() !== $code) {
+                    $this->transaction->setStatus($code);
+                }
+                $context =
+                    $violation->getCode() === Transaction::STATUS_NOT_FOUND ?
+                        Error::CONTEXT_GLOBAL :
+                        Error::CONTEXT_DATA;
+
+                $this->errors->add(
+                    new Error(
+                        $violation->getMessage(),
+                        $violation->getCode(),
+                        $context,
+                        $violation->getPropertyPath()
+                    )
+                );
+            }
         }
     }
 

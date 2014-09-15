@@ -27,7 +27,8 @@ use Hateoas\Configuration\Annotation as Hateoas;
  *              "id" = "expr(object.getRelatedId())"
  *          },
  *          absolute = true
- *      )
+ *      ),
+ *      exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getRelatedId() === null)")
  * )
  *
  * @Hateoas\Relation(
@@ -91,7 +92,7 @@ class Transaction
      * Related entity
      *
      * @var string
-     * @ORM\Column(name="related_id", type="string", nullable=false)
+     * @ORM\Column(name="related_id", type="string", nullable=true)
      *
      */
     private $relatedId;
@@ -484,5 +485,7 @@ class Transaction
     public function getMessages()
     {
         return $this->messages;
+
+
     }
 }

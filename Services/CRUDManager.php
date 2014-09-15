@@ -142,22 +142,55 @@ class CRUDManager
     }
 
     /**
+     * Validate collection uniqueness
+     *
+     * @param ArrayCollection|CRUDEntity[] $collection
+     * @return ConstraintViolationList
+     */
+    private function validateCollectionUniqueness(ArrayCollection $collection)
+    {
+        $constraintViolationList = new ConstraintViolationList();
+        foreach ($collection as $collectionItem) {
+            $count = 0;
+            foreach ($collection as $collectionItemToCompare) {
+                if ($collectionItemToCompare->getId() == $collectionItem->getId() && $collectionItem->getId()) {
+                    $count++;
+                }
+            }
+            if ($count > 1) {
+                $violation = new ConstraintViolation(
+                    'Collection contains duplicate entities',
+                    'Collection contains duplicate entities',
+                    array(),
+                    $collection,
+                    'id',
+                    '',
+                    null,
+                    409
+                );
+                $constraintViolationList->add($violation);
+                return $constraintViolationList;
+            }
+        }
+        return $constraintViolationList;
+    }
+
+    /**
      * Collection validation
      *
-     * @param ArrayCollection|object[] $collection
+     * @param ArrayCollection|CRUDEntity[] $collection
      * @return bool
      * @throws ValidationFailedException
      */
     public function validateCollection(ArrayCollection $collection)
     {
-        $violations = new ConstraintViolationList();
+        $violations = $this->validateCollectionUniqueness($collection);
         foreach ($collection as $collectionItem) {
             $itemViolations = $this->validate($collectionItem);
             if ($itemViolations instanceof ConstraintViolationList) {
                 $violations->addAll($itemViolations);
             }
         }
-
         if ($violations->count()) {
             throw new ValidationFailedException($violations);
         }
