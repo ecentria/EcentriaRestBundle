@@ -105,18 +105,17 @@ Controller for entity must be annotated as:
 
 Every action that needs to work with transaction must end with:
 
-``` php
-<?php
-
+```
 return $this->viewTransaction(...);
 ```
 
 To avoid action working with transaction use annotation:
 
 ``` php
-<?php
 
-@EcentriaAnnotation\AvoidTransaction()
+/**
+ * @EcentriaAnnotation\AvoidTransaction()
+ */
 ```
 
 ## That's it!
