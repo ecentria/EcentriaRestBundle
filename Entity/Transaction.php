@@ -10,14 +10,36 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
 use Symfony\Component\Validator\Constraints as Assert;
 use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
-
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * Transaction entity
+ *
+ * @Hateoas\Relation(
+ *      "related",
+ *      href = @Hateoas\Route(
+ *          "expr(object.getRelatedRoute())",
+ *          parameters = {
+ *              "id" = "expr(object.getRelatedId())"
+ *          },
+ *          absolute = true
+ *      )
+ * )
+ *
+ * @Hateoas\Relation(
+ *      "self",
+ *      href = @Hateoas\Route(
+ *          "get_transaction",
+ *          parameters = {
+ *              "id" = "expr(object.getId())"
+ *          },
+ *          absolute = true
+ *      )
+ * )
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  *
@@ -40,6 +62,7 @@ class Transaction
     const STATUS_OK = 200;
     const STATUS_CREATED = 201;
     const STATUS_BAD_REQUEST = 400;
+    const STATUS_NOT_FOUND = 404;
     const STATUS_CONFLICT = 409;
 
     /**
@@ -63,6 +86,23 @@ class Transaction
      * @Assert\NotNull()
      */
     private $model;
+
+    /**
+     * Related entity
+     *
+     * @var string
+     * @ORM\Column(name="related_id", type="string", nullable=false)
+     *
+     */
+    private $relatedId;
+
+    /**
+     * Related entity
+     *
+     * @var string
+     * @ORM\Column(name="related_route", type="string", nullable=false)
+     */
+    private $relatedRoute;
 
     /**
      * Request method
@@ -125,8 +165,6 @@ class Transaction
      * @ORM\Column(name="created_at", type="datetime", nullable=false)
      *
      * @Assert\NotNull()
-     *
-     * @Gedmo\Timestampable(on="create")
      */
     private $createdAt;
 
@@ -138,8 +176,6 @@ class Transaction
      * @ORM\Column(name="updated_at", type="datetime", nullable=false)
      *
      * @Assert\NotNull()
-     *
-     * @Gedmo\Timestampable(on="update")
      */
     private $updatedAt;
 
@@ -158,6 +194,7 @@ class Transaction
      *          Transaction::STATUS_OK,
      *          Transaction::STATUS_CREATED,
      *          Transaction::STATUS_BAD_REQUEST,
+     *          Transaction::STATUS_NOT_FOUND,
      *          Transaction::STATUS_CONFLICT
      *      }
      * )
@@ -180,9 +217,9 @@ class Transaction
      * Message
      * Json encoded message
      *
-     * @var string
+     * @var ArrayCollection
      *
-     * @ORM\Column(name="message", type="text")
+     * @ORM\Column(name="message", type="array")
      */
     private $messages;
 
@@ -217,6 +254,52 @@ class Transaction
     public function getModel()
     {
         return $this->model;
+    }
+
+    /**
+     * RelatedId setter
+     *
+     * @param string $relatedId
+     *
+     * @return $this
+     */
+    public function setRelatedId($relatedId)
+    {
+        $this->relatedId = $relatedId;
+        return $this;
+    }
+
+    /**
+     * RelatedId getter
+     *
+     * @return string
+     */
+    public function getRelatedId()
+    {
+        return $this->relatedId;
+    }
+
+    /**
+     * RelatedRoute setter
+     *
+     * @param string $relatedRoute
+     *
+     * @return $this
+     */
+    public function setRelatedRoute($relatedRoute)
+    {
+        $this->relatedRoute = $relatedRoute;
+        return $this;
+    }
+
+    /**
+     * RelatedRoute getter
+     *
+     * @return string
+     */
+    public function getRelatedRoute()
+    {
+        return $this->relatedRoute;
     }
 
     /**
@@ -383,7 +466,7 @@ class Transaction
     /**
      * Messages setter
      *
-     * @param string $messages
+     * @param ArrayCollection $messages
      *
      * @return self
      */
@@ -396,7 +479,7 @@ class Transaction
     /**
      * Messages getter
      *
-     * @return string
+     * @return ArrayCollection
      */
     public function getMessages()
     {

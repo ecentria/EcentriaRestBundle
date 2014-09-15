@@ -11,11 +11,15 @@ namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityNotFoundException;
+use Doctrine\ORM\UnitOfWork;
+use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
 use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntityInterface;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
@@ -172,17 +176,15 @@ class CRUDManager
     /**
      * Updating one entity
      *
-     * @param object $entity
+     * @param CRUDEntity $entity
      * @param array $data
      * @throws \Exception
      * @return void
      */
-    public function setData($entity, array $data = array())
+    public function setData(CRUDEntity $entity, array $data = array())
     {
         $data = reset($data);
-        if (!$entity instanceof CRUDEntityInterface) {
-            throw new \Exception('Entity must extend CRUDEntityInterface');
-        }
+        $this->validateExistence($entity);
         $this->crudTransformer->initializeClassMetadata(get_class($entity));
         foreach ($data as $property => $value) {
             $this->crudTransformer->processPropertyValue($entity, $property, $value, 'update');
@@ -213,5 +215,27 @@ class CRUDManager
     public function persist($entity)
     {
         $this->entityManager->persist($entity);
+    }
+
+    /**
+     * @param CRUDEntity $entity
+     * @throws \JMS\Serializer\Exception\ValidationFailedException
+     */
+    private function validateExistence(CRUDEntity $entity)
+    {
+        if (UnitOfWork::STATE_MANAGED !== $this->entityManager->getUnitOfWork()->getEntityState($entity)) {
+            $violation = new ConstraintViolation(
+                'Entity not found',
+                'Entity not found',
+                array(),
+                $entity,
+                'id',
+                $entity->getId(),
+                null,
+                404
+            );
+            $violations = new ConstraintViolationList(array($violation));
+            throw new ValidationFailedException($violations);
+        }
     }
 }

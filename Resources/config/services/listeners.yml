@@ -1,5 +1,6 @@
 parameters:
     gedmo.listener.timestampable.class: Gedmo\Timestampable\TimestampableListener
+    kernel.listener.transaction_listener.class: Ecentria\Libraries\CoreRestBundle\EventListener\TransactionListener
 
 services:
     gedmo.listener.timestampable:
@@ -8,3 +9,18 @@ services:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ @annotation_reader ] ]
+
+#    kernel.listener.transaction_listener:
+#        class: %kernel.listener.transaction_listener.class%
+#        tags:
+#            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
+#        calls:
+#            - [ setTransactionBuilder, [ @ecentria.transaction.builder ] ]
+
+    ecentria.controller.listener:
+        class: Ecentria\Libraries\CoreRestBundle\EventListener\TransactionalActionListener
+        tags:
+            - { name: kernel.event_subscriber }
+        arguments:
+            - @annotation_reader
+            - @ecentria.transaction.builder

@@ -65,6 +65,13 @@ class Email extends BaseEmail
     public $dependencyMatch;
 
     /**
+     * Property path
+     *
+     * @var string
+     */
+    public $propertyPath;
+
+    /**
      * {@inheritdoc}
      */
     public function validatedBy()

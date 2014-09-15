@@ -48,4 +48,16 @@ interface CRUDEntityInterface
      * @return \DateTime
      */
     public function getUpdatedAt();
+
+    /**
+     * Id getter
+     *
+     * @return mixed
+     */
+    public function getId();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setId($id);
 }

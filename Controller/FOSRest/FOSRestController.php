@@ -10,8 +10,11 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Controller\FOSRest;
 
+use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
+use Ecentria\Libraries\CoreRestBundle\Entity\NullEntity;
 use FOS\RestBundle\Controller\FOSRestController as BaseFOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * FOS Rest Controller
@@ -24,16 +27,28 @@ class FOSRestController extends BaseFOSRestController implements ClassResourceIn
     /**
      * {@inheritdoc}
      */
-    protected function view($data = null, $statusCode = null, array $headers = array())
+    protected function viewTransaction($transaction, $entity, ConstraintViolationList $violations = null)
     {
-        $errorHandler = $this->get('ecentria.error.response.handler');
+        $transactionHandler = $this->get('ecentria.transaction.handler');
+        $transaction = $transactionHandler->handle($transaction, $entity, $violations);
+        $em = $this->get('doctrine.orm.default_entity_manager');
 
-        if ($data instanceof \Exception || is_null($data)) {
-            $errorHandler->handle($data);
-            $data = $errorHandler->getData();
-            $statusCode = $errorHandler->getStatusCode();
+        $transaction->setRequestId('1');
+
+        $em->persist($transaction);
+        $em->flush($transaction);
+
+        if ($entity instanceof CRUDEntity) {
+            $entity->setTransaction($transaction);
         }
 
-        return parent::view($data, $statusCode, $headers);
+        if ($transaction->getSuccess()) {
+            $data = $entity;
+        } else {
+            $data = new NullEntity();
+            $data->setTransaction($transaction);
+        }
+
+        return parent::view($data, $transaction->getStatus());
     }
 }

@@ -11,13 +11,11 @@
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Util\Inflector;
 use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Array collection converter
@@ -34,6 +32,8 @@ class ArrayCollectionConverter implements ParamConverterInterface
     private $entityManager;
 
     /**
+     * CRUD Transformer
+     *
      * @var CRUDTransformer
      */
     private $crudTransformer;
