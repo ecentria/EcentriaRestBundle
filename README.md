@@ -101,7 +101,7 @@ Controller for entity must be annotated as:
  *      relatedRoute="your_get_entity_route"
  * )
  */
- ```
+```
 
 Every action that needs to work with transaction must end with:
 
