@@ -485,7 +485,5 @@ class Transaction
     public function getMessages()
     {
         return $this->messages;
-
-
     }
 }

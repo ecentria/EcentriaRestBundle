@@ -8,6 +8,7 @@
  * file that was distributed with this source code.
  */
 namespace Ecentria\Libraries\CoreRestBundle\Services;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;

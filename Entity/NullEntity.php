@@ -10,11 +10,6 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Mapping\Annotation as Gedmo;
-use Symfony\Component\Validator\Constraints as Assert;
-use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
-use Doctrine\ORM\Mapping\MappedSuperclass;
 use Hateoas\Configuration\Annotation as Hateoas;
 use JMS\Serializer\Annotation as Serializer;
 
@@ -40,12 +35,22 @@ class NullEntity
      */
     private $transaction;
 
+    /**
+     * Transaction getter
+     *
+     * @return Transaction
+     */
     public function getTransaction()
     {
         return $this->transaction;
     }
 
-    public function setTransaction($transaction)
+    /**
+     * Transaction setter
+     *
+     * @param Transaction $transaction
+     */
+    public function setTransaction(Transaction $transaction)
     {
         $this->transaction = $transaction;
     }

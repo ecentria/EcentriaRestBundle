@@ -11,10 +11,8 @@ namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityNotFoundException;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
-use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntityInterface;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use JMS\Serializer\Exception\ValidationFailedException;
