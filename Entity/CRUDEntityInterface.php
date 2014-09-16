@@ -57,7 +57,11 @@ interface CRUDEntityInterface
     public function getId();
 
     /**
-     * {@inheritdoc}
+     * Id setter
+     *
+     * @param mixed $id
+     *
+     * @return self
      */
     public function setId($id);
 }
