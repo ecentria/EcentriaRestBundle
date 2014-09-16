@@ -106,6 +106,10 @@ class CRUDManager
         if ($flush) {
             $this->entityManager->flush($entity);
         }
+        $this->eventDispatcher->dispatch(
+            Events::POST_CREATE,
+            new CRUDEvent($entity)
+        );
         return $entity;
     }
 
