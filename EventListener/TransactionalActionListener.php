@@ -70,20 +70,27 @@ class TransactionalActionListener implements EventSubscriberInterface
 
         $transactional = $this->reader->getClassAnnotation($object, Transactional::NAME);
 
-        if ($transactional instanceof Transactional) {
-            $avoidTransaction = $this->reader->getMethodAnnotation(
-                $object->getMethod($controller[1]),
-                AvoidTransaction::NAME
-            );
-            if (is_null($avoidTransaction)) {
-                $request = $event->getRequest();
-                $this->transactionBuilder->setRequestMethod($request->getRealMethod());
-                $this->transactionBuilder->setRequestSource(Transaction::SOURCE_REST);
-                $this->transactionBuilder->setRelatedRoute($transactional->relatedRoute);
-                $this->transactionBuilder->setModel($transactional->model);
-                $request->attributes->set('transaction', $this->transactionBuilder->build());
-            }
+        if (!$transactional instanceof Transactional) {
+            return;
         }
+
+        $avoidTransaction = $this->reader->getMethodAnnotation(
+            $object->getMethod($controller[1]),
+            AvoidTransaction::NAME
+        );
+
+        if (!is_null($avoidTransaction)) {
+            return;
+        }
+
+        $request = $event->getRequest();
+
+        $this->transactionBuilder->setRequestMethod($request->getRealMethod());
+        $this->transactionBuilder->setRequestSource(Transaction::SOURCE_REST);
+        $this->transactionBuilder->setRelatedRoute($transactional->relatedRoute);
+        $this->transactionBuilder->setModel($transactional->model);
+
+        $request->attributes->set('transaction', $this->transactionBuilder->build());
     }
 
     /**
