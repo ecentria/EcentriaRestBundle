@@ -199,6 +199,11 @@ class CRUDManager
         return true;
     }
 
+    /**
+     * Update entity
+     *
+     * @param $entity
+     */
     public function update($entity)
     {
         $this->save($entity);
@@ -235,21 +240,11 @@ class CRUDManager
     public function save($entity)
     {
         $violations = $this->validate($entity);
+
         if ($violations instanceof ConstraintViolationList) {
             throw new ValidationFailedException($violations);
         }
-
         $this->entityManager->flush($entity);
-    }
-
-    /**
-     * Persist
-     *
-     * @param object $entity
-     */
-    public function persist($entity)
-    {
-        $this->entityManager->persist($entity);
     }
 
     /**
