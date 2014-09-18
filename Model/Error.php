@@ -53,10 +53,10 @@ class Error
      *
      * @param $message
      * @param $code
-     * @param null|string $context
      * @param null|string $key
+     * @param null|string $context
      */
-    public function __construct($message, $code, $context = null, $key = null)
+    public function __construct($message, $code, $key = null, $context = null)
     {
         $this->message = $message;
         $this->code = $code;

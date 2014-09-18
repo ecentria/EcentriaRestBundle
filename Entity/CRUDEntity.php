@@ -32,9 +32,17 @@ use JMS\Serializer\Annotation as Serializer;
  * )
  *
  * @Hateoas\Relation(
+ *      "service-transaction",
+ *      exclusion = @Hateoas\Exclusion(
+ *          excludeIf = "expr(object.getTransaction() === null || object.getEmbedded() === false)"
+ *      ),
+ *      embedded = "expr(object.getTransaction())"
+ * )
+ *
+ * @Hateoas\Relation(
  *      "self",
  *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(object.getTransaction() === null)"
+ *          excludeIf = "expr(object.getTransaction() === null || !object.getId())"
  *      ),
  *      href = @Hateoas\Route(
  *          "expr(object.getTransaction().getRelatedRoute())",
@@ -79,9 +87,26 @@ abstract class CRUDEntity implements CRUDEntityInterface
      * May be in future we'll find a way to correct storing of all transactions
      * May be not.
      *
+     * @var null|Transaction
      * @Serializer\Exclude
      */
     protected $transaction = null;
+
+    /**
+     * Embedded?
+     *
+     * @var bool|null
+     * @Serializer\Exclude
+     */
+    protected $embedded = null;
+
+    /**
+     * Associations?
+     *
+     * @var bool|null
+     * @Serializer\Exclude
+     */
+    protected $showAssociations = null;
 
     /**
      * {@inheritdoc}
@@ -143,4 +168,50 @@ abstract class CRUDEntity implements CRUDEntityInterface
      * {@inheritdoc}
      */
     abstract public function setId($id);
+
+    /**
+     * Embedded setter
+     *
+     * @param boolean $embedded
+     *
+     * @return $this
+     */
+    public function setEmbedded($embedded)
+    {
+        $this->embedded = (bool) $embedded;
+        return $this;
+    }
+
+    /**
+     * Embedded getter
+     *
+     * @return boolean
+     */
+    public function getEmbedded()
+    {
+        return $this->embedded;
+    }
+
+    /**
+     * ShowAssociations setter
+     *
+     * @param bool|null $showAssociations
+     *
+     * @return $this
+     */
+    public function setShowAssociations($showAssociations)
+    {
+        $this->showAssociations = $showAssociations;
+        return $this;
+    }
+
+    /**
+     * ShowAssociations getter
+     *
+     * @return bool|null
+     */
+    public function showAssociations()
+    {
+        return $this->showAssociations;
+    }
 }

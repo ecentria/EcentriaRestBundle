@@ -7,7 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Ecentria\Libraries\CoreRestBundle\Services;
+
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 
 /**
@@ -106,7 +108,8 @@ class TransactionBuilder
         $transaction = new Transaction();
         $transaction->setMethod($this->requestMethod)
             ->setRelatedRoute($this->relatedRoute)
-            ->setRequestId(1)
+            ->setRequestId(microtime())
+            ->setId(UUID::generate())
             ->setRequestSource($this->requestSource)
             ->setModel($this->model)
             ->setCreatedAt($datetime)

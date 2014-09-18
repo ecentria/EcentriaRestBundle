@@ -13,10 +13,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
-use Ecentria\Libraries\CoreRestBundle\Entity\NullEntity;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
-use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
@@ -27,27 +26,60 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionHandler
 {
     /**
+     * Entity manager
+     *
      * @var EntityManager
      */
     private $entityManager;
 
     /**
+     * Transaction
+     *
      * @var Transaction
      */
     private $transaction;
 
     /**
-     * @var ArrayCollection
+     * Notice builder
+     *
+     * @var NoticeBuilder
      */
-    private $errors;
+    private $noticeBuilder;
+
+    /**
+     * Error builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
+     * Data
+     *
+     * @var ArrayCollection|CRUDEntity[]|CRUDEntity
+     */
+    private $data;
+
+    /**
+     * Violations
+     *
+     * @var ConstraintViolationList
+     */
+    private $violations;
 
     /**
      * @param EntityManager $entityManager
+     * @param ErrorBuilder $errorBuilder
+     * @param NoticeBuilder $noticeBuilder
      */
-    public function __construct(EntityManager $entityManager)
-    {
+    public function __construct(
+        EntityManager $entityManager,
+        ErrorBuilder $errorBuilder,
+        NoticeBuilder $noticeBuilder
+    ) {
         $this->entityManager = $entityManager;
-        $this->errors = new ArrayCollection();
+        $this->errorBuilder = $errorBuilder;
+        $this->noticeBuilder = $noticeBuilder;
     }
 
     /**
@@ -61,162 +93,159 @@ class TransactionHandler
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
     {
         $this->transaction = $transaction;
+        $this->data = $data;
+        $this->violations = $violations;
 
-        if ($data instanceof ArrayCollection) {
-            $this->handleCollection($data, $violations);
-        } else {
-            $this->handleEntity($data, $violations);
+        switch ($this->transaction->getMethod()) {
+            case Transaction::METHOD_GET:
+                $this->handleGet();
+                break;
+            case Transaction::METHOD_PATCH:
+                $this->handlePatch();
+                break;
+            case Transaction::METHOD_POST:
+                $this->handlePost();
+                break;
         }
-
-        $this->transaction->setMessages($this->getMessages());
 
         $this->entityManager->persist($this->transaction);
-        $this->entityManager->flush($this->transaction);
 
-        if ($this->transaction->getSuccess()) {
-            if ($data instanceof ArrayCollection) {
-                $data = $data->toArray();
-            }
-        } else {
-            $data = new NullEntity();
-            $data->setTransaction($this->transaction);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Handle collection
-     *
-     * @param ArrayCollection $data
-     * @param ConstraintViolationList $violations
-     */
-    private function handleCollection(ArrayCollection $data, ConstraintViolationList $violations = null)
-    {
-        if ($data->count() === 1) {
-            $data = $data->first();
-            $this->handleEntity($data, $violations);
-        }
-
-        foreach ($data as $item) {
-            if ($item instanceof CRUDEntity) {
-                $item->setTransaction($this->transaction);
-            }
-        }
-        if ($this->transaction->getMethod() === Transaction::METHOD_POST) {
-            $this->handlePost($violations);
-        }
-    }
-
-    /**
-     * @param CRUDEntity $entity
-     * @param ConstraintViolationList $violations
-     *
-     * @return Transaction
-     */
-    private function handleEntity(CRUDEntity $entity, ConstraintViolationList $violations = null)
-    {
-        $this->transaction->setRelatedId($entity->getId());
-        if ($this->transaction->getMethod() === Transaction::METHOD_GET) {
-            $this->handleGet($entity);
-        }
-        if ($this->transaction->getMethod() === Transaction::METHOD_PATCH) {
-            $this->handlePatch($violations);
-        }
-        $entity->setTransaction($this->transaction);
-    }
-
-    /**
-     * Handling PATCH method
-     *
-     * @param ConstraintViolationList|ConstraintViolation[] $violations
-     */
-    private function handlePost(ConstraintViolationList $violations = null)
-    {
-        if (is_null($violations)) {
-            $this->transaction->setStatus(Transaction::STATUS_CREATED);
-            $this->transaction->setSuccess(true);
-        } else {
-            $this->transaction->setSuccess(false);
-            $this->transaction->setStatus(Transaction::STATUS_CONFLICT);
-            foreach ($violations as $violation) {
-                $code = $violation->getCode();
-                if ($code && $this->transaction->getStatus() !== $code) {
-                    $this->transaction->setStatus($code);
-                }
-                $context =
-                    $violation->getCode() === Transaction::STATUS_NOT_FOUND ?
-                        Error::CONTEXT_GLOBAL :
-                        Error::CONTEXT_DATA;
-
-                $this->errors->add(
-                    new Error(
-                        $violation->getMessage(),
-                        $violation->getCode(),
-                        $context,
-                        $violation->getPropertyPath()
-                    )
-                );
-            }
-        }
-    }
-
-    /**
-     * Handling PATCH method
-     *
-     * @param ConstraintViolationList|ConstraintViolation[] $violations
-     */
-    private function handlePatch(ConstraintViolationList $violations = null)
-    {
-        if (is_null($violations)) {
-            $this->transaction->setStatus(Transaction::STATUS_OK);
-            $this->transaction->setSuccess(true);
-        } else {
-            $this->transaction->setSuccess(false);
-            $this->transaction->setStatus(Transaction::STATUS_CONFLICT);
-            foreach ($violations as $violation) {
-                $code = $violation->getCode();
-                if ($code && $this->transaction->getStatus() !== $code) {
-                    $this->transaction->setStatus($code);
-                }
-                $context =
-                    $violation->getCode() === Transaction::STATUS_NOT_FOUND ?
-                        Error::CONTEXT_GLOBAL :
-                        Error::CONTEXT_DATA;
-
-                $this->errors->add(
-                    new Error(
-                        $violation->getMessage(),
-                        $violation->getCode(),
-                        $context,
-                        $violation->getPropertyPath()
-                    )
-                );
-            }
-        }
+        return $this->data;
     }
 
     /**
      * Handling GET method
-     *
-     * @param CRUDEntity $entity
      */
-    private function handleGet(CRUDEntity $entity)
+    private function handleGet()
     {
-        if ($this->isEntityManaged($entity)) {
+        if ($this->isEntityManaged($this->data)) {
             $this->transaction->setStatus(Transaction::STATUS_OK);
             $this->transaction->setSuccess(true);
+            $this->data->setShowAssociations(true);
         } else {
             $this->transaction->setStatus(Transaction::STATUS_NOT_FOUND);
             $this->transaction->setSuccess(false);
-            $this->errors->add(
-                new Error(
-                    'Not found',
-                    Transaction::STATUS_NOT_FOUND,
-                    Error::CONTEXT_GLOBAL
-                )
+            $this->errorBuilder->addCustomError(
+                $this->data->getId(),
+                new Error('Entity not found', Transaction::STATUS_NOT_FOUND, null, Error::CONTEXT_GLOBAL)
             );
+            $this->setErrors($this->transaction);
         }
+        $this->transaction->setRelatedId($this->data->getId());
+        $this->data->setTransaction($this->transaction);
+    }
+
+    /**
+     * Handling PATCH method
+     */
+    private function handlePatch()
+    {
+        $this->errorBuilder->processViolations($this->violations);
+        if (!$this->errorBuilder->hasErrors()) {
+            $this->transaction->setStatus(Transaction::STATUS_OK);
+            $this->transaction->setSuccess(true);
+            $this->data->setShowAssociations(true);
+        } else {
+            $this->transaction->setStatus(Transaction::STATUS_CONFLICT);
+            $this->transaction->setSuccess(false);
+            $this->data->setEmbedded(true);
+            $this->setErrors($this->transaction);
+        }
+        $this->transaction->setRelatedId($this->data->getId());
+        $this->data->setTransaction($this->transaction);
+    }
+
+    /**
+     * Handling PATCH method
+     */
+    private function handlePost()
+    {
+        $this->errorBuilder->processViolations($this->violations);
+
+        if (!$this->errorBuilder->hasErrors()) {
+            $this->transaction->setStatus(Transaction::STATUS_CREATED);
+            $this->transaction->setSuccess(true);
+        } else {
+            $this->transaction->setStatus(Transaction::STATUS_CONFLICT);
+            $this->transaction->setSuccess(false);
+            $this->setErrors($this->transaction);
+        }
+        if ($this->data instanceof ArrayCollection) {
+            $this->handleCollection();
+            $this->setNotices($this->transaction);
+            $this->data = new CollectionResponse($this->data);
+            $this->data->setTransaction($this->transaction);
+        }
+    }
+
+    /**
+     * Handle collection
+     */
+    private function handleCollection()
+    {
+        foreach ($this->data as $entity) {
+
+            $transaction = clone $this->transaction;
+            $transaction->setRequestSource(Transaction::SOURCE_SERVICE);
+            $transaction->setId(UUID::generate());
+            $transaction->setRequestId(microtime());
+            $transaction->setRelatedId($entity->getId());
+
+            $errors = $this->errorBuilder->getEntityErrors($entity->getId());
+            $messages = new ArrayCollection();
+
+            if ($errors->isEmpty()) {
+                $transaction->setSuccess(true);
+                $transaction->setStatus(Transaction::STATUS_CREATED);
+                $entity->setEmbedded(false);
+                $entity->setShowAssociations(true);
+                $this->noticeBuilder->addSuccess();
+            } else {
+                $messages->set('errors', $errors);
+                $transaction->setSuccess(false);
+                $transaction->setStatus(Transaction::STATUS_CONFLICT);
+                $this->noticeBuilder->addFail();
+            }
+            $transaction->setMessages($messages);
+            $this->entityManager->persist($transaction);
+            $entity->setTransaction($transaction);
+        }
+    }
+
+    /**
+     * Setting errors only
+     *
+     * @param Transaction $transaction
+     */
+    private function setErrors(Transaction $transaction)
+    {
+        $messages = new ArrayCollection();
+        $globalErrors = $this->errorBuilder->getErrors('global');
+        if (!$globalErrors->isEmpty()) {
+            $transaction->setStatus(Transaction::STATUS_NOT_FOUND);
+        }
+        $errors = $this->errorBuilder->getErrors();
+        if (!$errors->isEmpty()) {
+            $messages->set('errors', $errors);
+        }
+        $transaction->setMessages($messages);
+    }
+
+    /**
+     * Setting errors only
+     *
+     * @param Transaction $transaction
+     */
+    private function setNotices(Transaction $transaction)
+    {
+        $messages = $transaction->getMessages();
+        if (is_null($messages)) {
+            $messages = new ArrayCollection();
+        }
+        if (!$this->noticeBuilder->isEmpty()) {
+            $messages->add($this->noticeBuilder->getNotices());
+        }
+        $transaction->setMessages($messages);
     }
 
     /**
@@ -227,19 +256,5 @@ class TransactionHandler
     private function isEntityManaged(CRUDEntity $entity)
     {
         return UnitOfWork::STATE_MANAGED === $this->entityManager->getUnitOfWork()->getEntityState($entity);
-    }
-
-    /**
-     * Get messages
-     *
-     * @return ArrayCollection
-     */
-    private function getMessages()
-    {
-        $messages = new ArrayCollection();
-        if (!$this->errors->isEmpty()) {
-            $messages->set('errors', $this->errors);
-        }
-        return $messages->isEmpty() ? null : $messages;
     }
 }

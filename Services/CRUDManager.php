@@ -15,6 +15,7 @@ use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
+use Ecentria\Libraries\CoreRestBundle\Model\Error;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -160,11 +161,14 @@ class CRUDManager
                 }
             }
             if ($count > 1) {
+                // TODO: move this to different class
                 $violation = new ConstraintViolation(
                     'Collection contains duplicate entities',
                     'Collection contains duplicate entities',
-                    array(),
-                    $collection,
+                    array(
+                        'context' => Error::CONTEXT_GLOBAL
+                    ),
+                    $collectionItem,
                     'id',
                     '',
                     null,
@@ -251,13 +255,16 @@ class CRUDManager
      * @param CRUDEntity $entity
      * @throws \JMS\Serializer\Exception\ValidationFailedException
      */
-    private function validateExistence(CRUDEntity $entity)
+    public function validateExistence(CRUDEntity $entity)
     {
         if (UnitOfWork::STATE_MANAGED !== $this->entityManager->getUnitOfWork()->getEntityState($entity)) {
+            // TODO: move this to different class
             $violation = new ConstraintViolation(
                 'Entity not found',
                 'Entity not found',
-                array(),
+                array(
+                    'context' => Error::CONTEXT_GLOBAL
+                ),
                 $entity,
                 'id',
                 $entity->getId(),

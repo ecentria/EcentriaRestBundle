@@ -7,15 +7,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
 use Doctrine\Common\Annotations\Reader;
+use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction;
 use Ecentria\Libraries\CoreRestBundle\Annotation\Transactional;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 use Ecentria\Libraries\CoreRestBundle\Services\TransactionBuilder;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
+use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Doctrine\Common\Util\ClassUtils;
@@ -26,7 +27,7 @@ use Doctrine\Common\Util\ClassUtils;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class TransactionalActionListener implements EventSubscriberInterface
+class TransactionalListener implements EventSubscriberInterface
 {
     /**
      * @var Reader
@@ -41,15 +42,24 @@ class TransactionalActionListener implements EventSubscriberInterface
     private $transactionBuilder;
 
     /**
+     * Entity manager
+     *
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
      * Constructor.
      *
      * @param Reader $reader An Reader instance
      * @param TransactionBuilder $transactionBuilder
+     * @param EntityManager $entityManager
      */
-    public function __construct(Reader $reader, TransactionBuilder $transactionBuilder)
+    public function __construct(Reader $reader, TransactionBuilder $transactionBuilder, EntityManager $entityManager)
     {
         $this->reader = $reader;
         $this->transactionBuilder = $transactionBuilder;
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -100,6 +110,20 @@ class TransactionalActionListener implements EventSubscriberInterface
     {
         return array(
             KernelEvents::CONTROLLER => 'onKernelController',
+            KernelEvents::TERMINATE => 'onKernelTerminate'
         );
+    }
+
+    /**
+     * On kernel terminate
+     *
+     * @param PostResponseEvent $postResponseEvent
+     */
+    public function onKernelTerminate(PostResponseEvent $postResponseEvent)
+    {
+        $request = $postResponseEvent->getRequest();
+        if ($request->attributes->get('transaction')) {
+            $this->entityManager->flush();
+        }
     }
 }

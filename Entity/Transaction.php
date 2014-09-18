@@ -72,8 +72,7 @@ class Transaction
      * @var int
      *
      * @ORM\Id
-     * @ORM\Column(name="transaction_id", type="bigint")
-     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(name="transaction_id", type="string")
      */
     private $id;
 
@@ -232,6 +231,18 @@ class Transaction
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Id setter
+     *
+     * @param int $id
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
     }
 
     /**
@@ -473,7 +484,7 @@ class Transaction
      */
     public function setMessages($messages)
     {
-        $this->messages = $messages;
+        $this->messages = $messages->isEmpty() ? null : $messages;
         return $this;
     }
 

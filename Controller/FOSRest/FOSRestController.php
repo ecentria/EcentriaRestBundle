@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Controller\FOSRest;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 use FOS\RestBundle\Controller\FOSRestController as BaseFOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -30,14 +29,14 @@ class FOSRestController extends BaseFOSRestController implements ClassResourceIn
     {
         $request = $this->get('request_stack')->getMasterRequest();
         $transaction = $request->get('transaction');
+        $transactionHandler = $this->get('ecentria.transaction.handler');
 
-        if ($transaction instanceof Transaction) {
-            $transactionHandler = $this->get('ecentria.transaction.handler');
-            $data = $transactionHandler->handle($transaction, $unitOfWork, $violations);
-        } else {
-            $data = $unitOfWork;
-        }
+        $response = $transactionHandler->handle(
+            $transaction,
+            $unitOfWork,
+            $violations
+        );
 
-        return parent::view($data, $transaction->getStatus());
+        return parent::view($response, $transaction->getStatus());
     }
 }
