@@ -14,33 +14,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
-use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * Transaction entity
- *
- * @Hateoas\Relation(
- *      "related",
- *      href = @Hateoas\Route(
- *          "expr(object.getRelatedRoute())",
- *          parameters = {
- *              "id" = "expr(object.getRelatedId())"
- *          },
- *          absolute = true
- *      ),
- *      exclusion = @Hateoas\Exclusion(excludeIf = "expr(object.getRelatedId() === null)")
- * )
- *
- * @Hateoas\Relation(
- *      "self",
- *      href = @Hateoas\Route(
- *          "get_transaction",
- *          parameters = {
- *              "id" = "expr(object.getId())"
- *          },
- *          absolute = true
- *      )
- * )
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  *

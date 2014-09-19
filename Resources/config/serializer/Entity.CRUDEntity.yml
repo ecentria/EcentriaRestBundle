@@ -1,0 +1,33 @@
+Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity:
+
+    properties:
+        transaction:
+            exclude: true
+        embedded:
+            exclude: true
+        showAssociations:
+            exclude: true
+
+    relations:
+
+        - rel: service-transaction
+          exclusion:
+              exclude_if: expr(object.getTransaction() === null)
+          href:
+              route: get_transaction
+              parameters:
+                  id: expr(object.getTransaction().getId())
+              absolute: true
+          embedded:
+             content: expr(object.getTransaction())
+             exclusion:
+                exclude_if: expr(object.getEmbedded() === false)
+
+        - rel: self
+          exclusion:
+              exclude_if: expr(object.getTransaction() === null || !object.getId())
+          href:
+              route: expr(object.getTransaction().getRelatedRoute())
+              parameters:
+                  id: expr(object.getId())
+              absolute: true

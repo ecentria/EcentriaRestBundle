@@ -1,0 +1,21 @@
+Ecentria\Libraries\CoreRestBundle\Entity\Transaction:
+
+    relations:
+
+        - rel: related
+          exclusion:
+              exclude_if: expr(object.getRelatedId() === null)
+          href:
+              route: expr(object.getRelatedRoute())
+              parameters:
+                  id: expr(object.getRelatedId())
+              absolute: true
+
+        - rel: self
+          exclusion:
+              exclude_if: expr(object.getId() === null)
+          href:
+              route: get_transaction
+              parameters:
+                  id: expr(object.getId())
+              absolute: true

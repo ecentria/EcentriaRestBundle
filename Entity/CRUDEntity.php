@@ -12,52 +12,11 @@ namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
-use Doctrine\ORM\Mapping\MappedSuperclass;
-use Hateoas\Configuration\Annotation as Hateoas;
-use JMS\Serializer\Annotation as Serializer;
 
 /**
- * @Hateoas\Relation(
- *      "service-transaction",
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(object.getTransaction() === null)"
- *      ),
- *      href = @Hateoas\Route(
- *          "get_transaction",
- *          parameters = {
- *              "id" = "expr(object.getTransaction().getId())"
- *          },
- *          absolute = true
- *      )
- * )
- *
- * @Hateoas\Relation(
- *      "service-transaction",
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(object.getTransaction() === null || object.getEmbedded() === false)"
- *      ),
- *      embedded = "expr(object.getTransaction())"
- * )
- *
- * @Hateoas\Relation(
- *      "self",
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(object.getTransaction() === null || !object.getId())"
- *      ),
- *      href = @Hateoas\Route(
- *          "expr(object.getTransaction().getRelatedRoute())",
- *          parameters = {
- *              "id" = "expr(object.getId())"
- *          },
- *          absolute = true
- *      )
- * )
- *
  * Abstract CRUD entity class
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
- *
- * @MappedSuperclass
  */
 abstract class CRUDEntity implements CRUDEntityInterface
 {
@@ -88,7 +47,6 @@ abstract class CRUDEntity implements CRUDEntityInterface
      * May be not.
      *
      * @var null|Transaction
-     * @Serializer\Exclude
      */
     protected $transaction = null;
 
@@ -96,7 +54,6 @@ abstract class CRUDEntity implements CRUDEntityInterface
      * Embedded?
      *
      * @var bool|null
-     * @Serializer\Exclude
      */
     protected $embedded = null;
 
@@ -104,7 +61,6 @@ abstract class CRUDEntity implements CRUDEntityInterface
      * Associations?
      *
      * @var bool|null
-     * @Serializer\Exclude
      */
     protected $showAssociations = null;
 
