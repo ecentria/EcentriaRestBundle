@@ -1,0 +1,18 @@
+Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse:
+
+    properties:
+        transaction:
+            exclude: true
+
+    relations:
+
+        - rel: service-transaction
+          exclusion:
+              exclude_if: expr(object.getTransaction() === null)
+          href:
+              route: get_transaction
+              parameters:
+                  id: expr(object.getTransaction().getId())
+              absolute: true
+          embedded:
+              content: expr(object.getTransaction())

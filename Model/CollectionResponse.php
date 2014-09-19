@@ -11,28 +11,13 @@
 namespace Ecentria\Libraries\CoreRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Hateoas\Configuration\Annotation as Hateoas;
+use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
  * Collection Response
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
- *
- * @Hateoas\Relation(
- *      "service-transaction",
- *      exclusion = @Hateoas\Exclusion(
- *          excludeIf = "expr(object.getTransaction() === null)"
- *      ),
- *      href = @Hateoas\Route(
- *          "get_transaction",
- *          parameters = {
- *              "id" = "expr(object.getTransaction().getId())"
- *          },
- *          absolute = true
- *      ),
- *      embedded = "expr(object.getTransaction())"
- * )
  */
 class CollectionResponse
 {
@@ -44,7 +29,8 @@ class CollectionResponse
     private $items;
 
     /**
-     * @Serializer\Exclude
+     * Transaction
+     * @var Transaction|null
      */
     private $transaction;
 

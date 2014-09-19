@@ -243,7 +243,7 @@ class TransactionHandler
             $messages = new ArrayCollection();
         }
         if (!$this->noticeBuilder->isEmpty()) {
-            $messages->add($this->noticeBuilder->getNotices());
+            $messages->set('notices', $this->noticeBuilder->getNotices());
         }
         $transaction->setMessages($messages);
     }

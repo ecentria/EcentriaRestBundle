@@ -63,11 +63,9 @@ class NoticeBuilder
     public function getNotices()
     {
         return array(
-            'notices' => array(
-                'total' => $this->total,
-                'success' => $this->success,
-                'failed' => $this->failed
-            )
+            'total' => $this->total,
+            'success' => $this->success,
+            'failed' => $this->failed
         );
     }
 
