@@ -1,6 +1,7 @@
 parameters:
     gedmo.listener.timestampable.class: Gedmo\Timestampable\TimestampableListener
     ecentria.controller.transactional_listener.class: Ecentria\Libraries\CoreRestBundle\EventListener\TransactionalListener
+    ecentria.kernel.listener.exception.class: Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener
 
 services:
     gedmo.listener.timestampable:
@@ -18,3 +19,10 @@ services:
             - @annotation_reader
             - @ecentria.transaction.builder
             - @doctrine.orm.default_entity_manager
+
+    ecentria.kernel.listener.exception:
+        arguments:
+            - @ecentria.transaction.handler
+        class: %ecentria.kernel.listener.exception.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

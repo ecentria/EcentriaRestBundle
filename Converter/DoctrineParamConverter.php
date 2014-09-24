@@ -11,6 +11,7 @@
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
+use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,6 +55,10 @@ class DoctrineParamConverter extends BaseDoctrineParamConverter
         }
 
         $request->attributes->set($name, $object);
+
+        /** This attribute added to support exception listener */
+        $request->attributes->set(ExceptionListener::DATA_ALIAS, $name);
+
         return true;
     }
 }

@@ -12,6 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
+use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -71,6 +72,10 @@ class ArrayCollectionConverter implements ParamConverterInterface
             $collection->add($object);
         }
         $request->attributes->set($name, $collection);
+
+        /** This attribute added to support exception listener */
+        $request->attributes->set(ExceptionListener::DATA_ALIAS, $name);
+
         return true;
     }
 
