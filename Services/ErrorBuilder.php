@@ -7,7 +7,9 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Ecentria\Libraries\CoreRestBundle\Services;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
 use Symfony\Component\Validator\ConstraintViolation;
