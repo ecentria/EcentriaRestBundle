@@ -28,19 +28,11 @@ class ErrorBuilder
     private $errors;
 
     /**
-     * Violations
-     *
-     * @var ConstraintViolation[]|ArrayCollection
-     */
-    private $violations;
-
-    /**
      * Constructor
      */
     public function __construct()
     {
         $this->errors = new ArrayCollection();
-        $this->violations = new ArrayCollection();
     }
 
     /**
@@ -53,7 +45,6 @@ class ErrorBuilder
         if (is_null($violations)) {
             return;
         }
-        $this->violations = $violations;
         foreach ($violations as $violation) {
             $this->processViolation($violation);
         }
@@ -105,7 +96,7 @@ class ErrorBuilder
             foreach ($errorContainer as $errorItem) {
                 if ($errorItem instanceof Error) {
                     if (!is_null($context)) {
-                        if ($errorItem->context == Error::CONTEXT_GLOBAL) {
+                        if ($errorItem->context == $context) {
                             $errors->add($errorItem);
                         }
                     } else {
@@ -130,7 +121,7 @@ class ErrorBuilder
     /**
      * Entity errors getter
      *
-     * @param $key
+     * @param string $key
      * @return ArrayCollection|mixed|null
      */
     public function getEntityErrors($key)
@@ -145,7 +136,7 @@ class ErrorBuilder
     /**
      * Custom error adder
      *
-     * @param $id
+     * @param string|int $id
      * @param Error $error
      */
     public function addCustomError($id, Error $error)

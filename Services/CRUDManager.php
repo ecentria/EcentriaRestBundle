@@ -207,9 +207,9 @@ class CRUDManager
     /**
      * Update entity
      *
-     * @param $entity
+     * @param CRUDEntity $entity
      */
-    public function update($entity)
+    public function update(CRUDEntity $entity)
     {
         $this->save($entity);
         $this->eventDispatcher->dispatch(

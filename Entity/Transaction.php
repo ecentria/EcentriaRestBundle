@@ -193,7 +193,7 @@ class Transaction
      * Message
      * Json encoded message
      *
-     * @var ArrayCollection
+     * @var ArrayCollection|null
      *
      * @ORM\Column(name="message", type="array")
      */
@@ -454,11 +454,11 @@ class Transaction
     /**
      * Messages setter
      *
-     * @param ArrayCollection $messages
+     * @param ArrayCollection|null $messages
      *
      * @return self
      */
-    public function setMessages($messages)
+    public function setMessages(ArrayCollection $messages = null)
     {
         $this->messages = $messages->isEmpty() ? null : $messages;
         return $this;

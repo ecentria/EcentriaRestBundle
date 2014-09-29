@@ -132,7 +132,7 @@ abstract class CRUDEntity implements CRUDEntityInterface
      *
      * @return $this
      */
-    public function setEmbedded($embedded)
+    public function setIsEmbedded($embedded)
     {
         $this->embedded = (bool) $embedded;
         return $this;
@@ -143,7 +143,7 @@ abstract class CRUDEntity implements CRUDEntityInterface
      *
      * @return boolean
      */
-    public function getEmbedded()
+    public function isEmbedded()
     {
         return $this->embedded;
     }

@@ -43,15 +43,15 @@ class DoctrineParamConverter extends BaseDoctrineParamConverter
                 $object = new $class;
                 if ($object instanceof CRUDEntity) {
                     $object->setId($request->attributes->get('id'));
-                    $object->setEmbedded(true);
+                    $object->setIsEmbedded(true);
                 }
             }
         }
         $embedded = $request->query->get('_embedded');
 
-        if ($object instanceof CRUDEntity && is_null($object->getEmbedded())) {
+        if ($object instanceof CRUDEntity && $object->isEmbedded() === null) {
             $embedded = filter_var($embedded, FILTER_VALIDATE_BOOLEAN);
-            $object->setEmbedded(is_null($embedded) ? false : (bool) $embedded);
+            $object->setIsEmbedded($embedded === null ? false : (bool) $embedded);
         }
 
         $request->attributes->set($name, $object);

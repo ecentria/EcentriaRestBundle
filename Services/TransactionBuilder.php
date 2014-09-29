@@ -100,7 +100,9 @@ class TransactionBuilder
     }
 
     /**
-     * Build
+     * Building transaction
+     *
+     * @return Transaction
      */
     public function build()
     {

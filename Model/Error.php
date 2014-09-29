@@ -51,8 +51,8 @@ class Error
     /**
      * Constructor
      *
-     * @param $message
-     * @param $code
+     * @param string $message
+     * @param int $code
      * @param null|string $key
      * @param null|string $context
      */

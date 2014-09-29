@@ -47,10 +47,10 @@ class CollectionResponse
     /**
      * Items setter
      *
-     * @param \Doctrine\Common\Collections\ArrayCollection $items
+     * @param ArrayCollection $items
      * @return self
      */
-    public function setItems($items)
+    public function setItems(ArrayCollection $items)
     {
         $this->items = $items;
         return $this;
@@ -59,7 +59,7 @@ class CollectionResponse
     /**
      * Items getter
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return ArrayCollection
      */
     public function getItems()
     {
@@ -69,10 +69,10 @@ class CollectionResponse
     /**
      * Transaction setter
      *
-     * @param mixed $transaction
+     * @param Transaction|null $transaction
      * @return self
      */
-    public function setTransaction($transaction)
+    public function setTransaction(Transaction $transaction = null)
     {
         $this->transaction = $transaction;
         return $this;
@@ -81,7 +81,7 @@ class CollectionResponse
     /**
      * Transaction getter
      *
-     * @return mixed
+     * @return Transaction|null
      */
     public function getTransaction()
     {

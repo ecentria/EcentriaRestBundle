@@ -12,6 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 /**
  * UUID generator
+ * http://php.net/manual/en/function.uniqid.php#94959
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */

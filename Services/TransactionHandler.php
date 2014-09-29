@@ -17,6 +17,7 @@ use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
+use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
@@ -64,7 +65,7 @@ class TransactionHandler
     /**
      * Violations
      *
-     * @var ConstraintViolationList
+     * @var ConstraintViolationList|null
      */
     private $violations;
 
@@ -87,9 +88,10 @@ class TransactionHandler
      * Handle
      *
      * @param Transaction $transaction
-     * @param $data
+     * @param ArrayCollection|CrudEntity $data
      * @param ConstraintViolationList $violations
-     * @return Transaction
+     * @throws FeatureNotImplementedException
+     * @return CollectionResponse|CrudEntity
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
     {
@@ -97,7 +99,9 @@ class TransactionHandler
         $this->data = $data;
         $this->violations = $violations;
 
-        switch ($this->transaction->getMethod()) {
+        $method = $this->transaction->getMethod();
+
+        switch ($method) {
             case Transaction::METHOD_GET:
                 $this->handleGet();
                 break;
@@ -106,6 +110,9 @@ class TransactionHandler
                 break;
             case Transaction::METHOD_POST:
                 $this->handlePost();
+                break;
+            default:
+                throw new FeatureNotImplementedException($method . ' request method is not supported yet.');
                 break;
         }
 
@@ -119,6 +126,12 @@ class TransactionHandler
      */
     private function handleGet()
     {
+        if (!$this->data instanceof CRUDEntity) {
+            throw new FeatureNotImplementedException(
+                get_class($this->data) . ' class is not supported by transactions. Instance of CRUDEntity needed.'
+            );
+        }
+
         if ($this->isEntityManaged($this->data)) {
             $this->transaction->setStatus(Transaction::STATUS_OK);
             $this->transaction->setSuccess(true);
@@ -141,6 +154,11 @@ class TransactionHandler
      */
     private function handlePatch()
     {
+        if (!$this->data instanceof CRUDEntity) {
+            throw new FeatureNotImplementedException(
+                get_class($this->data) . ' class is not supported by transactions. Instance of CRUDEntity needed.'
+            );
+        }
         $this->errorBuilder->processViolations($this->violations);
         if (!$this->errorBuilder->hasErrors()) {
             $this->transaction->setStatus(Transaction::STATUS_OK);
@@ -149,7 +167,7 @@ class TransactionHandler
         } else {
             $this->transaction->setStatus(Transaction::STATUS_CONFLICT);
             $this->transaction->setSuccess(false);
-            $this->data->setEmbedded(true);
+            $this->data->setIsEmbedded(true);
             $this->setErrors($this->transaction);
         }
         $this->transaction->setRelatedId($this->data->getId());
@@ -176,6 +194,10 @@ class TransactionHandler
             $this->setNotices($this->transaction);
             $this->data = new CollectionResponse($this->data);
             $this->data->setTransaction($this->transaction);
+        } else {
+            throw new FeatureNotImplementedException(
+                'Handling POST method with single CRUDEntity is not supported. Use collection instead'
+            );
         }
     }
 
@@ -198,7 +220,7 @@ class TransactionHandler
             if ($errors->isEmpty()) {
                 $transaction->setSuccess(true);
                 $transaction->setStatus(Transaction::STATUS_CREATED);
-                $entity->setEmbedded(false);
+                $entity->setIsEmbedded(false);
                 $entity->setShowAssociations(true);
                 $this->noticeBuilder->addSuccess();
             } else {
@@ -221,7 +243,7 @@ class TransactionHandler
     private function setErrors(Transaction $transaction)
     {
         $messages = new ArrayCollection();
-        $globalErrors = $this->errorBuilder->getErrors('global');
+        $globalErrors = $this->errorBuilder->getErrors(Error::CONTEXT_GLOBAL);
         if (!$globalErrors->isEmpty()) {
             $transaction->setStatus(Transaction::STATUS_NOT_FOUND);
         }
