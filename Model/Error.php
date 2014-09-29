@@ -10,8 +10,6 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Model;
 
-use Doctrine\Common\Collections\ArrayCollection;
-
 /**
  * Error Model
  *
@@ -19,110 +17,50 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Error
 {
-    const CODE_CONFLICT = 409;
-    const CODE_BAD_REQUEST = 400;
-    const CODE_NOT_FOUND = 404;
+    const CONTEXT_DATA = 'data';
+    const CONTEXT_GLOBAL = 'global';
 
     /**
      * Code
      *
      * @var int
      */
-    protected $code;
+    public $code = null;
 
     /**
      * Message
      *
      * @var string
      */
-    protected $message;
+    public $message = null;
 
     /**
-     * Errors collection
+     * Error context
      *
-     * @var ArrayCollection
+     * @var null|string
      */
-    protected $errors;
+    public $context = null;
+
+    /**
+     * Property path
+     *
+     * @var null|string
+     */
+    public $key = null;
 
     /**
      * Constructor
      *
-     * @param $message
-     * @param $code
-     */
-    public function __construct($message, $code)
-    {
-        $this->message = $message;
-        $this->code = $code;
-        $this->errors = new ArrayCollection();
-    }
-
-    /**
-     * Code setter
-     *
-     * @param int $code
-     *
-     * @return self
-     */
-    public function setCode($code)
-    {
-        $this->code = $code;
-        return $this;
-    }
-
-    /**
-     * Code getter
-     *
-     * @return int
-     */
-    public function getCode()
-    {
-        return $this->code;
-    }
-
-    /**
-     * Message setter
-     *
      * @param string $message
-     *
-     * @return self
+     * @param int $code
+     * @param null|string $key
+     * @param null|string $context
      */
-    public function setMessage($message)
+    public function __construct($message, $code, $key = null, $context = null)
     {
         $this->message = $message;
-        return $this;
-    }
-
-    /**
-     * Message getter
-     *
-     * @return string
-     */
-    public function getMessage()
-    {
-        return $this->message;
-    }
-
-    /**
-     * Errors setter
-     *
-     * @param ArrayCollection $errors
-     *
-     * @return self
-     */
-    public function setErrors($errors)
-    {
-        $this->errors = $errors;
-        return $this;
-    }
-
-    /**
-     * Errors getter
-     *
-     * @return ArrayCollection
-     */
-    public function getErrors()
-    {
-        return $this->errors;
+        $this->code = $code;
+        $this->context = $context;
+        $this->key = $key;
     }
 }

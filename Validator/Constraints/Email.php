@@ -7,6 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Ecentria\Libraries\CoreRestBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraints\Email as BaseEmail;
@@ -63,6 +64,13 @@ class Email extends BaseEmail
      * @var string
      */
     public $dependencyMatch;
+
+    /**
+     * Property path
+     *
+     * @var string
+     */
+    public $propertyPath;
 
     /**
      * {@inheritdoc}

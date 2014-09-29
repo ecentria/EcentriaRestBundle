@@ -7,10 +7,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Ecentria\Libraries\CoreRestBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\EmailValidator as BaseEmailValidator;
+use Symfony\Component\Validator\ConstraintViolation;
 
 /**
  * Extension of email validator
@@ -32,6 +34,22 @@ class EmailValidator extends BaseEmailValidator
         if (method_exists($entity, $method) && method_exists($entity, $getter)) {
             if ($entity->$method() === $constraint->dependencyMatch) {
                 parent::validate($entity->$getter(), $constraint);
+                $violations = $this->context->getViolations();
+                foreach ($violations as $key => $violation) {
+                    /** @var ConstraintViolation $violation */
+                    $constraintViolation = new ConstraintViolation(
+                        $violation->getMessage(),
+                        $violation->getMessageTemplate(),
+                        $violation->getParameters(),
+                        $violation->getRoot(),
+                        $constraint->propertyPath,
+                        $violation->getInvalidValue(),
+                        $violation->getPlural(),
+                        $violation->getCode()
+                    );
+                    $violations->set($key, $constraintViolation);
+                }
+
             }
         }
     }

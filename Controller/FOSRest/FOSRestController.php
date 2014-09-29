@@ -12,6 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Controller\FOSRest;
 
 use FOS\RestBundle\Controller\FOSRestController as BaseFOSRestController;
 use FOS\RestBundle\Routing\ClassResourceInterface;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * FOS Rest Controller
@@ -26,14 +27,15 @@ class FOSRestController extends BaseFOSRestController implements ClassResourceIn
      */
     protected function view($data = null, $statusCode = null, array $headers = array())
     {
-        $errorHandler = $this->get('ecentria.error.response.handler');
-
-        if ($data instanceof \Exception || is_null($data)) {
-            $errorHandler->handle($data);
-            $data = $errorHandler->getData();
-            $statusCode = $errorHandler->getStatusCode();
+        $request = $this->get('request_stack')->getMasterRequest();
+        $transaction = $request->get('transaction');
+        if ($transaction) {
+            $violations = $request->get('violations');
+            $transaction = $request->get('transaction');
+            $transactionHandler = $this->get('ecentria.transaction.handler');
+            $response = $transactionHandler->handle($transaction, $data, $violations);
+            return parent::view($response, $transaction->getStatus());
         }
-
         return parent::view($data, $statusCode, $headers);
     }
 }

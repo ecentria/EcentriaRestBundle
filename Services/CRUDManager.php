@@ -7,15 +7,19 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
-use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntityInterface;
+use Doctrine\ORM\UnitOfWork;
+use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
+use Ecentria\Libraries\CoreRestBundle\Model\Error;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
@@ -142,29 +146,70 @@ class CRUDManager
     }
 
     /**
+     * Validate collection uniqueness
+     *
+     * @param ArrayCollection|CRUDEntity[] $collection
+     * @return ConstraintViolationList
+     */
+    private function validateCollectionUniqueness(ArrayCollection $collection)
+    {
+        $constraintViolationList = new ConstraintViolationList();
+        foreach ($collection as $collectionItem) {
+            $count = 0;
+            foreach ($collection as $collectionItemToCompare) {
+                if ($collectionItemToCompare->getId() == $collectionItem->getId() && $collectionItem->getId()) {
+                    $count++;
+                }
+            }
+            if ($count > 1) {
+                // TODO: move this to different class
+                $violation = new ConstraintViolation(
+                    'Collection contains duplicate entities',
+                    'Collection contains duplicate entities',
+                    array(
+                        'context' => Error::CONTEXT_GLOBAL
+                    ),
+                    $collectionItem,
+                    'id',
+                    '',
+                    null,
+                    409
+                );
+                $constraintViolationList->add($violation);
+                return $constraintViolationList;
+            }
+        }
+        return $constraintViolationList;
+    }
+
+    /**
      * Collection validation
      *
-     * @param ArrayCollection|object[] $collection
+     * @param ArrayCollection|CRUDEntity[] $collection
      * @return bool
      * @throws ValidationFailedException
      */
     public function validateCollection(ArrayCollection $collection)
     {
-        $violations = new ConstraintViolationList();
+        $violations = $this->validateCollectionUniqueness($collection);
         foreach ($collection as $collectionItem) {
             $itemViolations = $this->validate($collectionItem);
             if ($itemViolations instanceof ConstraintViolationList) {
                 $violations->addAll($itemViolations);
             }
         }
-
         if ($violations->count()) {
             throw new ValidationFailedException($violations);
         }
         return true;
     }
 
-    public function update($entity)
+    /**
+     * Update entity
+     *
+     * @param CRUDEntity $entity
+     */
+    public function update(CRUDEntity $entity)
     {
         $this->save($entity);
         $this->eventDispatcher->dispatch(
@@ -176,17 +221,15 @@ class CRUDManager
     /**
      * Updating one entity
      *
-     * @param object $entity
+     * @param CRUDEntity $entity
      * @param array $data
      * @throws \Exception
      * @return void
      */
-    public function setData($entity, array $data = array())
+    public function setData(CRUDEntity $entity, array $data = array())
     {
         $data = reset($data);
-        if (!$entity instanceof CRUDEntityInterface) {
-            throw new \Exception('Entity must extend CRUDEntityInterface');
-        }
+        $this->validateExistence($entity);
         $this->crudTransformer->initializeClassMetadata(get_class($entity));
         foreach ($data as $property => $value) {
             $this->crudTransformer->processPropertyValue($entity, $property, $value, 'update');
@@ -202,20 +245,35 @@ class CRUDManager
     public function save($entity)
     {
         $violations = $this->validate($entity);
+
         if ($violations instanceof ConstraintViolationList) {
             throw new ValidationFailedException($violations);
         }
-
         $this->entityManager->flush($entity);
     }
 
     /**
-     * Persist
-     *
-     * @param object $entity
+     * @param CRUDEntity $entity
+     * @throws \JMS\Serializer\Exception\ValidationFailedException
      */
-    public function persist($entity)
+    public function validateExistence(CRUDEntity $entity)
     {
-        $this->entityManager->persist($entity);
+        if (UnitOfWork::STATE_MANAGED !== $this->entityManager->getUnitOfWork()->getEntityState($entity)) {
+            // TODO: move this to different class
+            $violation = new ConstraintViolation(
+                'Entity not found',
+                'Entity not found',
+                array(
+                    'context' => Error::CONTEXT_GLOBAL
+                ),
+                $entity,
+                'id',
+                $entity->getId(),
+                null,
+                404
+            );
+            $violations = new ConstraintViolationList(array($violation));
+            throw new ValidationFailedException($violations);
+        }
     }
 }

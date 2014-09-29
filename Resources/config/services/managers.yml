@@ -1,7 +1,10 @@
 parameters:
     ecentria.crud.transformer.class: Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer
     ecentria.crud.manager.class: Ecentria\Libraries\CoreRestBundle\Services\CRUDManager
-    ecentria.error.response.handler.class: Ecentria\Libraries\CoreRestBundle\Services\ErrorResponseHandler
+    ecentria.error.builder.class: Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder
+    ecentria.notice.builder.class: Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder
+    ecentria.transaction.builder.class: Ecentria\Libraries\CoreRestBundle\Services\TransactionBuilder
+    ecentria.transaction.handler.class: Ecentria\Libraries\CoreRestBundle\Services\TransactionHandler
 
 services:
 
@@ -19,5 +22,18 @@ services:
             - @event_dispatcher
             - @ecentria.crud.transformer
 
-    ecentria.error.response.handler:
-        class: %ecentria.error.response.handler.class%
+    ecentria.transaction.handler:
+        class: %ecentria.transaction.handler.class%
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @ecentria.error.builder
+            - @ecentria.notice.builder
+
+    ecentria.notice.builder:
+        class: %ecentria.notice.builder.class%
+
+    ecentria.error.builder:
+        class: %ecentria.error.builder.class%
+
+    ecentria.transaction.builder:
+        class: %ecentria.transaction.builder.class%
