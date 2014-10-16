@@ -54,12 +54,12 @@ class ExceptionListener
         $name,
         ContainerAwareEventDispatcher $eventDispatcher
     ) {
-        $response = $event->getResponse();
         $exception = $event->getException();
         if ($exception instanceof ValidationFailedException) {
-            $response = $this->getValidationFailedExceptionResponse($event, $eventDispatcher, $exception);
+            $event->setResponse(
+                $this->getValidationFailedExceptionResponse($event, $eventDispatcher, $exception)
+            );
         }
-        $event->setResponse($response);
     }
 
     /**
