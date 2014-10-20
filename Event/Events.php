@@ -23,6 +23,7 @@ final class Events
 
     /**
      * Event that will be thrown after creating entity
+     * This does not imply that the entity is flushed.
      */
     const POST_CREATE = 'ecentria.crud.post_create';
 
@@ -33,6 +34,7 @@ final class Events
 
     /**
      * Event that will be thrown after updating entity
+     * This implies that the entity is flushed.
      */
     const POST_UPDATE = 'ecentria.crud.post_update';
 }
