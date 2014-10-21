@@ -145,7 +145,7 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
     public function testCreateEntityPersist()
     {
         $entity = $this->prepareEntity();
-        $entitys = new ArrayCollection(
+        $entities = new ArrayCollection(
             array($entity, $entity)
         );
 
@@ -161,11 +161,11 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
             ->method('validate')
             ->willReturn(new ConstraintViolationList());
 
-        $this->crudManager->createCollection($entitys);
+        $this->crudManager->createCollection($entities);
 
         $this->assertEquals(
             new ArrayCollection(array($entity, $entity)),
-            $entitys
+            $entities
         );
     }
 
