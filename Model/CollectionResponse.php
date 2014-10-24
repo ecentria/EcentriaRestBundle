@@ -75,16 +75,10 @@ class CollectionResponse implements EmbeddedInterface, TransactionalInterface
      */
     public function setInheritedShowAssociations($value)
     {
-        foreach ($this->getItems() as $item)
-        {
+        foreach ($this->getItems() as $item) {
             if ($item instanceof EmbeddedInterface) {
-                try {
-                    $item->setShowAssociations((bool) $value);
-                } catch (\Exception $e) {
-                    // Reference.
-                }
+                $item->setShowAssociations((bool) $value);
             }
-
         }
     }
 }
