@@ -127,6 +127,13 @@ class TransactionHandler
     private function handleGet()
     {
         if (!$this->data instanceof CRUDEntity) {
+            if (is_array($this->data)) {
+                $this->data = new ArrayCollection($this->data);
+            }
+            if ($this->data instanceof ArrayCollection) {
+                $this->handleGetCollection();
+                return;
+            }
             throw new FeatureNotImplementedException(
                 get_class($this->data) . ' class is not supported by transactions. Instance of CRUDEntity needed.'
             );
@@ -135,10 +142,10 @@ class TransactionHandler
         if ($this->isEntityManaged($this->data)) {
             $this->transaction->setStatus(Transaction::STATUS_OK);
             $this->transaction->setSuccess(true);
-            $this->data->setShowAssociations(true);
         } else {
             $this->transaction->setStatus(Transaction::STATUS_NOT_FOUND);
             $this->transaction->setSuccess(false);
+            $this->data->setShowAssociations(true);
             $this->errorBuilder->addCustomError(
                 $this->data->getId(),
                 new Error('Entity not found', Transaction::STATUS_NOT_FOUND, null, Error::CONTEXT_GLOBAL)
@@ -146,6 +153,15 @@ class TransactionHandler
             $this->setErrors($this->transaction);
         }
         $this->transaction->setRelatedId($this->data->getId());
+        $this->data->setTransaction($this->transaction);
+    }
+
+    /**
+     * Handle GET collection
+     */
+    private function handleGetCollection()
+    {
+        $this->data = new CollectionResponse($this->data);
         $this->data->setTransaction($this->transaction);
     }
 
@@ -163,11 +179,9 @@ class TransactionHandler
         if (!$this->errorBuilder->hasErrors()) {
             $this->transaction->setStatus(Transaction::STATUS_OK);
             $this->transaction->setSuccess(true);
-            $this->data->setShowAssociations(true);
         } else {
             $this->transaction->setStatus(Transaction::STATUS_CONFLICT);
             $this->transaction->setSuccess(false);
-            $this->data->setIsEmbedded(true);
             $this->setErrors($this->transaction);
         }
         $this->transaction->setRelatedId($this->data->getId());
@@ -193,6 +207,7 @@ class TransactionHandler
             $this->handleCollection();
             $this->setNotices($this->transaction);
             $this->data = new CollectionResponse($this->data);
+            $this->data->setShowAssociations(true);
             $this->data->setTransaction($this->transaction);
         } else {
             throw new FeatureNotImplementedException(
@@ -220,8 +235,6 @@ class TransactionHandler
             if ($errors->isEmpty()) {
                 $transaction->setSuccess(true);
                 $transaction->setStatus(Transaction::STATUS_CREATED);
-                $entity->setIsEmbedded(false);
-                $entity->setShowAssociations(true);
                 $this->noticeBuilder->addSuccess();
             } else {
                 $messages->set('errors', $errors);

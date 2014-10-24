@@ -10,6 +10,8 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
+use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface;
+use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
 use Ecentria\Libraries\CoreRestBundle\Services\TransactionHandler;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -54,6 +56,7 @@ class ExceptionListener
         $name,
         ContainerAwareEventDispatcher $eventDispatcher
     ) {
+
         $exception = $event->getException();
         if ($exception instanceof ValidationFailedException) {
             $event->setResponse(
@@ -92,6 +95,14 @@ class ExceptionListener
             $data,
             $violations
         );
+
+        if ($responseData instanceof EmbeddedInterface) {
+            $responseData->setShowAssociations(true);
+        }
+
+        if ($responseData instanceof CollectionResponse) {
+            $responseData->setInheritedShowAssociations(false);
+        }
 
         $view = View::create($responseData, $transaction->getStatus());
 

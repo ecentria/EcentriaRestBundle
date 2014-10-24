@@ -12,6 +12,8 @@ namespace Ecentria\Libraries\CoreRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface;
+use Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait;
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -19,8 +21,10 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CollectionResponse
+class CollectionResponse implements EmbeddedInterface
 {
+    use EmbeddedTrait;
+
     /**
      * Array collection of entities
      *
@@ -86,6 +90,26 @@ class CollectionResponse
     public function getTransaction()
     {
         return $this->transaction;
+    }
+
+    /**
+     * Setting association to show
+     *
+     * @param mixed $value
+     */
+    public function setInheritedShowAssociations($value)
+    {
+        foreach ($this->getItems() as $item)
+        {
+            if ($item instanceof EmbeddedInterface) {
+                try {
+                    $item->setShowAssociations((bool) $value);
+                } catch (\Exception $e) {
+                    // Reference.
+                }
+            }
+
+        }
     }
 }
 

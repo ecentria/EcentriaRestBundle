@@ -21,7 +21,7 @@ Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity:
           embedded:
              content: expr(object.getTransaction())
              exclusion:
-                exclude_if: expr(object.isEmbedded() === false)
+                exclude_if: expr(object.showAssociations() === false)
 
         - rel: self
           exclusion:
