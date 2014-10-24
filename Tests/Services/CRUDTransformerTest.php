@@ -93,6 +93,7 @@ class CRUDTransformerTest extends \PHPUnit_Framework_TestCase
         $reflectionProperty3 = $this->prepareReflectionProperty();
 
         $classMetadata = $this->prepareClassMetadata();
+        $classMetadata->expects($this->any())->method('hasField')->willReturn(true);
         $classMetadata->expects($this->exactly(6))
             ->method('getReflectionProperty')
             ->withConsecutive(
@@ -258,7 +259,7 @@ class CRUDTransformerTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadata')
             ->disableOriginalConstructor()
-            ->setMethods(array('hasAssociation', 'getReflectionProperty', 'getAssociationTargetClass', 'getSingleIdentifierFieldName'))
+            ->setMethods(array('hasAssociation', 'getReflectionProperty', 'getAssociationTargetClass', 'getSingleIdentifierFieldName', 'hasField'))
             ->getMock();
     }
 

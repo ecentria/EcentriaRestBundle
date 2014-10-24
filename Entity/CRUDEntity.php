@@ -15,7 +15,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface,
     Ecentria\Libraries\CoreRestBundle\Interfaces\TransactionalInterface,
     Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait,
-    Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait;
+    Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait,
+    Ecentria\Libraries\CoreRestBundle\Traits\TimestampableTrait,
+    Ecentria\Libraries\CoreRestBundle\Interfaces\TimestampableInterface;
 
 use Gedmo\Mapping\Annotation as Gedmo;
 
@@ -24,64 +26,11 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-abstract class CRUDEntity implements CRUDEntityInterface, EmbeddedInterface, TransactionalInterface
+abstract class CRUDEntity implements CRUDEntityInterface, EmbeddedInterface, TransactionalInterface, TimestampableInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;
-
-    /**
-     * Created at given datetime
-     *
-     * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime")
-     * @Gedmo\Timestampable(on="create")
-     */
-    protected $createdAt;
-
-    /**
-     * Updated at given datetime
-     *
-     * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime")
-     * @Gedmo\Timestampable(on="update")
-     */
-    protected $updatedAt;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setCreatedAt(\DateTime $createdAt)
-    {
-        $this->createdAt = $createdAt;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
+    use TimestampableTrait;
 
     /**
      * {@inheritdoc}

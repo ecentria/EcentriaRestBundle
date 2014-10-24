@@ -82,6 +82,11 @@ class CRUDTransformer
         if ($this->getClassMetadata()->hasAssociation(ucfirst($property))) {
             $property = ucfirst($property);
         }
+
+        if (!$this->getClassMetadata()->hasField($property)) {
+            return false;
+        }
+
         $propertyRestriction = $this->annotationsReader->getPropertyAnnotation(
             $this->getClassMetadata()->getReflectionProperty($property),
             PropertyRestriction::NAME
