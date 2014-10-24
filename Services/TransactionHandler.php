@@ -162,6 +162,8 @@ class TransactionHandler
     private function handleGetCollection()
     {
         $this->data = new CollectionResponse($this->data);
+        $this->transaction->setStatus(Transaction::STATUS_OK);
+        $this->transaction->setSuccess(true);
         $this->data->setTransaction($this->transaction);
     }
 
