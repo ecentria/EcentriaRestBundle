@@ -10,8 +10,11 @@
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Ecentria\Libraries\CoreRestBundle\Interfaces\CRUDEntityInterface;
+use Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait;
+use Ecentria\Libraries\CoreRestBundle\Traits\TimestampableTrait;
+use Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait;
 use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
 
 /**
@@ -23,8 +26,29 @@ use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
  *      field="Parent"
  * )
  */
-class CircularReferenceEntity extends CRUDEntity
+class CircularReferenceEntity implements CRUDEntityInterface
 {
+    use EmbeddedTrait;
+    use TransactionalTrait;
+    use TimestampableTrait;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
     /**
      * Identifier
      *
@@ -52,28 +76,6 @@ class CircularReferenceEntity extends CRUDEntity
     public function __construct()
     {
         $this->Children = new ArrayCollection();
-    }
-
-    /**
-     * Sets identifier
-     *
-     * @param string $id
-     * @return CircularReferenceEntity
-     */
-    public function setId($id)
-    {
-        $this->id = (string) $id;
-        return $this;
-    }
-
-    /**
-     * Returns identifier
-     *
-     * @return string
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
     /**
