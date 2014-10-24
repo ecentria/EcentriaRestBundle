@@ -1,4 +1,12 @@
 <?php
+/*
+ * This file is part of the Ecentria software.
+ *
+ * (c) 2014, OpticsPlanet, Inc
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace Ecentria\Libraries\CoreRestBundle\Traits;
 
@@ -18,6 +26,8 @@ trait EmbeddedTrait
 
     /**
      * {@inheritdoc}
+     *
+     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface::setShowAssociations
      */
     public function setShowAssociations($showAssociations)
     {
@@ -27,6 +37,8 @@ trait EmbeddedTrait
 
     /**
      * {@inheritdoc}
+     *
+     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface::showAssociations
      */
     public function showAssociations()
     {

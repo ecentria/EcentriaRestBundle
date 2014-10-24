@@ -11,8 +11,12 @@
 namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface;
-use Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait;
+
+use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface,
+    Ecentria\Libraries\CoreRestBundle\Interfaces\TransactionalInterface,
+    Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait,
+    Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait;
+
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
@@ -20,9 +24,10 @@ use Gedmo\Mapping\Annotation as Gedmo;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-abstract class CRUDEntity implements CRUDEntityInterface, EmbeddedInterface
+abstract class CRUDEntity implements CRUDEntityInterface, EmbeddedInterface, TransactionalInterface
 {
     use EmbeddedTrait;
+    use TransactionalTrait;
 
     /**
      * Created at given datetime
@@ -43,16 +48,6 @@ abstract class CRUDEntity implements CRUDEntityInterface, EmbeddedInterface
      * @Gedmo\Timestampable(on="update")
      */
     protected $updatedAt;
-
-    /**
-     * Transaction
-     * We don't store this transaction.
-     * May be in future we'll find a way to correct storing of all transactions
-     * May be not.
-     *
-     * @var null|Transaction
-     */
-    protected $transaction = null;
 
     /**
      * {@inheritdoc}
@@ -86,23 +81,6 @@ abstract class CRUDEntity implements CRUDEntityInterface, EmbeddedInterface
     public function getUpdatedAt()
     {
         return $this->updatedAt;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setTransaction($transaction)
-    {
-        $this->transaction = $transaction;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTransaction()
-    {
-        return $this->transaction;
     }
 
     /**

@@ -11,9 +11,12 @@
 namespace Ecentria\Libraries\CoreRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface;
-use Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait;
+
+use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface,
+    Ecentria\Libraries\CoreRestBundle\Interfaces\TransactionalInterface,
+    Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait,
+    Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait;
+
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -21,9 +24,10 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CollectionResponse implements EmbeddedInterface
+class CollectionResponse implements EmbeddedInterface, TransactionalInterface
 {
     use EmbeddedTrait;
+    use TransactionalTrait;
 
     /**
      * Array collection of entities
@@ -31,12 +35,6 @@ class CollectionResponse implements EmbeddedInterface
      * @var ArrayCollection
      */
     private $items;
-
-    /**
-     * Transaction
-     * @var Transaction|null
-     */
-    private $transaction;
 
     /**
      * Constructor
@@ -68,28 +66,6 @@ class CollectionResponse implements EmbeddedInterface
     public function getItems()
     {
         return $this->items;
-    }
-
-    /**
-     * Transaction setter
-     *
-     * @param Transaction|null $transaction
-     * @return self
-     */
-    public function setTransaction(Transaction $transaction = null)
-    {
-        $this->transaction = $transaction;
-        return $this;
-    }
-
-    /**
-     * Transaction getter
-     *
-     * @return Transaction|null
-     */
-    public function getTransaction()
-    {
-        return $this->transaction;
     }
 
     /**
