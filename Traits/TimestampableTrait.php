@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
- * Transactional trait
+ * Timestampable trait
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */

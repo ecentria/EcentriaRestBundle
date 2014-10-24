@@ -83,7 +83,7 @@ class CRUDTransformer
             $property = ucfirst($property);
         }
 
-        if (!$this->getClassMetadata()->hasField($property)) {
+        if (!$this->getClassMetadata()->hasField($property) && !$this->getClassMetadata()->hasAssociation($property)) {
             return false;
         }
 
