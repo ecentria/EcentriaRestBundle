@@ -12,10 +12,10 @@ namespace Ecentria\Libraries\CoreRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface,
-    Ecentria\Libraries\CoreRestBundle\Interfaces\TransactionalInterface,
-    Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait,
-    Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait;
+use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait,
+    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait;
 
 use JMS\Serializer\Annotation as Serializer;
 

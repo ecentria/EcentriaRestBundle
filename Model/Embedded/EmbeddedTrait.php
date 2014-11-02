@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Traits;
+namespace Ecentria\Libraries\CoreRestBundle\Model\Embedded;
 
 /**
  * Embedded trait
@@ -27,7 +27,7 @@ trait EmbeddedTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface::setShowAssociations
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface::setShowAssociations
      */
     public function setShowAssociations($showAssociations)
     {
@@ -38,7 +38,7 @@ trait EmbeddedTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface::showAssociations
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface::showAssociations
      */
     public function showAssociations()
     {

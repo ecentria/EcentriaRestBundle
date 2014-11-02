@@ -12,8 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\UnitOfWork;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUDManager;
-use JMS\Serializer\Metadata\ClassMetadata;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -268,7 +267,7 @@ class CRUDManagerTest extends \PHPUnit_Framework_TestCase
      */
     private function prepareCRUDTransformet()
     {
-        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer')
+        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer')
             ->disableOriginalConstructor()
             ->setMethods(array('initializeClassMetadata', 'processPropertyValue'))
             ->getMock();

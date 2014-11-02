@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Traits;
+namespace Ecentria\Libraries\CoreRestBundle\Model\Transactional;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 
@@ -32,7 +32,7 @@ trait TransactionalTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\TransactionalInterface::setTransaction
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface::setTransaction
      */
     public function setTransaction(Transaction $transaction = null)
     {
@@ -43,7 +43,7 @@ trait TransactionalTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\TransactionalInterface::getTransaction
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface::getTransaction
      */
     public function getTransaction()
     {

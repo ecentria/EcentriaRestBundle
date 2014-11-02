@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Interfaces;
+namespace Ecentria\Libraries\CoreRestBundle\Model\Embedded;
 
 /**
  * Embedded interface

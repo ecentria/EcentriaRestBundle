@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
-use Ecentria\Libraries\CoreRestBundle\Interfaces\CRUDEntityInterface;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

@@ -10,10 +10,10 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Interfaces\CRUDEntityInterface,
-    Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait,
-    Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait,
-    Ecentria\Libraries\CoreRestBundle\Traits\TimestampableTrait;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait,
+    Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableTrait,
+    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait;
 
 /**
  * Abstract CRUD entity class

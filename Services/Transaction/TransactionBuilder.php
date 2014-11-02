@@ -8,9 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\CoreRestBundle\Services\UUID;
 
 /**
  * Transaction service

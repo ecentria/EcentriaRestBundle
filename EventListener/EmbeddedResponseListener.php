@@ -10,8 +10,8 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
-use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface;
 use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
+use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 

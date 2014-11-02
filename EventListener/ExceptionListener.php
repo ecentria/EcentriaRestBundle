@@ -10,9 +10,9 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
-use Ecentria\Libraries\CoreRestBundle\Interfaces\EmbeddedInterface;
 use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\CoreRestBundle\Services\TransactionHandler;
+use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
+use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionHandler;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;

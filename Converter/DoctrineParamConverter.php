@@ -11,7 +11,7 @@
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
-use Ecentria\Libraries\CoreRestBundle\Interfaces\CRUDEntityInterface;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
 use Symfony\Component\HttpFoundation\Request;

@@ -1,10 +1,10 @@
 parameters:
-    ecentria.crud.transformer.class: Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer
-    ecentria.crud.manager.class: Ecentria\Libraries\CoreRestBundle\Services\CRUDManager
+    ecentria.crud.transformer.class: Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer
+    ecentria.crud.manager.class: Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager
     ecentria.error.builder.class: Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder
     ecentria.notice.builder.class: Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder
-    ecentria.transaction.builder.class: Ecentria\Libraries\CoreRestBundle\Services\TransactionBuilder
-    ecentria.transaction.handler.class: Ecentria\Libraries\CoreRestBundle\Services\TransactionHandler
+    ecentria.transaction.builder.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder
+    ecentria.transaction.handler.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionHandler
 
 services:
 

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Traits;
+namespace Ecentria\Libraries\CoreRestBundle\Model\Timestampable;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -43,7 +43,7 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\TimestampableInterface::setCreatedAt
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::setCreatedAt
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
@@ -54,7 +54,7 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\TimestampableInterface::getCreatedAt
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::getCreatedAt
      */
     public function getCreatedAt()
     {
@@ -64,7 +64,7 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\TimestampableInterface::setUpdatedAt
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::setUpdatedAt
      */
     public function setUpdatedAt(\DateTime $updatedAt)
     {
@@ -75,7 +75,7 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Interfaces\TimestampableInterface::getUpdatedAt
+     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::getUpdatedAt
      */
     public function getUpdatedAt()
     {

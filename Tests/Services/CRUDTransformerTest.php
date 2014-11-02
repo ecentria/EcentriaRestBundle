@@ -10,15 +10,10 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUDManager;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer;
-use Ecentria\Libraries\CoreRestBundle\Tests\Entity\AnnotationRestrictionEntity;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
  * CRUD manager test

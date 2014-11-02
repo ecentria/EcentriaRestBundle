@@ -13,7 +13,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Converter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;

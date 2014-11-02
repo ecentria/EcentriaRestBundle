@@ -7,15 +7,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Interfaces\CRUDEntityInterface;
-use Ecentria\Libraries\CoreRestBundle\Traits\EmbeddedTrait;
-use Ecentria\Libraries\CoreRestBundle\Traits\TimestampableTrait;
-use Ecentria\Libraries\CoreRestBundle\Traits\TransactionalTrait;
-use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
+use Doctrine\ORM\Mapping as ORM,
+    Doctrine\Common\Collections\ArrayCollection;
+
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait,
+    Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableTrait,
+    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait,
+    Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
 
 /**
  * CircularReferenceEntity test

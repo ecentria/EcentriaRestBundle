@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction;
 use Ecentria\Libraries\CoreRestBundle\Annotation\Transactional;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Services\TransactionBuilder;
+use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
