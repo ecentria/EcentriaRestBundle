@@ -31,9 +31,8 @@ class FOSRestController extends BaseFOSRestController implements ClassResourceIn
         $transaction = $request->get('transaction');
         if ($transaction) {
             $violations = $request->get('violations');
-            $transaction = $request->get('transaction');
-            $transactionHandler = $this->get('ecentria.transaction.handler');
-            $response = $transactionHandler->handle($transaction, $data, $violations);
+            $transactionResponseManager = $this->get('ecentria.transaction_response_manager');
+            $response = $transactionResponseManager->handle($transaction, $data, $violations);
             return parent::view($response, $transaction->getStatus());
         }
         return parent::view($data, $statusCode, $headers);

@@ -22,7 +22,7 @@ services:
 
     ecentria.kernel.listener.exception:
         arguments:
-            - @ecentria.transaction.handler
+            - @ecentria.transaction_response_manager
         class: %ecentria.kernel.listener.exception.class%
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }

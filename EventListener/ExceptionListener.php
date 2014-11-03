@@ -12,7 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
 use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
 use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
-use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionHandler;
+use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
@@ -32,11 +32,11 @@ class ExceptionListener
     /**
      * Constructor
      *
-     * @param TransactionHandler $transactionHandler
+     * @param TransactionResponseManager $transactionResponseManager
      */
-    public function __construct(TransactionHandler $transactionHandler)
+    public function __construct(TransactionResponseManager $transactionResponseManager)
     {
-        $this->transactionHandler = $transactionHandler;
+        $this->transactionResponseManager = $transactionResponseManager;
     }
 
     /**
@@ -90,7 +90,7 @@ class ExceptionListener
             return $event->getResponse();
         }
 
-        $responseData = $this->transactionHandler->handle(
+        $responseData = $this->transactionResponseManager->handle(
             $transaction,
             $data,
             $violations
