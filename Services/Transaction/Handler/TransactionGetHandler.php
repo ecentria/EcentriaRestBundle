@@ -96,11 +96,8 @@ class TransactionGetHandler implements TransactionHandlerInterface
     {
         $data = new CollectionResponse($data);
 
-        $success = $data->getItems()->count();
-        $status = $success ? Transaction::STATUS_OK : Transaction::STATUS_NOT_FOUND;
-
-        $transaction->setStatus($status);
-        $transaction->setSuccess($success);
+        $transaction->setStatus(Transaction::STATUS_OK);
+        $transaction->setSuccess(true);
 
         return $data;
     }
