@@ -61,7 +61,7 @@ class TransactionGetHandler implements TransactionHandlerInterface
             $data = $this->handleCollection($transaction, $data);
         } else {
             throw new FeatureNotImplementedException(
-                get_class($data) . ' class is not supported by transactions. Instance of CRUDEntity needed.'
+                get_class($data) . ' class is not supported by transactions (GET). Instance of CRUDEntity needed.'
             );
         }
         return $data;
@@ -96,8 +96,11 @@ class TransactionGetHandler implements TransactionHandlerInterface
     {
         $data = new CollectionResponse($data);
 
-        $transaction->setStatus(Transaction::STATUS_OK);
-        $transaction->setSuccess(true);
+        $success = $data->getItems()->count();
+        $status = $success ? Transaction::STATUS_OK : Transaction::STATUS_NOT_FOUND;
+
+        $transaction->setStatus($status);
+        $transaction->setSuccess($success);
 
         return $data;
     }

@@ -48,7 +48,7 @@ class TransactionPatchHandler implements TransactionHandlerInterface
     {
         if (!$data instanceof CRUDEntityInterface) {
             throw new FeatureNotImplementedException(
-                get_class($data) . ' class is not supported by transactions. Instance of CRUDEntity needed.'
+                get_class($data) . ' class is not supported by transactions (PATCH). Instance of CRUDEntity needed.'
             );
         }
         
