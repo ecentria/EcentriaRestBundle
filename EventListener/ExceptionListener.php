@@ -56,7 +56,6 @@ class ExceptionListener
         $name,
         ContainerAwareEventDispatcher $eventDispatcher
     ) {
-
         $exception = $event->getException();
         if ($exception instanceof ValidationFailedException) {
             $event->setResponse(
@@ -81,20 +80,29 @@ class ExceptionListener
     ) {
         $event->stopPropagation();
         $request = $event->getRequest();
-        $dataAccessName = $request->get(self::DATA_ALIAS);
-        $data = $request->get($dataAccessName);
-        $violations = $exception->getConstraintViolationList();
+
         $transaction = $request->get('transaction');
 
         if (!$transaction) {
             return $event->getResponse();
         }
 
-        $responseData = $this->transactionResponseManager->handle(
-            $transaction,
-            $data,
-            $violations
+        $data = $request->get(
+            $request->get(self::DATA_ALIAS)
         );
+
+        $violations = $exception->getConstraintViolationList();
+        $request->attributes->set('violations', $violations);
+
+        $view = View::create($data);
+        $responseEvent = new GetResponseForControllerResultEvent(
+            $event->getKernel(),
+            $request,
+            $request->getMethod(),
+            $view
+        );
+        $eventDispatcher->dispatch('kernel.view', $responseEvent);
+        $responseData = $view->getData();
 
         if ($responseData instanceof EmbeddedInterface) {
             $responseData->setShowAssociations(true);
@@ -103,17 +111,6 @@ class ExceptionListener
         if ($responseData instanceof CollectionResponse) {
             $responseData->setInheritedShowAssociations(false);
         }
-
-        $view = View::create($responseData, $transaction->getStatus());
-
-        $responseEvent = new GetResponseForControllerResultEvent(
-            $event->getKernel(),
-            $request,
-            $request->getMethod(),
-            $view
-        );
-
-        $eventDispatcher->dispatch('kernel.view', $responseEvent);
 
         return $responseEvent->getResponse();
     }

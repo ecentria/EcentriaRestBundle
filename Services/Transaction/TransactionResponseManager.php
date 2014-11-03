@@ -10,6 +10,7 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction;
 
+use Behat\Mink\Exception\Exception;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
@@ -32,7 +33,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionResponseManager
 {
     /**
-     * @var array|TransactionHandlerInterface[]
+     * @var TransactionHandlerInterface[]
      */
     private $handlers;
 
@@ -41,7 +42,7 @@ class TransactionResponseManager
      *
      * @param array $handlers
      */
-    public function __construct(array $handlers = array()) {
+    public function __construct(array $handlers) {
         $this->handlers = $handlers;
     }
 
@@ -51,6 +52,7 @@ class TransactionResponseManager
      * @param Transaction $transaction
      * @param $data
      * @param ConstraintViolationList $violations
+     * @throws \Exception
      * @return CollectionResponse|CRUDEntityInterface
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
@@ -60,6 +62,9 @@ class TransactionResponseManager
         }
 
         foreach ($this->handlers as $handler) {
+            if (!$handler instanceof TransactionHandlerInterface) {
+                throw new \Exception('Handler must be instance of TransactionHandlerInterface');
+            }
             if ($handler->supports() === $transaction->getMethod()) {
                 $data = $handler->handle($transaction, $data, $violations);
             }

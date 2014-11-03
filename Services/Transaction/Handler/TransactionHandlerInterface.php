@@ -11,9 +11,11 @@
 namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
+
+use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
+    Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
+    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
+
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
