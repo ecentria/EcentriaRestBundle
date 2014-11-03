@@ -99,6 +99,7 @@ class TransactionalListener implements EventSubscriberInterface
         $this->transactionBuilder->setRequestMethod($request->getRealMethod());
         $this->transactionBuilder->setRequestSource(Transaction::SOURCE_REST);
         $this->transactionBuilder->setRelatedRoute($transactional->relatedRoute);
+        $this->transactionBuilder->setRelatedId($request->get('id'));
         $this->transactionBuilder->setModel($transactional->model);
 
         $request->attributes->set('transaction', $this->transactionBuilder->build());

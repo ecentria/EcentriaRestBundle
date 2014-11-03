@@ -155,7 +155,6 @@ class TransactionHandler
             );
             $this->setErrors($this->transaction);
         }
-        $this->transaction->setRelatedId($this->data->getId());
         $this->data->setTransaction($this->transaction);
     }
 

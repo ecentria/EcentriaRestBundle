@@ -10,6 +10,11 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
 
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface;
+
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 /**
@@ -22,7 +27,7 @@ class CRUDEntityTest extends TestCase
     /**
      * CRUD Entity
      *
-     * @var CRUDEntityTest
+     * @var CRUDEntity
      */
     protected $CRUDEntity;
 
@@ -39,11 +44,21 @@ class CRUDEntityTest extends TestCase
      */
     public function testExtendedFunctionality()
     {
+        $this->assertTrue($this->CRUDEntity instanceof CRUDEntityInterface);
 
+        $this->assertTrue($this->CRUDEntity instanceof EmbeddedInterface);
+        $this->assertTrue($this->CRUDEntity instanceof TransactionalInterface);
+        $this->assertTrue($this->CRUDEntity instanceof TimestampableInterface);
+
+        // Transactional
         $this->assertTrue(method_exists($this->CRUDEntity, 'setTransaction'));
         $this->assertTrue(method_exists($this->CRUDEntity, 'getTransaction'));
+
+        // Embedded
         $this->assertTrue(method_exists($this->CRUDEntity, 'setShowAssociations'));
         $this->assertTrue(method_exists($this->CRUDEntity, 'showAssociations'));
+
+        // Timestampable
         $this->assertTrue(method_exists($this->CRUDEntity, 'setCreatedAt'));
         $this->assertTrue(method_exists($this->CRUDEntity, 'getCreatedAt'));
         $this->assertTrue(method_exists($this->CRUDEntity, 'setUpdatedAt'));
