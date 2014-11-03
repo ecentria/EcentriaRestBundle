@@ -1,4 +1,4 @@
-Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity:
+Ecentria\Libraries\CoreRestBundle\Entity\AbstractCRUDEntity:
 
     properties:
         transaction:

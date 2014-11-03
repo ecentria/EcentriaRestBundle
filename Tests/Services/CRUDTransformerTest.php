@@ -14,13 +14,14 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 /**
  * CRUD manager test
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDTransformerTest extends \PHPUnit_Framework_TestCase
+class CRUDTransformerTest extends TestCase
 {
     /**
      * Entity manager

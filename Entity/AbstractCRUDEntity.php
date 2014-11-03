@@ -20,7 +20,7 @@ use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-abstract class CRUDEntity implements CRUDEntityInterface
+abstract class AbstractCRUDEntity implements CRUDEntityInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;

@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager;
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -21,7 +22,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDManagerTest extends \PHPUnit_Framework_TestCase
+class CRUDManagerTest extends TestCase
 {
     /**
      * Entity manager

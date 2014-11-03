@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\CoreRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReference;
 use Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReferenceValidator;
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContext;
 
 /**
@@ -21,7 +22,7 @@ use Symfony\Component\Validator\Context\ExecutionContext;
  *
  * @author Sergey Chernecov <sergey.chenrnecov@intexsys.lv>
  */
-class CircularReferenceValidatorTest extends \PHPUnit_Framework_TestCase
+class CircularReferenceValidatorTest extends TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|ExecutionContext
