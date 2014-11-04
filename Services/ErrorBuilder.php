@@ -11,6 +11,7 @@
 namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -146,5 +147,27 @@ class ErrorBuilder
         $this->errors->set($id, $errors);
     }
 
+    /**
+     * Setting transaction errors
+     *
+     * @param Transaction $transaction
+     */
+    public function setTransactionErrors(Transaction &$transaction)
+    {
+        $messages = new ArrayCollection();
+        $globalErrors = $this->getErrors(Error::CONTEXT_GLOBAL);
 
+        if (!$globalErrors->isEmpty()) {
+            $transaction->setStatus(Transaction::STATUS_NOT_FOUND);
+        }
+
+        $errors = $this->getErrors();
+        if (!$errors->isEmpty()) {
+            $messages->set('errors', $errors);
+        }
+
+        if ($messages->count()) {
+            $transaction->setMessages($messages);
+        }
+    }
 }

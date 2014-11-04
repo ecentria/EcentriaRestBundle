@@ -10,22 +10,18 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 
-use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUDManager;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUDTransformer;
-use Ecentria\Libraries\CoreRestBundle\Tests\Entity\AnnotationRestrictionEntity;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 /**
  * CRUD manager test
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDTransformerTest extends \PHPUnit_Framework_TestCase
+class CRUDTransformerTest extends TestCase
 {
     /**
      * Entity manager
@@ -93,6 +89,7 @@ class CRUDTransformerTest extends \PHPUnit_Framework_TestCase
         $reflectionProperty3 = $this->prepareReflectionProperty();
 
         $classMetadata = $this->prepareClassMetadata();
+        $classMetadata->expects($this->any())->method('hasField')->willReturn(true);
         $classMetadata->expects($this->exactly(6))
             ->method('getReflectionProperty')
             ->withConsecutive(
@@ -258,7 +255,7 @@ class CRUDTransformerTest extends \PHPUnit_Framework_TestCase
     {
         return $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadata')
             ->disableOriginalConstructor()
-            ->setMethods(array('hasAssociation', 'getReflectionProperty', 'getAssociationTargetClass', 'getSingleIdentifierFieldName'))
+            ->setMethods(array('hasAssociation', 'getReflectionProperty', 'getAssociationTargetClass', 'getSingleIdentifierFieldName', 'hasField'))
             ->getMock();
     }
 

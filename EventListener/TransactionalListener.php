@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction;
 use Ecentria\Libraries\CoreRestBundle\Annotation\Transactional;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Services\TransactionBuilder;
+use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\PostResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -99,6 +99,7 @@ class TransactionalListener implements EventSubscriberInterface
         $this->transactionBuilder->setRequestMethod($request->getRealMethod());
         $this->transactionBuilder->setRequestSource(Transaction::SOURCE_REST);
         $this->transactionBuilder->setRelatedRoute($transactional->relatedRoute);
+        $this->transactionBuilder->setRelatedId($request->get('id'));
         $this->transactionBuilder->setModel($transactional->model);
 
         $request->attributes->set('transaction', $this->transactionBuilder->build());

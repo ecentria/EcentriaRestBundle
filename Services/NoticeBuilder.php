@@ -9,6 +9,8 @@
  */
 
 namespace Ecentria\Libraries\CoreRestBundle\Services;
+use Doctrine\Common\Collections\ArrayCollection;
+use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 
 /**
  * Notice builder
@@ -79,4 +81,25 @@ class NoticeBuilder
     {
         return ! (bool) $this->total;
     }
+
+    /**
+     * Setting transaction notices
+     *
+     * @param Transaction $transaction
+     */
+    public function setTransactionNotices(Transaction &$transaction)
+    {
+        $messages = $transaction->getMessages();
+        if (is_null($messages)) {
+            $messages = new ArrayCollection();
+        }
+        if (!$this->isEmpty()) {
+            $messages->set('notices', $this->getNotices());
+        }
+
+        if ($messages->count()) {
+            $transaction->setMessages($messages);
+        }
+    }
+
 }

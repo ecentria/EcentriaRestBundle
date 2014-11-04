@@ -11,7 +11,12 @@
 namespace Ecentria\Libraries\CoreRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+
+use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait,
+    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait;
+
 use JMS\Serializer\Annotation as Serializer;
 
 /**
@@ -19,20 +24,17 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CollectionResponse
+class CollectionResponse implements EmbeddedInterface, TransactionalInterface
 {
+    use EmbeddedTrait;
+    use TransactionalTrait;
+
     /**
      * Array collection of entities
      *
      * @var ArrayCollection
      */
     private $items;
-
-    /**
-     * Transaction
-     * @var Transaction|null
-     */
-    private $transaction;
 
     /**
      * Constructor
@@ -67,25 +69,17 @@ class CollectionResponse
     }
 
     /**
-     * Transaction setter
+     * Setting association to show
      *
-     * @param Transaction|null $transaction
-     * @return self
+     * @param mixed $value
      */
-    public function setTransaction(Transaction $transaction = null)
+    public function setInheritedShowAssociations($value)
     {
-        $this->transaction = $transaction;
-        return $this;
-    }
-
-    /**
-     * Transaction getter
-     *
-     * @return Transaction|null
-     */
-    public function getTransaction()
-    {
-        return $this->transaction;
+        foreach ($this->getItems() as $item) {
+            if ($item instanceof EmbeddedInterface) {
+                $item->setShowAssociations((bool) $value);
+            }
+        }
     }
 }
 

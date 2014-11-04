@@ -10,9 +10,12 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Controller;
 
-use Ecentria\Libraries\CoreRestBundle\Controller\FOSRest\FOSRestController;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use FOS\RestBundle\Controller\Annotations\Route;
+
+use FOS\RestBundle\Controller\Annotations\Route,
+    FOS\RestBundle\Controller\FOSRestController,
+    FOS\RestBundle\Routing\ClassResourceInterface;
+
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -22,7 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class TransactionController extends FOSRestController
+class TransactionController extends FOSRestController implements ClassResourceInterface
 {
     /**
      * @Route(

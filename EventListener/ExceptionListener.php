@@ -10,7 +10,9 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
-use Ecentria\Libraries\CoreRestBundle\Services\TransactionHandler;
+use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
+use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
+use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
@@ -30,11 +32,11 @@ class ExceptionListener
     /**
      * Constructor
      *
-     * @param TransactionHandler $transactionHandler
+     * @param TransactionResponseManager $transactionResponseManager
      */
-    public function __construct(TransactionHandler $transactionHandler)
+    public function __construct(TransactionResponseManager $transactionResponseManager)
     {
-        $this->transactionHandler = $transactionHandler;
+        $this->transactionResponseManager = $transactionResponseManager;
     }
 
     /**
@@ -78,31 +80,37 @@ class ExceptionListener
     ) {
         $event->stopPropagation();
         $request = $event->getRequest();
-        $dataAccessName = $request->get(self::DATA_ALIAS);
-        $data = $request->get($dataAccessName);
-        $violations = $exception->getConstraintViolationList();
+
         $transaction = $request->get('transaction');
 
         if (!$transaction) {
             return $event->getResponse();
         }
 
-        $responseData = $this->transactionHandler->handle(
-            $transaction,
-            $data,
-            $violations
+        $data = $request->get(
+            $request->get(self::DATA_ALIAS)
         );
 
-        $view = View::create($responseData, $transaction->getStatus());
+        $violations = $exception->getConstraintViolationList();
+        $request->attributes->set('violations', $violations);
 
+        $view = View::create($data);
         $responseEvent = new GetResponseForControllerResultEvent(
             $event->getKernel(),
             $request,
             $request->getMethod(),
             $view
         );
-
         $eventDispatcher->dispatch('kernel.view', $responseEvent);
+        $responseData = $view->getData();
+
+        if ($responseData instanceof EmbeddedInterface) {
+            $responseData->setShowAssociations(true);
+        }
+
+        if ($responseData instanceof CollectionResponse) {
+            $responseData->setInheritedShowAssociations(false);
+        }
 
         return $responseEvent->getResponse();
     }

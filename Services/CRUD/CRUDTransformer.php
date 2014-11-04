@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -82,6 +82,11 @@ class CRUDTransformer
         if ($this->getClassMetadata()->hasAssociation(ucfirst($property))) {
             $property = ucfirst($property);
         }
+
+        if (!$this->getClassMetadata()->hasField($property) && !$this->getClassMetadata()->hasAssociation($property)) {
+            return false;
+        }
+
         $propertyRestriction = $this->annotationsReader->getPropertyAnnotation(
             $this->getClassMetadata()->getReflectionProperty($property),
             PropertyRestriction::NAME

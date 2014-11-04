@@ -10,8 +10,8 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
 use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,17 +41,10 @@ class DoctrineParamConverter extends BaseDoctrineParamConverter
             // find by criteria
             if (null === $object = $this->findOneBy($class, $request, $options)) {
                 $object = new $class;
-                if ($object instanceof CRUDEntity) {
+                if ($object instanceof CRUDEntityInterface) {
                     $object->setId($request->attributes->get('id'));
-                    $object->setIsEmbedded(true);
                 }
             }
-        }
-        $embedded = $request->query->get('_embedded');
-
-        if ($object instanceof CRUDEntity && $object->isEmbedded() === null) {
-            $embedded = filter_var($embedded, FILTER_VALIDATE_BOOLEAN);
-            $object->setIsEmbedded($embedded === null ? false : (bool) $embedded);
         }
 
         $request->attributes->set($name, $object);

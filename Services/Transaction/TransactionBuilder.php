@@ -8,9 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\CoreRestBundle\Services\UUID;
 
 /**
  * Transaction service
@@ -46,6 +47,13 @@ class TransactionBuilder
      * @var string
      */
     protected $relatedRoute;
+
+    /**
+     * Related id
+     *
+     * @var string
+     */
+    protected $relatedId;
 
     /**
      * RequestMethod setter
@@ -100,6 +108,29 @@ class TransactionBuilder
     }
 
     /**
+     * RelatedId setter
+     *
+     * @param string $relatedId
+     *
+     * @return self
+     */
+    public function setRelatedId($relatedId)
+    {
+        $this->relatedId = $relatedId;
+        return $this;
+    }
+
+    /**
+     * RelatedId getter
+     *
+     * @return string
+     */
+    public function getRelatedId()
+    {
+        return $this->relatedId;
+    }
+
+    /**
      * Building transaction
      *
      * @return Transaction
@@ -110,6 +141,7 @@ class TransactionBuilder
         $transaction = new Transaction();
         $transaction->setMethod($this->requestMethod)
             ->setRelatedRoute($this->relatedRoute)
+            ->setRelatedId($this->relatedId)
             ->setRequestId(microtime())
             ->setId(UUID::generate())
             ->setRequestSource($this->requestSource)

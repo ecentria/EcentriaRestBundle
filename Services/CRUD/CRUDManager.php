@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
-use Ecentria\Libraries\CoreRestBundle\Entity\CRUDEntity;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -148,7 +148,7 @@ class CRUDManager
     /**
      * Validate collection uniqueness
      *
-     * @param ArrayCollection|CRUDEntity[] $collection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection
      * @return ConstraintViolationList
      */
     private function validateCollectionUniqueness(ArrayCollection $collection)
@@ -185,7 +185,7 @@ class CRUDManager
     /**
      * Collection validation
      *
-     * @param ArrayCollection|CRUDEntity[] $collection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection
      * @return bool
      * @throws ValidationFailedException
      */
@@ -207,9 +207,9 @@ class CRUDManager
     /**
      * Update entity
      *
-     * @param CRUDEntity $entity
+     * @param CRUDEntityInterface $entity
      */
-    public function update(CRUDEntity $entity)
+    public function update(CRUDEntityInterface $entity)
     {
         $this->save($entity);
         $this->eventDispatcher->dispatch(
@@ -221,12 +221,12 @@ class CRUDManager
     /**
      * Updating one entity
      *
-     * @param CRUDEntity $entity
+     * @param CRUDEntityInterface $entity
      * @param array $data
      * @throws \Exception
      * @return void
      */
-    public function setData(CRUDEntity $entity, array $data = array())
+    public function setData(CRUDEntityInterface $entity, array $data = array())
     {
         $data = reset($data);
         $this->validateExistence($entity);
@@ -253,10 +253,10 @@ class CRUDManager
     }
 
     /**
-     * @param CRUDEntity $entity
+     * @param CRUDEntityInterface $entity
      * @throws \JMS\Serializer\Exception\ValidationFailedException
      */
-    public function validateExistence(CRUDEntity $entity)
+    public function validateExistence(CRUDEntityInterface $entity)
     {
         if (UnitOfWork::STATE_MANAGED !== $this->entityManager->getUnitOfWork()->getEntityState($entity)) {
             // TODO: move this to different class
