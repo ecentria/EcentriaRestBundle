@@ -17,6 +17,7 @@ use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
     Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
     Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionHandlerInterface;
 
+use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
@@ -44,9 +45,12 @@ class TransactionResponseManager
      * Handle
      *
      * @param Transaction $transaction
-     * @param $data
+     * @param mixed $data
      * @param ConstraintViolationList $violations
+     *
+     * @throws FeatureNotImplementedException
      * @throws \Exception
+     *
      * @return CollectionResponse|CRUDEntityInterface
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
@@ -55,13 +59,21 @@ class TransactionResponseManager
             $data = new ArrayCollection($data);
         }
 
+        $handled = false;
         foreach ($this->handlers as $handler) {
             if (!$handler instanceof TransactionHandlerInterface) {
                 throw new \Exception('Handler must be instance of TransactionHandlerInterface');
             }
             if ($handler->supports() === $transaction->getMethod()) {
                 $data = $handler->handle($transaction, $data, $violations);
+                $handled = true;
             }
+        }
+
+        if (!$handled) {
+            throw new FeatureNotImplementedException(
+                'Method ' . $transaction->getMethod() . ' is not supported yet.'
+            );
         }
 
         $data->setTransaction($transaction);
