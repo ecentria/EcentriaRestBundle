@@ -10,14 +10,16 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
-use Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder;
-use Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder;
-use Ecentria\Libraries\CoreRestBundle\Services\UUID;
+use Doctrine\Common\Collections\ArrayCollection,
+    Doctrine\ORM\EntityManager;
+
+use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
+    Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
+    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder,
+    Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder,
+    Ecentria\Libraries\CoreRestBundle\Services\UUID;
+
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
