@@ -48,14 +48,14 @@ services:
             - @doctrine.orm.default_entity_manager
             - @ecentria.error.builder
         tags:
-            - { name: ecentria.transaction_method_handler, priority: 1 }
+            - { name: ecentria.transaction_method_handler }
 
     ecentria.transaction_patch_handler:
         class: %ecentria.transaction_patch_handler.class%
         arguments:
             - @ecentria.error.builder
         tags:
-            - { name: ecentria.transaction_method_handler, priority: 2 }
+            - { name: ecentria.transaction_method_handler }
 
     ecentria.transaction_post_handler:
         class: %ecentria.transaction_post_handler.class%
@@ -64,4 +64,4 @@ services:
             - @ecentria.error.builder
             - @ecentria.notice.builder
         tags:
-            - { name: ecentria.transaction_method_handler, priority: 3 }
+            - { name: ecentria.transaction_method_handler }

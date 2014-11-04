@@ -37,8 +37,7 @@ class TransactionHandlerPass implements CompilerPassInterface
 
         $handlers = array();
         foreach ($container->findTaggedServiceIds('ecentria.transaction_method_handler') as $id => $attributes) {
-            $priority = isset($attributes[0]['priority']) ? $attributes[0]['priority'] : 0;
-            $handlers[$priority] = $container->getDefinition($id);
+            $handlers[] = $container->getDefinition($id);
         }
         $handler->replaceArgument(0, $handlers);
         $container->setDefinition('ecentria.transaction_response_manager', $handler);
