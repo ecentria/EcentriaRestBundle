@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
 class CRUDManager
 {
     const MODE_DEFAULT = 'default';
-    const MODE_FORCED = 'forced';
+    const MODE_UPDATE_ON_DUPLICATE = 'update_on_duplicate';
 
     /**
      * Entity manager
