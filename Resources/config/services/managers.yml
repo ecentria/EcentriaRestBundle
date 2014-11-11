@@ -13,6 +13,8 @@ parameters:
     ecentria.transaction_patch_handler.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPatchHandler
     ecentria.transaction_post_handler.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPostHandler
 
+    ecentria.configuration_manager.class: Ecentria\Libraries\CoreRestBundle\Services\ConfigurationManager
+
 services:
 
     ecentria.crud.transformer:
@@ -65,3 +67,8 @@ services:
             - @ecentria.notice.builder
         tags:
             - { name: ecentria.transaction_method_handler }
+
+    ecentria.configuration_manager:
+        class: %ecentria.configuration_manager.class%
+        arguments:
+            - @router

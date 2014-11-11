@@ -39,4 +39,14 @@ class CRUDEntity extends AbstractCRUDEntity
     {
         $this->id = $id;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array(
+            'id' => $this->id
+        );
+    }
 }

@@ -17,6 +17,7 @@ use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
+use Ecentria\Libraries\CoreRestBundle\Tests\Entity\CRUDEntity;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -30,6 +31,9 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
  */
 class CRUDManager
 {
+    const MODE_DEFAULT = 'default';
+    const MODE_FORCED = 'forced';
+
     /**
      * Entity manager
      *
@@ -59,6 +63,23 @@ class CRUDManager
     private $crudTransformer;
 
     /**
+     * Entity handling mode
+     *
+     * @var string
+     */
+    private $mode = self::MODE_DEFAULT;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $collectionToInsert;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $collectionToUpdate;
+
+    /**
      * Constructor
      *
      * @param EntityManager $entityManager
@@ -76,6 +97,32 @@ class CRUDManager
         $this->validator = $validator;
         $this->eventDispatcher = $eventDispatcher;
         $this->crudTransformer = $crudTransformer;
+
+        $this->collectionToInsert = new ArrayCollection();
+        $this->collectionToUpdate = new ArrayCollection();
+    }
+
+    /**
+     * Mode setter
+     *
+     * @param string $mode
+     *
+     * @return self
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+        return $this;
+    }
+
+    /**
+     * Mode getter
+     *
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->mode;
     }
 
     /**
@@ -118,15 +165,21 @@ class CRUDManager
     /**
      * Creating collection
      *
-     * @param object[]|ArrayCollection $collection
+     * @param CRUDEntityInterface[]|ArrayCollection $collection
      * @return void
      */
     public function createCollection(ArrayCollection $collection)
     {
-        $this->validateCollection($collection);
-        foreach ($collection as $collectionItem) {
+        $this->filterCollection($collection);
+        $this->validateCollection($this->collectionToInsert);
+
+        foreach ($this->collectionToInsert as $collectionItem) {
             $this->create($collectionItem, false);
         }
+        foreach ($this->collectionToUpdate as $collectionItem) {
+            $this->update($collectionItem);
+        }
+
         $this->entityManager->flush();
     }
 
@@ -229,7 +282,9 @@ class CRUDManager
     public function setData(CRUDEntityInterface $entity, array $data = array())
     {
         $data = reset($data);
+
         $this->validateExistence($entity);
+
         $this->crudTransformer->initializeClassMetadata(get_class($entity));
         foreach ($data as $property => $value) {
             $this->crudTransformer->processPropertyValue($entity, $property, $value, 'update');
@@ -275,5 +330,29 @@ class CRUDManager
             $violations = new ConstraintViolationList(array($violation));
             throw new ValidationFailedException($violations);
         }
+    }
+
+    /**
+     * Filtering collection
+     *
+     * @param CRUDEntityInterface[]|ArrayCollection $collection
+     * @return ArrayCollection
+     */
+    private function filterCollection(ArrayCollection $collection)
+    {
+        if ($this->mode === self::MODE_DEFAULT) {
+            $this->collectionToInsert = $collection;
+            return $collection;
+        }
+        foreach ($collection as $entity) {
+            $crudEntity = $this->find(get_class($entity), $entity->getId());
+            if ($crudEntity instanceof CRUDEntityInterface) {
+                $this->setData($crudEntity, array($entity->toArray()));
+                $this->collectionToUpdate->add($crudEntity);
+            } else {
+                $this->collectionToInsert->add($entity);
+            }
+        }
+        return $collection;
     }
 }
