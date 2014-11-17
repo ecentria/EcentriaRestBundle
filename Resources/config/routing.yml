@@ -1,6 +1,12 @@
+configuration:
+    type:     rest
+    resource: Ecentria\Libraries\CoreRestBundle\Controller\ConfigurationController
+
 transaction-service:
     type:     rest
     resource: Ecentria\Libraries\CoreRestBundle\Controller\TransactionController
+    options:
+        expose: true
 
 status:
     type:     rest

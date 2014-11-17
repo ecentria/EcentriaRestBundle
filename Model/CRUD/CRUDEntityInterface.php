@@ -36,4 +36,11 @@ interface CRUDEntityInterface extends EmbeddedInterface, TransactionalInterface,
      * @return self
      */
     public function setId($id);
+
+    /**
+     * Returns an array that is enough to update entity
+     *
+     * @return array
+     */
+    public function toArray();
 }

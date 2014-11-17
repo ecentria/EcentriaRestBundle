@@ -72,6 +72,7 @@ class TransactionalListener implements EventSubscriberInterface
      */
     public function onKernelController(FilterControllerEvent $event)
     {
+
         if (!is_array($controller = $event->getController())) {
             return;
         }

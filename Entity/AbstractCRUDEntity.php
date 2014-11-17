@@ -35,4 +35,9 @@ abstract class AbstractCRUDEntity implements CRUDEntityInterface
      * {@inheritdoc}
      */
     abstract public function setId($id);
+
+    /**
+     * {@inheritdoc}
+     */
+    abstract public function toArray();
 }

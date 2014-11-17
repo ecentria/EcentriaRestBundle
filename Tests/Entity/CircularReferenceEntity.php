@@ -146,4 +146,14 @@ class CircularReferenceEntity implements CRUDEntityInterface
             $this->Children->remove($index);
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array(
+            'id' => $this->id
+        );
+    }
 }
