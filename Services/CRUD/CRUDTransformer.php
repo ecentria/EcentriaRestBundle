@@ -15,6 +15,7 @@ use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
+use JMS\Serializer\Serializer;
 
 /**
  * CRUD Transformer
@@ -38,6 +39,13 @@ class CRUDTransformer
     private $annotationsReader;
 
     /**
+     * Serializer
+     *
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * Class metadata
      *
      * @var ClassMetadata
@@ -49,13 +57,16 @@ class CRUDTransformer
      *
      * @param EntityManager $entityManager
      * @param AnnotationReader $annotationsReader
+     * @param Serializer $serializer
      */
     public function __construct(
         EntityManager $entityManager,
-        AnnotationReader $annotationsReader
+        AnnotationReader $annotationsReader,
+        Serializer $serializer
     ) {
         $this->entityManager = $entityManager;
         $this->annotationsReader = $annotationsReader;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -110,11 +121,35 @@ class CRUDTransformer
         if ($this->transformationNeeded($property, $value)) {
             $targetClass = $this->getClassMetadata()->getAssociationTargetClass(ucfirst($property));
             if (is_null($collection)) {
-                $value = $this->entityManager->getReference($targetClass, $value);
+                if (is_array($value)) {
+                    $deserializedValue = $this->serializer->deserialize(
+                        json_encode($value),
+                        $targetClass,
+                        'json'
+                    );
+                    $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
+                    if (!$value) {
+                        $value = $deserializedValue;
+                    }
+                } else {
+                    $value = $this->entityManager->getReference($targetClass, $value);
+                }
             } else {
                 $object = $this->findByIdentifier($collection, $value);
                 if (is_null($object)) {
-                    $object = $this->entityManager->getReference($targetClass, $value);
+                    if (is_array($value)) {
+                        $deserializedObject = $this->serializer->deserialize(
+                            json_encode($value),
+                            $targetClass,
+                            'json'
+                        );
+                        $object = $this->entityManager->find($targetClass, $deserializedObject->getId());
+                        if (!$object) {
+                            $object = $deserializedObject;
+                        }
+                    } else {
+                        $object = $this->entityManager->getReference($targetClass, $value);
+                    }
                 }
                 $value = $object;
             }
