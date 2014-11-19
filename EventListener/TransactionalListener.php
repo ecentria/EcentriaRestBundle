@@ -103,7 +103,10 @@ class TransactionalListener implements EventSubscriberInterface
         $this->transactionBuilder->setRelatedId($request->get('id'));
         $this->transactionBuilder->setModel($transactional->model);
 
-        $request->attributes->set('transaction', $this->transactionBuilder->build());
+        $transaction = $this->transactionBuilder->build();
+        $this->entityManager->persist($transaction);
+
+        $request->attributes->set('transaction', $transaction);
     }
 
     /**
