@@ -104,7 +104,6 @@ class TransactionalListener implements EventSubscriberInterface
         $this->transactionBuilder->setModel($transactional->model);
 
         $transaction = $this->transactionBuilder->build();
-        $this->entityManager->persist($transaction);
 
         $request->attributes->set('transaction', $transaction);
     }
@@ -128,7 +127,9 @@ class TransactionalListener implements EventSubscriberInterface
     public function onKernelTerminate(PostResponseEvent $postResponseEvent)
     {
         $request = $postResponseEvent->getRequest();
-        if ($request->attributes->get('transaction')) {
+        $transaction = $request->attributes->get('transaction');
+        if ($transaction) {
+            $this->entityManager->persist($transaction);
             $this->entityManager->flush();
         }
     }
