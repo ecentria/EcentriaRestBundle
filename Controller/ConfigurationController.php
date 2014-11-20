@@ -16,6 +16,8 @@ use FOS\RestBundle\Controller\Annotations as FOS,
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+
 /**
  * Configuration Controller
  *
@@ -24,6 +26,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ConfigurationController extends FOSRestController
 {
     /**
+     * @EcentriaAnnotation\AvoidTransaction()
+     *
      * @FOS\Route(
      *      pattern="configuration"
      * )
