@@ -12,13 +12,13 @@ namespace Ecentria\Libraries\CoreRestBundle\Controller;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 
-use FOS\RestBundle\Controller\Annotations\Route,
+use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\FOSRestController,
     FOS\RestBundle\Routing\ClassResourceInterface;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Nelmio\ApiDocBundle\Annotation as Nelmio;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as Sensio;
 
 /**
  * Contact Controller
@@ -28,20 +28,20 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 class TransactionController extends FOSRestController implements ClassResourceInterface
 {
     /**
-     * @Route(
+     * @FOS\Route(
      *      pattern="transaction-service/{id}",
      *      requirements = {
      *          "id" = ".+?"
      *      }
      * )
      *
-     * @ParamConverter(
+     * @Sensio\ParamConverter(
      *      "transactionEntity",
      *      class="Ecentria\Libraries\CoreRestBundle\Entity\Transaction",
      *      converter = "ecentria.doctrine_param_converter"
      * )
      *
-     * @ApiDoc(
+     * @Nelmio\ApiDoc(
      *      section="Transaction",
      *      resource=true,
      *      statusCodes={
