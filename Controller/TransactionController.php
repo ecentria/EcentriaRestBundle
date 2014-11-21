@@ -14,10 +14,10 @@ use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 
 use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\FOSRestController,
-    FOS\RestBundle\Routing\ClassResourceInterface;
+    FOS\RestBundle\Routing\ClassResourceInterface,
+    FOS\RestBundle\View\View;
 
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration as Sensio;
 
 /**
@@ -52,7 +52,7 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      * )
      *
      * @param Transaction $transactionEntity
-     * @return JsonResponse
+     * @return View
      */
     public function getAction(Transaction $transactionEntity)
     {
