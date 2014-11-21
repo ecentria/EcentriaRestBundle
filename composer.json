@@ -20,14 +20,16 @@
     ],
     "require": {
         "php": ">=5.3.2",
-        "symfony/framework-bundle": "~2.2",
+        "symfony/symfony": "~2.5",
         "friendsofsymfony/rest-bundle": "~1.4",
         "jms/serializer-bundle": "~0.13",
         "willdurand/rest-extra-bundle": "@stable",
         "willdurand/hateoas-bundle": "~0.3",
         "gedmo/doctrine-extensions": "v2.3.8",
         "egulias/email-validator": "~1.1",
-        "nelmio/api-doc-bundle": "2.2.3"
+        "nelmio/api-doc-bundle": "2.2.3",
+        "doctrine/orm": "~2.3",
+        "sensio/framework-extra-bundle": "~3.0.1"
     },
     "autoload": {
         "psr-4": { "Ecentria\\Libraries\\CoreRestBundle\\": "" }

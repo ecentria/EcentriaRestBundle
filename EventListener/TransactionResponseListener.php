@@ -11,8 +11,6 @@
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
 use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
