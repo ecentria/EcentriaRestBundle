@@ -10,13 +10,13 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Controller;
 
+use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+
 use FOS\RestBundle\Controller\Annotations as FOS,
-    FOS\RestBundle\Controller\FOSRestController;
+    FOS\RestBundle\Controller\FOSRestController,
+    FOS\RestBundle\View\View;
 
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
 
 /**
  * Configuration Controller
@@ -41,7 +41,7 @@ class ConfigurationController extends FOSRestController
      *      }
      * )
      *
-     * @return JsonResponse
+     * @return View
      */
     public function getConfigurationAction()
     {
