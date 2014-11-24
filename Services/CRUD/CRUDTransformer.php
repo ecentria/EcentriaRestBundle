@@ -111,8 +111,8 @@ class CRUDTransformer
     /**
      * Transform property value
      *
-     * @param $property
-     * @param $value
+     * @param string $property
+     * @param mixed $value
      * @param ArrayCollection $collection
      * @return object
      */
@@ -121,22 +121,32 @@ class CRUDTransformer
         if ($this->transformationNeeded($property, $value)) {
             $targetClass = $this->getClassMetadata()->getAssociationTargetClass(ucfirst($property));
             if (is_null($collection)) {
-                if (is_array($value)) {
-                    $value = $this->processArrayValue($value, $targetClass);
-                } else {
-                    $value = $this->entityManager->getReference($targetClass, $value);
-                }
+                $value = $this->processValue($value, $targetClass);
             } else {
                 $object = $this->findByIdentifier($collection, $value);
                 if (is_null($object)) {
-                    if (is_array($value)) {
-                        $object = $this->processArrayValue($value, $targetClass);
-                    } else {
-                        $object = $this->entityManager->getReference($targetClass, $value);
-                    }
+                    $object = $this->processValue($value, $targetClass);
                 }
                 $value = $object;
             }
+        }
+        return $value;
+    }
+
+    /**
+     * Processing mixed value
+     *
+     * @param mixed $value
+     * @param string $targetClass
+     *
+     * @return mixed
+     */
+    private function processValue($value, $targetClass)
+    {
+        if (is_array($value)) {
+            $value = $this->processArrayValue($value, $targetClass);
+        } else {
+            $value = $this->entityManager->getReference($targetClass, $value);
         }
         return $value;
     }
@@ -227,8 +237,8 @@ class CRUDTransformer
     /**
      * Transformation needed?
      *
-     * @param $property
-     * @param $value
+     * @param string $property
+     * @param mixed $value
      * @return bool
      */
     private function transformationNeeded($property, $value)
