@@ -10,17 +10,23 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
-use Doctrine\Common\Annotations\Reader;
-use Doctrine\ORM\EntityManager;
-use Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction;
-use Ecentria\Libraries\CoreRestBundle\Annotation\Transactional;
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder;
-use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
-use Symfony\Component\HttpKernel\Event\PostResponseEvent;
-use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Annotations\Reader,
+    Doctrine\ORM\EntityManager,
+    Doctrine\Common\Util\ClassUtils;
+
+use Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction,
+    Ecentria\Libraries\CoreRestBundle\Annotation\Transactional,
+    Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
+    Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder,
+    Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
+
+use FOS\RestBundle\View\View;
+
+use Symfony\Component\HttpKernel\Event\FilterControllerEvent,
+    Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
+    Symfony\Component\HttpKernel\Event\PostResponseEvent,
+    Symfony\Component\HttpKernel\KernelEvents,
+    Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
  * The ControllerListener class parses annotation blocks located in
@@ -50,17 +56,30 @@ class TransactionalListener implements EventSubscriberInterface
     private $entityManager;
 
     /**
+     * Transaction response manager
+     *
+     * @var TransactionResponseManager
+     */
+    private $transactionResponseManager;
+
+    /**
      * Constructor.
      *
      * @param Reader $reader An Reader instance
      * @param TransactionBuilder $transactionBuilder
      * @param EntityManager $entityManager
+     * @param TransactionResponseManager $transactionResponseManager
      */
-    public function __construct(Reader $reader, TransactionBuilder $transactionBuilder, EntityManager $entityManager)
-    {
+    public function __construct(
+        Reader $reader,
+        TransactionBuilder $transactionBuilder,
+        EntityManager $entityManager,
+        TransactionResponseManager $transactionResponseManager
+    ) {
         $this->reader = $reader;
         $this->transactionBuilder = $transactionBuilder;
         $this->entityManager = $entityManager;
+        $this->transactionResponseManager = $transactionResponseManager;
     }
 
     /**
@@ -72,7 +91,6 @@ class TransactionalListener implements EventSubscriberInterface
      */
     public function onKernelController(FilterControllerEvent $event)
     {
-
         if (!is_array($controller = $event->getController())) {
             return;
         }
@@ -109,14 +127,30 @@ class TransactionalListener implements EventSubscriberInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Let's process transaction
+     *
+     * @param GetResponseForControllerResultEvent $event
+     * @return void
      */
-    public static function getSubscribedEvents()
+    public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        return array(
-            KernelEvents::CONTROLLER => 'onKernelController',
-            KernelEvents::TERMINATE => 'onKernelTerminate'
-        );
+        $view = $event->getControllerResult();
+
+        if (!$view instanceof View) {
+            return;
+        }
+
+        $request = $event->getRequest();
+        $transaction = $request->get('transaction');
+
+        if ($transaction instanceof Transaction) {
+            $data = $view->getData();
+            $violations = $request->get('violations');
+            $view->setData(
+                $this->transactionResponseManager->handle($transaction, $data, $violations)
+            );
+            $view->setStatusCode($transaction->getStatus());
+        }
     }
 
     /**
@@ -132,5 +166,17 @@ class TransactionalListener implements EventSubscriberInterface
             $this->entityManager->persist($transaction);
             $this->entityManager->flush();
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::CONTROLLER => 'onKernelController',
+            KernelEvents::VIEW  => array('onKernelView', 300),
+            KernelEvents::TERMINATE => 'onKernelTerminate'
+        );
     }
 }

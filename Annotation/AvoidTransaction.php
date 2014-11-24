@@ -19,12 +19,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
  */
 class AvoidTransaction extends ConfigurationAnnotation
 {
-    const NAME = 'Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction';
+    const NAME = 'Ecentria\\Libraries\\CoreRestBundle\\Annotation\\AvoidTransaction';
 
     /**
-     * Returns the alias name for an annotated configuration.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getAliasName()
     {
@@ -32,9 +30,7 @@ class AvoidTransaction extends ConfigurationAnnotation
     }
 
     /**
-     * Returns whether multiple annotations of this type are allowed
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function allowArray()
     {
