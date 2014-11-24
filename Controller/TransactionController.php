@@ -38,7 +38,7 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      * @Sensio\ParamConverter(
      *      "transactionEntity",
      *      class="Ecentria\Libraries\CoreRestBundle\Entity\Transaction",
-     *      converter = "ecentria.doctrine_param_converter"
+     *      converter = "ecentria.api.converter.parameter"
      * )
      *
      * @Nelmio\ApiDoc(

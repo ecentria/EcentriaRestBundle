@@ -45,7 +45,7 @@ class ConfigurationController extends FOSRestController
      */
     public function getConfigurationAction()
     {
-        $configurationManager = $this->get('ecentria.configuration_manager');
+        $configurationManager = $this->get('ecentria.api.configuration.manager');
         $configuration = $configurationManager->getConfiguration();
         return $this->view($configuration);
     }

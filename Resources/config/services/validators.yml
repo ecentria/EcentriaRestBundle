@@ -1,39 +1,43 @@
 parameters:
-    ecentria.entity.validator.class: Symfony\Component\Validator\Validator\RecursiveValidator
-    ecentria.validator.constraints.circular_reference.class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReferenceValidator
-    ecentria.validator.constraints.in_array.class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\InArrayValidator
-    ecentria.validator.constraints.email.class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\EmailValidator
-    ecentria.validator.constraints.unique_entity.class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntityValidator
+
+    ecentria.api.constraint.circular_reference.class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReferenceValidator
+    ecentria.api.constraint.email.class:              Ecentria\Libraries\CoreRestBundle\Validator\Constraints\EmailValidator
+    ecentria.api.constraint.in_array.class:           Ecentria\Libraries\CoreRestBundle\Validator\Constraints\InArrayValidator
+    ecentria.api.constraint.unique_entity.class:      Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntityValidator
+
+    ecentria.api.validator.class:                     Symfony\Component\Validator\Validator\RecursiveValidator
 
 services:
-    ecentria.entity.validator:
-        class: %ecentria.entity.validator.class%
-        factory_service: validator.builder
-        factory_method: getValidator
 
     # Constraints
-    ecentria.validator.constraints.circular_reference:
-        class: %ecentria.validator.constraints.circular_reference.class%
+    ecentria.api.constraint.circular_reference:
+        class: %ecentria.api.constraint.circular_reference.class%
         tags:
             - { name: validator.constraint_validator, alias: circular_reference }
         calls:
             - [ setEntityManager, [ @doctrine.orm.default_entity_manager ] ]
 
-    ecentria.validator.constraints.in_array:
-        class: %ecentria.validator.constraints.in_array.class%
-        tags:
-            - { name: validator.constraint_validator, alias: in_array }
-
-    ecentria.validator.constraints.email:
-        class: %ecentria.validator.constraints.email.class%
+    ecentria.api.constraint.email:
+        class: %ecentria.api.constraint.email.class%
         tags:
             - { name: validator.constraint_validator, alias: email }
 
-    ecentria.validator.constraints.unique_entity:
-        class: %ecentria.validator.constraints.unique_entity.class%
+    ecentria.api.constraint.in_array:
+        class: %ecentria.api.constraint.in_array.class%
+        tags:
+            - { name: validator.constraint_validator, alias: in_array }
+
+    ecentria.api.constraint.unique_entity:
+        class: %ecentria.api.constraint.unique_entity.class%
         arguments:
             - @doctrine
         tags:
             - { name: validator.constraint_validator, alias: unique_entity }
         calls:
             - [ setEntityManager, [ @doctrine.orm.default_entity_manager ] ]
+
+    # Validators
+    ecentria.api.validator:
+        class: %ecentria.api.validator.class%
+        factory_service: validator.builder
+        factory_method: getValidator

@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class DoctrineParamConverter extends BaseDoctrineParamConverter
+class ParameterConverter extends BaseDoctrineParamConverter
 {
     /**
      * {@inheritdoc}
