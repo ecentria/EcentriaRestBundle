@@ -122,15 +122,7 @@ class CRUDTransformer
             $targetClass = $this->getClassMetadata()->getAssociationTargetClass(ucfirst($property));
             if (is_null($collection)) {
                 if (is_array($value)) {
-                    $deserializedValue = $this->serializer->deserialize(
-                        json_encode($value),
-                        $targetClass,
-                        'json'
-                    );
-                    $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
-                    if (!$value) {
-                        $value = $deserializedValue;
-                    }
+                    $value = $this->processArrayValue($value, $targetClass);
                 } else {
                     $value = $this->entityManager->getReference($targetClass, $value);
                 }
@@ -138,21 +130,35 @@ class CRUDTransformer
                 $object = $this->findByIdentifier($collection, $value);
                 if (is_null($object)) {
                     if (is_array($value)) {
-                        $deserializedObject = $this->serializer->deserialize(
-                            json_encode($value),
-                            $targetClass,
-                            'json'
-                        );
-                        $object = $this->entityManager->find($targetClass, $deserializedObject->getId());
-                        if (!$object) {
-                            $object = $deserializedObject;
-                        }
+                        $object = $this->processArrayValue($value, $targetClass);
                     } else {
                         $object = $this->entityManager->getReference($targetClass, $value);
                     }
                 }
                 $value = $object;
             }
+        }
+        return $value;
+    }
+
+    /**
+     * Process array value
+     *
+     * @param array $value
+     * @param string $targetClass
+     *
+     * @return array|mixed|null|object
+     */
+    private function processArrayValue(array $value, $targetClass)
+    {
+        $deserializedValue = $this->serializer->deserialize(
+            json_encode($value),
+            $targetClass,
+            'json'
+        );
+        $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
+        if (!$value) {
+            $value = $deserializedValue;
         }
         return $value;
     }
