@@ -21,25 +21,21 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 class TransactionHandlerPass implements CompilerPassInterface
 {
     /**
-     * You can modify the container here before it is dumped to PHP code.
-     *
-     * @param ContainerBuilder $container
-     *
-     * @api
+     * {@inheritDoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('ecentria.transaction_response_manager')) {
+        if (!$container->hasDefinition('ecentria.api.transaction.manager')) {
             return;
         }
 
-        $handler = $container->getDefinition('ecentria.transaction_response_manager');
+        $handler = $container->getDefinition('ecentria.api.transaction.manager');
 
         $handlers = array();
-        foreach ($container->findTaggedServiceIds('ecentria.transaction_method_handler') as $id => $attributes) {
+        foreach ($container->findTaggedServiceIds('ecentria.api.tag.transaction_handler') as $id => $attributes) {
             $handlers[] = $container->getDefinition($id);
         }
         $handler->replaceArgument(0, $handlers);
-        $container->setDefinition('ecentria.transaction_response_manager', $handler);
+        $container->setDefinition('ecentria.api.transaction.manager', $handler);
     }
 }

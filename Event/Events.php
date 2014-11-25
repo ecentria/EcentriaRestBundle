@@ -19,22 +19,22 @@ final class Events
     /**
      * Event that will be thrown before creating entity
      */
-    const PRE_CREATE = 'ecentria.crud.pre_create';
+    const PRE_CREATE = 'ecentria.api.event.crud.pre_create';
 
     /**
      * Event that will be thrown after creating entity
      * This does not imply that the entity is flushed.
      */
-    const POST_CREATE = 'ecentria.crud.post_create';
+    const POST_CREATE = 'ecentria.api.event.crud.post_create';
 
     /**
      * Event that will be thrown before updating entity
      */
-    const PRE_UPDATE = 'ecentria.crud.pre_update';
+    const PRE_UPDATE = 'ecentria.api.event.crud.pre_update';
 
     /**
      * Event that will be thrown after updating entity
      * This implies that the entity is flushed.
      */
-    const POST_UPDATE = 'ecentria.crud.post_update';
+    const POST_UPDATE = 'ecentria.api.event.crud.post_update';
 }

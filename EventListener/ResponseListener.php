@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class EmbeddedResponseListener
+class ResponseListener
 {
     /**
      * Let's embed our response

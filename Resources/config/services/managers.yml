@@ -1,74 +1,78 @@
 parameters:
 
-    ecentria.crud.transformer.class: Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer
-    ecentria.crud.manager.class: Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager
+    ecentria.api.builder.error.class:             Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder
+    ecentria.api.builder.notice.class:            Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder
+    ecentria.api.builder.transaction.class:       Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder
 
-    ecentria.error.builder.class: Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder
-    ecentria.notice.builder.class: Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder
+    ecentria.api.configuration.manager.class:     Ecentria\Libraries\CoreRestBundle\Services\ConfigurationManager
 
-    ecentria.transaction.builder.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder
-    ecentria.transaction_response_manager.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager
+    ecentria.api.crud.manager.class:              Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager
+    ecentria.api.crud.transformer.class:          Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer
 
-    ecentria.transaction_get_handler.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionGetHandler
-    ecentria.transaction_patch_handler.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPatchHandler
-    ecentria.transaction_post_handler.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPostHandler
-
-    ecentria.configuration_manager.class: Ecentria\Libraries\CoreRestBundle\Services\ConfigurationManager
+    ecentria.api.transaction.handler.get.class:   Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionGetHandler
+    ecentria.api.transaction.handler.patch.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPatchHandler
+    ecentria.api.transaction.handler.post.class:  Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPostHandler
+    ecentria.api.transaction.manager.class:       Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager
 
 services:
 
-    ecentria.crud.transformer:
-        class: %ecentria.crud.transformer.class%
+    # Builders
+    ecentria.api.builder.error:
+        class: %ecentria.api.builder.error.class%
+
+    ecentria.api.builder.notice:
+        class: %ecentria.api.builder.notice.class%
+
+    ecentria.api.builder.transaction:
+        class: %ecentria.api.builder.transaction.class%
+
+    # Configuration
+    ecentria.api.configuration.manager:
+        class: %ecentria.api.configuration.manager.class%
+        arguments:
+            - @router
+
+    # Crud
+    ecentria.api.crud.manager:
+        class: %ecentria.api.crud.manager.class%
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @ecentria.api.validator
+            - @event_dispatcher
+            - @ecentria.api.crud.transformer
+
+    ecentria.api.crud.transformer:
+        class: %ecentria.api.crud.transformer.class%
         arguments:
             - @doctrine.orm.default_entity_manager
             - @annotations.reader
+            - @jms_serializer
 
-    ecentria.crud.manager:
-        class: %ecentria.crud.manager.class%
+    # Transaction
+    ecentria.api.transaction.handler.get:
+        class: %ecentria.api.transaction.handler.get.class%
         arguments:
             - @doctrine.orm.default_entity_manager
-            - @ecentria.entity.validator
-            - @event_dispatcher
-            - @ecentria.crud.transformer
+            - @ecentria.api.builder.error
+        tags:
+            - { name: ecentria.api.tag.transaction_handler }
 
-    ecentria.notice.builder:
-        class: %ecentria.notice.builder.class%
+    ecentria.api.transaction.handler.patch:
+        class: %ecentria.api.transaction.handler.patch.class%
+        arguments:
+            - @ecentria.api.builder.error
+        tags:
+            - { name: ecentria.api.tag.transaction_handler }
 
-    ecentria.error.builder:
-        class: %ecentria.error.builder.class%
-
-    ecentria.transaction.builder:
-        class: %ecentria.transaction.builder.class%
-
-    ecentria.transaction_response_manager:
-        class: %ecentria.transaction_response_manager.class%
-        arguments: [~]
-
-    ecentria.transaction_get_handler:
-        class: %ecentria.transaction_get_handler.class%
+    ecentria.api.transaction.handler.post:
+        class: %ecentria.api.transaction.handler.post.class%
         arguments:
             - @doctrine.orm.default_entity_manager
-            - @ecentria.error.builder
+            - @ecentria.api.builder.error
+            - @ecentria.api.builder.notice
         tags:
-            - { name: ecentria.transaction_method_handler }
+            - { name: ecentria.api.tag.transaction_handler }
 
-    ecentria.transaction_patch_handler:
-        class: %ecentria.transaction_patch_handler.class%
-        arguments:
-            - @ecentria.error.builder
-        tags:
-            - { name: ecentria.transaction_method_handler }
-
-    ecentria.transaction_post_handler:
-        class: %ecentria.transaction_post_handler.class%
-        arguments:
-            - @doctrine.orm.default_entity_manager
-            - @ecentria.error.builder
-            - @ecentria.notice.builder
-        tags:
-            - { name: ecentria.transaction_method_handler }
-
-    ecentria.configuration_manager:
-        class: %ecentria.configuration_manager.class%
-        arguments:
-            - @router
+    ecentria.api.transaction.manager:
+            class: %ecentria.api.transaction.manager.class%
+            arguments: [~]

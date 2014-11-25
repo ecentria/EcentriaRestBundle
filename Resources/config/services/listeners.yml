@@ -1,40 +1,40 @@
 parameters:
-    gedmo.listener.timestampable.class: Gedmo\Timestampable\TimestampableListener
-    ecentria.controller.transactional_listener.class: Ecentria\Libraries\CoreRestBundle\EventListener\TransactionalListener
-    ecentria.listener.exception.class: Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener
+
+    ecentria.api.listener.exception.class:     Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener
+    ecentria.api.listener.response.class:      Ecentria\Libraries\CoreRestBundle\EventListener\ResponseListener
+    ecentria.api.listener.transactional.class: Ecentria\Libraries\CoreRestBundle\EventListener\TransactionalListener
+
+    gedmo.listener.timestampable.class:        Gedmo\Timestampable\TimestampableListener
 
 services:
+
+    # Ecentria
+    ecentria.api.listener.exception:
+        arguments:
+            - @ecentria.api.transaction.manager
+        class: %ecentria.api.listener.exception.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+
+    ecentria.api.listener.response:
+        class: %ecentria.api.listener.response.class%
+        tags:
+            - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }
+
+    ecentria.api.listener.transactional:
+        class: %ecentria.api.listener.transactional.class%
+        tags:
+            - { name: kernel.event_subscriber }
+        arguments:
+            - @annotation_reader
+            - @ecentria.api.builder.transaction
+            - @doctrine.orm.default_entity_manager
+            - @ecentria.api.transaction.manager
+
+    # Gedmo
     gedmo.listener.timestampable:
         class: %gedmo.listener.timestampable.class%
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
             - [ setAnnotationReader, [ @annotation_reader ] ]
-
-    ecentria.controller.transactional_listener:
-        class: %ecentria.controller.transactional_listener.class%
-        tags:
-            - { name: kernel.event_subscriber }
-        arguments:
-            - @annotation_reader
-            - @ecentria.transaction.builder
-            - @doctrine.orm.default_entity_manager
-
-    ecentria.listener.exception:
-        arguments:
-            - @ecentria.transaction_response_manager
-        class: %ecentria.listener.exception.class%
-        tags:
-            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
-
-    ecentria.listener.embedded_response:
-        class: Ecentria\Libraries\CoreRestBundle\EventListener\EmbeddedResponseListener
-        tags:
-            - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }
-
-    ecentria.listener.transaction_response:
-        class: Ecentria\Libraries\CoreRestBundle\EventListener\TransactionResponseListener
-        arguments:
-            - @ecentria.transaction_response_manager
-        tags:
-            - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 300 }

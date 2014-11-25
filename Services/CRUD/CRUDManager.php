@@ -16,8 +16,8 @@ use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Event\CRUDEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDUnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Model\Error;
-use Ecentria\Libraries\CoreRestBundle\Tests\Entity\CRUDEntity;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -70,16 +70,6 @@ class CRUDManager
     private $mode = self::MODE_DEFAULT;
 
     /**
-     * @var ArrayCollection
-     */
-    private $collectionToInsert;
-
-    /**
-     * @var ArrayCollection
-     */
-    private $collectionToUpdate;
-
-    /**
      * Constructor
      *
      * @param EntityManager $entityManager
@@ -97,9 +87,6 @@ class CRUDManager
         $this->validator = $validator;
         $this->eventDispatcher = $eventDispatcher;
         $this->crudTransformer = $crudTransformer;
-
-        $this->collectionToInsert = new ArrayCollection();
-        $this->collectionToUpdate = new ArrayCollection();
     }
 
     /**
@@ -165,21 +152,15 @@ class CRUDManager
     /**
      * Creating collection
      *
-     * @param CRUDEntityInterface[]|ArrayCollection $collection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection
      * @return void
      */
     public function createCollection(ArrayCollection $collection)
     {
-        $this->filterCollection($collection);
-        $this->validateCollection($this->collectionToInsert);
-
-        foreach ($this->collectionToInsert as $collectionItem) {
+        $this->validateCollection($collection);
+        foreach ($collection as $collectionItem) {
             $this->create($collectionItem, false);
         }
-        foreach ($this->collectionToUpdate as $collectionItem) {
-            $this->update($collectionItem);
-        }
-
         $this->entityManager->flush();
     }
 
@@ -272,6 +253,19 @@ class CRUDManager
     }
 
     /**
+     * Creating collection
+     *
+     * @param ArrayCollection|CRUDEntityInterface[] $collection
+     * @return void
+     */
+    public function updateCollection(ArrayCollection $collection)
+    {
+        foreach ($collection as $entity) {
+            $this->update($entity);
+        }
+    }
+
+    /**
      * Updating one entity
      *
      * @param CRUDEntityInterface $entity
@@ -282,9 +276,7 @@ class CRUDManager
     public function setData(CRUDEntityInterface $entity, array $data = array())
     {
         $data = reset($data);
-
         $this->validateExistence($entity);
-
         $this->crudTransformer->initializeClassMetadata(get_class($entity));
         foreach ($data as $property => $value) {
             $this->crudTransformer->processPropertyValue($entity, $property, $value, 'update');
@@ -335,24 +327,39 @@ class CRUDManager
     /**
      * Filtering collection
      *
-     * @param CRUDEntityInterface[]|ArrayCollection $collection
-     * @return ArrayCollection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection
+     *
+     * @return CRUDUnitOfWork
      */
-    private function filterCollection(ArrayCollection $collection)
+    public function filterCollection(ArrayCollection $collection)
     {
-        if ($this->mode === self::MODE_DEFAULT) {
-            $this->collectionToInsert = $collection;
-            return $collection;
-        }
+        $unitOfWork = new CRUDUnitOfWork();
         foreach ($collection as $entity) {
             $crudEntity = $this->find(get_class($entity), $entity->getId());
             if ($crudEntity instanceof CRUDEntityInterface) {
                 $this->setData($crudEntity, array($entity->toArray()));
-                $this->collectionToUpdate->add($crudEntity);
+                $unitOfWork->update($crudEntity);
             } else {
-                $this->collectionToInsert->add($entity);
+                $unitOfWork->insert($entity);
             }
         }
-        return $collection;
+        return $unitOfWork;
+    }
+
+    /**
+     * Processing unit of work
+     *
+     * TODO: refactor api to use unit of work always
+     *
+     * @param CRUDUnitOfWork $unitOfWork
+     */
+    public function processUnitOfWork(CRUDUnitOfWork $unitOfWork)
+    {
+        if ($unitOfWork->getInsertions()->count()) {
+            $this->createCollection($unitOfWork->getInsertions());
+        }
+        if ($unitOfWork->getUpdates()->count()) {
+            $this->updateCollection($unitOfWork->getUpdates());
+        }
     }
 }

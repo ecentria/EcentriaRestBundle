@@ -15,6 +15,7 @@ use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
+use JMS\Serializer\Serializer;
 
 /**
  * CRUD Transformer
@@ -38,6 +39,13 @@ class CRUDTransformer
     private $annotationsReader;
 
     /**
+     * Serializer
+     *
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
      * Class metadata
      *
      * @var ClassMetadata
@@ -49,13 +57,16 @@ class CRUDTransformer
      *
      * @param EntityManager $entityManager
      * @param AnnotationReader $annotationsReader
+     * @param Serializer $serializer
      */
     public function __construct(
         EntityManager $entityManager,
-        AnnotationReader $annotationsReader
+        AnnotationReader $annotationsReader,
+        Serializer $serializer
     ) {
         $this->entityManager = $entityManager;
         $this->annotationsReader = $annotationsReader;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -100,8 +111,8 @@ class CRUDTransformer
     /**
      * Transform property value
      *
-     * @param $property
-     * @param $value
+     * @param string $property
+     * @param mixed $value
      * @param ArrayCollection $collection
      * @return object
      */
@@ -110,14 +121,54 @@ class CRUDTransformer
         if ($this->transformationNeeded($property, $value)) {
             $targetClass = $this->getClassMetadata()->getAssociationTargetClass(ucfirst($property));
             if (is_null($collection)) {
-                $value = $this->entityManager->getReference($targetClass, $value);
+                $value = $this->processValue($value, $targetClass);
             } else {
                 $object = $this->findByIdentifier($collection, $value);
                 if (is_null($object)) {
-                    $object = $this->entityManager->getReference($targetClass, $value);
+                    $object = $this->processValue($value, $targetClass);
                 }
                 $value = $object;
             }
+        }
+        return $value;
+    }
+
+    /**
+     * Processing mixed value
+     *
+     * @param mixed $value
+     * @param string $targetClass
+     *
+     * @return mixed
+     */
+    private function processValue($value, $targetClass)
+    {
+        if (is_array($value)) {
+            $value = $this->processArrayValue($value, $targetClass);
+        } else {
+            $value = $this->entityManager->getReference($targetClass, $value);
+        }
+        return $value;
+    }
+
+    /**
+     * Process array value
+     *
+     * @param array $value
+     * @param string $targetClass
+     *
+     * @return array|mixed|null|object
+     */
+    private function processArrayValue(array $value, $targetClass)
+    {
+        $deserializedValue = $this->serializer->deserialize(
+            json_encode($value),
+            $targetClass,
+            'json'
+        );
+        $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
+        if (!$value) {
+            $value = $deserializedValue;
         }
         return $value;
     }
@@ -186,8 +237,8 @@ class CRUDTransformer
     /**
      * Transformation needed?
      *
-     * @param $property
-     * @param $value
+     * @param string $property
+     * @param mixed $value
      * @return bool
      */
     private function transformationNeeded($property, $value)

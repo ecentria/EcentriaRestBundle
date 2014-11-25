@@ -19,7 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
  */
 class Transactional extends ConfigurationAnnotation
 {
-    const NAME = 'Ecentria\Libraries\CoreRestBundle\Annotation\Transactional';
+    const NAME = 'Ecentria\\Libraries\\CoreRestBundle\\Annotation\\Transactional';
 
     /**
      * Model (entity namespace)
@@ -36,10 +36,7 @@ class Transactional extends ConfigurationAnnotation
     public $relatedRoute;
 
     /**
-     * Constructor.
-     *
-     * @param array $data Key-value for properties to be defined in this class.
-     * @throws \Exception
+     * {@inheritDoc}
      */
     public final function __construct(array $data)
     {
@@ -51,9 +48,7 @@ class Transactional extends ConfigurationAnnotation
     }
 
     /**
-     * Returns the alias name for an annotated configuration.
-     *
-     * @return string
+     * {@inheritDoc}
      */
     public function getAliasName()
     {
@@ -61,9 +56,7 @@ class Transactional extends ConfigurationAnnotation
     }
 
     /**
-     * Returns whether multiple annotations of this type are allowed
-     *
-     * @return bool
+     * {@inheritDoc}
      */
     public function allowArray()
     {

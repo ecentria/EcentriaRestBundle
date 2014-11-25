@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
+use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 /**
@@ -45,6 +46,11 @@ class CRUDTransformerTest extends TestCase
     private $crudTransformer;
 
     /**
+     * @var \PHPUnit_Framework_MockObject_MockObject|Serializer
+     */
+    private $serializer;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
@@ -52,9 +58,11 @@ class CRUDTransformerTest extends TestCase
     {
         $this->entityManager = $this->prepareEntityManager();
         $this->annotationsReader = $this->prepareAnnotationReader();
+        $this->serializer = $this->prepareSerializer();
         $this->crudTransformer = new CRUDTransformer(
             $this->entityManager,
-            $this->annotationsReader
+            $this->annotationsReader,
+            $this->serializer
         );
     }
 
@@ -307,6 +315,18 @@ class CRUDTransformerTest extends TestCase
         return $this->getMockBuilder('\stdClass')
             ->disableOriginalConstructor()
             ->setMethods(array('getId'))
+            ->getMock();
+    }
+
+    /**
+     * Preparing serializer
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function prepareSerializer()
+    {
+        return $this->getMockBuilder('\JMS\Serializer\Serializer')
+            ->disableOriginalConstructor()
             ->getMock();
     }
 }

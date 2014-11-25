@@ -20,7 +20,7 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class PropertyRestriction extends Annotation
 {
-    const NAME = 'Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction';
+    const NAME = 'Ecentria\\Libraries\\CoreRestBundle\\Annotation\\PropertyRestriction';
 
     /**
      * Is granted for:

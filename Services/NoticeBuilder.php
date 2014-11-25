@@ -9,6 +9,7 @@
  */
 
 namespace Ecentria\Libraries\CoreRestBundle\Services;
+
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 
