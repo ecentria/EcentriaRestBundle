@@ -27,7 +27,7 @@
         "willdurand/hateoas-bundle": "~0.3",
         "gedmo/doctrine-extensions": "v2.3.8",
         "egulias/email-validator": "~1.1",
-        "nelmio/api-doc-bundle": "2.2.3",
+        "nelmio/api-doc-bundle": "2.*",
         "doctrine/orm": "~2.3",
         "sensio/framework-extra-bundle": "~3.0.1"
     },
