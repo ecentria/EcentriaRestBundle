@@ -1,4 +1,4 @@
-Ecentria Core REST Bundle
+Ecentria Core REST Bundle v0.1.4
 =========================
 
 This bundle is the core REST bundle that all REST services built within Ecentria will extend.
