@@ -72,6 +72,18 @@ fos_rest:
 nelmio_api_doc: ~
 ```
 
+If you want use native json_encode/decode in your project instead of JMS\Serializer, add one more option
+to the end of fos_rest section:
+
+``` yaml
+
+fos_rest:
+    ...
+    service:
+        serializer: ecentria.fos_rest.native_json_encode_serializer
+
+```
+
 ## D) Update app/config/routing.yml
 
 Modify app/config/routing.yml and add the following:
