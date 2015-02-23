@@ -15,7 +15,7 @@ use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
 use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -49,12 +49,12 @@ class ExceptionListener
      *
      * @param GetResponseForExceptionEvent $event
      * @param string $name
-     * @param ContainerAwareEventDispatcher $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function onKernelException(
         GetResponseForExceptionEvent $event,
         $name,
-        ContainerAwareEventDispatcher $eventDispatcher
+        EventDispatcherInterface $eventDispatcher
     ) {
         $exception = $event->getException();
         if ($exception instanceof ValidationFailedException) {
@@ -70,14 +70,14 @@ class ExceptionListener
      * Get correct response for validation failed exception
      *
      * @param GetResponseForExceptionEvent $event
-     * @param ContainerAwareEventDispatcher $eventDispatcher
+     * @param EventDispatcherInterface $eventDispatcher
      * @param ValidationFailedException $exception
      *
      * @return Response|null
      */
     private function getValidationFailedExceptionResponse(
         GetResponseForExceptionEvent $event,
-        ContainerAwareEventDispatcher $eventDispatcher,
+        EventDispatcherInterface $eventDispatcher,
         ValidationFailedException $exception
     ) {
         $event->stopPropagation();
