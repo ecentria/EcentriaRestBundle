@@ -39,7 +39,7 @@ class ParameterConverter extends BaseDoctrineParamConverter
         if (null === $object = $this->find($class, $request, $options, $name)) {
             // find by criteria
             if (null === $object = $this->findOneBy($class, $request, $options)) {
-                $object = new $class;
+                $object = new $class();
                 if ($object instanceof CRUDEntityInterface) {
                     $object->setId($request->attributes->get('id'));
                 }
