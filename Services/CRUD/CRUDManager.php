@@ -33,6 +33,7 @@ class CRUDManager
 {
     const MODE_DEFAULT = 'default';
     const MODE_UPDATE_ON_DUPLICATE = 'update_on_duplicate';
+    const MODE_DRY_RUN = 'dry_run';
 
     /**
      * Entity manager
@@ -72,10 +73,10 @@ class CRUDManager
     /**
      * Constructor
      *
-     * @param EntityManager $entityManager
-     * @param RecursiveValidator $validator
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param CRUDTransformer $crudTransformer
+     * @param EntityManager            $entityManager   Entity manager
+     * @param RecursiveValidator       $validator       Validator
+     * @param EventDispatcherInterface $eventDispatcher Event dispatcher
+     * @param CRUDTransformer          $crudTransformer Crud transformer
      */
     public function __construct(
         EntityManager $entityManager,
@@ -92,9 +93,9 @@ class CRUDManager
     /**
      * Mode setter
      *
-     * @param string $mode
+     * @param string $mode Mode
      *
-     * @return self
+     * @return CRUDManager
      */
     public function setMode($mode)
     {
@@ -115,8 +116,8 @@ class CRUDManager
     /**
      * Find
      *
-     * @param string $class
-     * @param mixed $id
+     * @param string $class Class
+     * @param mixed  $id    Id
      *
      * @return object
      */
@@ -128,11 +129,12 @@ class CRUDManager
     /**
      * Creating entity
      *
-     * @param object $entity
-     * @param bool $flush
+     * @param CRUDEntityInterface $entity Entity
+     * @param bool                $flush  Flush
+     *
      * @return object
      */
-    public function create($entity, $flush = true)
+    public function create(CRUDEntityInterface $entity, $flush = true)
     {
         $this->eventDispatcher->dispatch(
             Events::PRE_CREATE,
@@ -140,7 +142,7 @@ class CRUDManager
         );
         $this->entityManager->persist($entity);
         if ($flush) {
-            $this->entityManager->flush($entity);
+            $this->flush($entity);
         }
         $this->eventDispatcher->dispatch(
             Events::POST_CREATE,
@@ -150,9 +152,23 @@ class CRUDManager
     }
 
     /**
+     * Flush
+     *
+     * @param CRUDEntityInterface $entity Entity
+     *
+     * @return void
+     */
+    private function flush(CRUDEntityInterface $entity = null)
+    {
+        if ($this->getMode() !== self::MODE_DRY_RUN) {
+            $this->entityManager->flush($entity);
+        }
+    }
+
+    /**
      * Creating collection
      *
-     * @param ArrayCollection|CRUDEntityInterface[] $collection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection Collection
      * @return void
      */
     public function createCollection(ArrayCollection $collection)
@@ -161,16 +177,16 @@ class CRUDManager
         foreach ($collection as $collectionItem) {
             $this->create($collectionItem, false);
         }
-        $this->entityManager->flush();
+        $this->flush();
     }
 
     /**
      * Entity validation
      *
-     * @param object $entity
+     * @param CRUDEntityInterface $entity Entity
      * @return ConstraintViolationList|bool
      */
-    public function validate($entity)
+    public function validate(CRUDEntityInterface $entity)
     {
         $violations = $this->validator->validate($entity);
         if ($violations->count()) {
@@ -182,7 +198,7 @@ class CRUDManager
     /**
      * Validate collection uniqueness
      *
-     * @param ArrayCollection|CRUDEntityInterface[] $collection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection Collection
      * @return ConstraintViolationList
      */
     private function validateCollectionUniqueness(ArrayCollection $collection)
@@ -219,9 +235,9 @@ class CRUDManager
     /**
      * Collection validation
      *
-     * @param ArrayCollection|CRUDEntityInterface[] $collection
-     * @return bool
+     * @param ArrayCollection|CRUDEntityInterface[] $collection collection
      * @throws ValidationFailedException
+     * @return bool
      */
     public function validateCollection(ArrayCollection $collection)
     {
@@ -241,7 +257,8 @@ class CRUDManager
     /**
      * Update entity
      *
-     * @param CRUDEntityInterface $entity
+     * @param CRUDEntityInterface $entity entity
+     * @return void
      */
     public function update(CRUDEntityInterface $entity)
     {
@@ -255,7 +272,7 @@ class CRUDManager
     /**
      * Creating collection
      *
-     * @param ArrayCollection|CRUDEntityInterface[] $collection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection collection
      * @return void
      */
     public function updateCollection(ArrayCollection $collection)
@@ -268,8 +285,9 @@ class CRUDManager
     /**
      * Updating one entity
      *
-     * @param CRUDEntityInterface $entity
-     * @param array $data
+     * @param CRUDEntityInterface $entity Entity
+     * @param array               $data   Data
+     *
      * @throws \Exception
      * @return void
      */
@@ -286,22 +304,27 @@ class CRUDManager
     /**
      * Saving
      *
-     * @param object $entity
+     * @param CRUDEntityInterface $entity Entity
      * @throws ValidationFailedException
+     * @return void
      */
-    public function save($entity)
+    public function save(CRUDEntityInterface $entity)
     {
         $violations = $this->validate($entity);
 
         if ($violations instanceof ConstraintViolationList) {
             throw new ValidationFailedException($violations);
         }
-        $this->entityManager->flush($entity);
+        $this->flush($entity);
     }
 
     /**
-     * @param CRUDEntityInterface $entity
-     * @throws \JMS\Serializer\Exception\ValidationFailedException
+     * Validates existence
+     *
+     * @param CRUDEntityInterface $entity Entity
+     * @throws ValidationFailedException
+     *
+     * @return void
      */
     public function validateExistence(CRUDEntityInterface $entity)
     {
@@ -327,7 +350,7 @@ class CRUDManager
     /**
      * Filtering collection
      *
-     * @param ArrayCollection|CRUDEntityInterface[] $collection
+     * @param ArrayCollection|CRUDEntityInterface[] $collection Collection
      *
      * @return CRUDUnitOfWork
      */
@@ -351,7 +374,8 @@ class CRUDManager
      *
      * TODO: refactor api to use unit of work always
      *
-     * @param CRUDUnitOfWork $unitOfWork
+     * @param CRUDUnitOfWork $unitOfWork UnitOfWork
+     * @return void
      */
     public function processUnitOfWork(CRUDUnitOfWork $unitOfWork)
     {
