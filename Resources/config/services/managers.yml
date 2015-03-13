@@ -1,18 +1,19 @@
 parameters:
 
-    ecentria.api.builder.error.class:             Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder
-    ecentria.api.builder.notice.class:            Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder
-    ecentria.api.builder.transaction.class:       Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder
+    ecentria.api.builder.error.class:              Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder
+    ecentria.api.builder.notice.class:             Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder
+    ecentria.api.builder.transaction.class:        Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder
 
-    ecentria.api.configuration.manager.class:     Ecentria\Libraries\CoreRestBundle\Services\ConfigurationManager
+    ecentria.api.configuration.manager.class:      Ecentria\Libraries\CoreRestBundle\Services\ConfigurationManager
 
-    ecentria.api.crud.manager.class:              Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager
-    ecentria.api.crud.transformer.class:          Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer
+    ecentria.api.crud.manager.class:               Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager
+    ecentria.api.crud.transformer.class:           Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer
 
-    ecentria.api.transaction.handler.get.class:   Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionGetHandler
-    ecentria.api.transaction.handler.patch.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPatchHandler
-    ecentria.api.transaction.handler.post.class:  Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPostHandler
-    ecentria.api.transaction.manager.class:       Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager
+    ecentria.api.transaction.handler.get.class:    Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionGetHandler
+    ecentria.api.transaction.handler.patch.class:  Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPatchHandler
+    ecentria.api.transaction.handler.delete.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionDeleteHandler
+    ecentria.api.transaction.handler.post.class:   Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPostHandler
+    ecentria.api.transaction.manager.class:        Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager
 
 services:
 
@@ -59,6 +60,13 @@ services:
 
     ecentria.api.transaction.handler.patch:
         class: %ecentria.api.transaction.handler.patch.class%
+        arguments:
+            - @ecentria.api.builder.error
+        tags:
+            - { name: ecentria.api.tag.transaction_handler }
+
+    ecentria.api.transaction.handler.delete:
+        class: %ecentria.api.transaction.handler.delete.class%
         arguments:
             - @ecentria.api.builder.error
         tags:
