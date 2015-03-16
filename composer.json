@@ -8,8 +8,12 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Patrick McGovern",
-            "email": "patrick.mcgovern@opticsplanet.com"
+            "name": "Sergey Chernecov",
+            "email": "sergey.chernecov@intexsys.lv"
+        },
+        {
+            "name": "Ruslan Zavacky",
+            "email": "ruslan.zavacky@intexsys.lv"
         }
     ],
     "repositories": [

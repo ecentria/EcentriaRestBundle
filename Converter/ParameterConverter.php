@@ -30,7 +30,6 @@ class ParameterConverter extends BaseDoctrineParamConverter
     {
         $name    = $configuration->getName();
         $class   = $configuration->getClass();
-
         $options = $this->getOptions($configuration);
         if (null === $request->attributes->get($name, false)) {
             $configuration->setIsOptional(true);
@@ -40,7 +39,7 @@ class ParameterConverter extends BaseDoctrineParamConverter
         if (null === $object = $this->find($class, $request, $options, $name)) {
             // find by criteria
             if (null === $object = $this->findOneBy($class, $request, $options)) {
-                $object = new $class;
+                $object = new $class();
                 if ($object instanceof CRUDEntityInterface) {
                     $object->setId($request->attributes->get('id'));
                 }
@@ -48,6 +47,12 @@ class ParameterConverter extends BaseDoctrineParamConverter
         }
 
         $request->attributes->set($name, $object);
+
+        if (!empty($options['parameters'])) {
+            foreach ($options['parameters'] as $parameter) {
+                $request->attributes->set($parameter, $request->query->get($parameter));
+            }
+        }
 
         /** This attribute added to support exception listener */
         $request->attributes->set(ExceptionListener::DATA_ALIAS, $name);
