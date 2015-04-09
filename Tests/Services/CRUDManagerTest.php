@@ -12,7 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\UnitOfWork;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudManager;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -22,7 +22,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDManagerTest extends TestCase
+class CrudManagerTest extends TestCase
 {
     /**
      * Entity manager
@@ -41,7 +41,7 @@ class CRUDManagerTest extends TestCase
     /**
      * CRUD manager
      *
-     * @var CRUDManager
+     * @var CrudManager
      */
     private $crudManager;
 
@@ -62,6 +62,8 @@ class CRUDManagerTest extends TestCase
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
+     *
+     * @return void
      */
     protected function setUp()
     {
@@ -72,7 +74,7 @@ class CRUDManagerTest extends TestCase
             array('dispatch')
         );
         $this->crudTransformer = $this->prepareCRUDTransformet();
-        $this->crudManager = new CRUDManager(
+        $this->crudManager = new CrudManager(
             $this->entityManager,
             $this->recursiveValidator,
             $this->dispatcher,
@@ -81,6 +83,8 @@ class CRUDManagerTest extends TestCase
     }
 
     /**
+     * TestValidationCollectionFailed
+     *
      * @return void
      */
     public function testValidationCollectionFailed()
@@ -101,11 +105,14 @@ class CRUDManagerTest extends TestCase
                 new ConstraintViolationList(),
                 $violationList
             );
-        $this->setExpectedException('\JMS\Serializer\Exception\ValidationFailedException');
-        $this->crudManager->validateCollection($entities);
+        $violations = $this->crudManager->validateCollection($entities);
+
+        $this->assertEquals(1, $violations->count());
     }
 
     /**
+     * TestValidationItemSuccess
+     *
      * @return void
      */
     public function testValidationItemSuccess()
@@ -119,13 +126,15 @@ class CRUDManagerTest extends TestCase
     }
 
     /**
+     * TestValidationCollectionSuccess
+     *
      * @return void
      */
     public function testValidationCollectionSuccess()
     {
         $entity1 = $this->prepareEntity();
         $entity2 = $this->prepareEntity();
-        $entitys = new ArrayCollection(array($entity1, $entity2));
+        $entities = new ArrayCollection(array($entity1, $entity2));
         $this->recursiveValidator->expects($this->exactly(2))
             ->method('validate')
             ->withConsecutive(
@@ -136,10 +145,14 @@ class CRUDManagerTest extends TestCase
                 new ConstraintViolationList(),
                 new ConstraintViolationList()
             );
-        $this->assertEquals(true, $this->crudManager->validateCollection($entitys));
+
+        $violations = $this->crudManager->validateCollection($entities);
+        $this->assertEquals(0, $violations->count());
     }
 
     /**
+     * TestCreateEntityPersist
+     *
      * @return void
      */
     public function testCreateEntityPersist()
@@ -170,6 +183,8 @@ class CRUDManagerTest extends TestCase
     }
 
     /**
+     * TestSetData
+     *
      * @return void
      */
     public function testSetData()
@@ -178,10 +193,12 @@ class CRUDManagerTest extends TestCase
 
         $id = 'new.email@opticsplanet.com';
         $type = 'email';
-        $data = array(array(
-            'id' => $id,
-            'type' => $type
-        ));
+        $data = array(
+            array(
+                'id'   => $id,
+                'type' => $type
+            )
+        );
 
         $entity->expects($this->never())
             ->method('setId')
@@ -214,8 +231,9 @@ class CRUDManagerTest extends TestCase
         $this->crudManager->setData($entity, $data);
     }
 
-
     /**
+     * Test create and not flush entity
+     *
      * @return void
      */
     public function testCreateAndNotFlushEntity()
@@ -268,7 +286,7 @@ class CRUDManagerTest extends TestCase
      */
     private function prepareCRUDTransformet()
     {
-        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer')
+        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudTransformer')
             ->disableOriginalConstructor()
             ->setMethods(array('initializeClassMetadata', 'processPropertyValue'))
             ->getMock();
@@ -290,7 +308,7 @@ class CRUDManagerTest extends TestCase
     /**
      * Preparing EntityRepository
      *
-     * @return \stdClass|\PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject
      */
     private function prepareEntity()
     {

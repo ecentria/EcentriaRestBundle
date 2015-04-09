@@ -10,7 +10,7 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait,
     Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableTrait,
     Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait;
@@ -20,24 +20,32 @@ use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-abstract class AbstractCRUDEntity implements CRUDEntityInterface
+abstract class AbstractCrudEntity implements CrudEntityInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;
     use TimestampableTrait;
 
     /**
-     * {@inheritdoc}
+     * Id getter
+     *
+     * @return mixed
      */
     abstract public function getId();
 
     /**
-     * {@inheritdoc}
+     * Id setter
+     *
+     * @param mixed $id id
+     *
+     * @return CrudEntityInterface
      */
     abstract public function setId($id);
 
     /**
-     * {@inheritdoc}
+     * Returns an array that is enough to update entity
+     *
+     * @return array
      */
     abstract public function toArray();
 }

@@ -10,7 +10,7 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
     Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableInterface,
     Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface;
@@ -18,50 +18,54 @@ use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 /**
- * CRUDEntity
+ * CrudEntity
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDEntityTest extends TestCase
+class CrudEntityTest extends TestCase
 {
     /**
      * CRUD Entity
      *
-     * @var CRUDEntity
+     * @var CrudEntity
      */
-    protected $CRUDEntity;
+    protected $CrudEntity;
 
     /**
      * Setting up
+     *
+     * @return void
      */
     protected function setUp()
     {
-        $this->CRUDEntity = new CRUDEntity();
+        $this->CrudEntity = new CrudEntity();
     }
 
     /**
      * Testing that all methods exists
+     *
+     * @return void
      */
     public function testExtendedFunctionality()
     {
-        $this->assertTrue($this->CRUDEntity instanceof CRUDEntityInterface);
+        $this->assertTrue($this->CrudEntity instanceof CrudEntityInterface);
 
-        $this->assertTrue($this->CRUDEntity instanceof EmbeddedInterface);
-        $this->assertTrue($this->CRUDEntity instanceof TransactionalInterface);
-        $this->assertTrue($this->CRUDEntity instanceof TimestampableInterface);
+        $this->assertTrue($this->CrudEntity instanceof EmbeddedInterface);
+        $this->assertTrue($this->CrudEntity instanceof TransactionalInterface);
+        $this->assertTrue($this->CrudEntity instanceof TimestampableInterface);
 
         // Transactional
-        $this->assertTrue(method_exists($this->CRUDEntity, 'setTransaction'));
-        $this->assertTrue(method_exists($this->CRUDEntity, 'getTransaction'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'setTransaction'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'getTransaction'));
 
         // Embedded
-        $this->assertTrue(method_exists($this->CRUDEntity, 'setShowAssociations'));
-        $this->assertTrue(method_exists($this->CRUDEntity, 'showAssociations'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'setShowAssociations'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'showAssociations'));
 
         // Timestampable
-        $this->assertTrue(method_exists($this->CRUDEntity, 'setCreatedAt'));
-        $this->assertTrue(method_exists($this->CRUDEntity, 'getCreatedAt'));
-        $this->assertTrue(method_exists($this->CRUDEntity, 'setUpdatedAt'));
-        $this->assertTrue(method_exists($this->CRUDEntity, 'getUpdatedAt'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'setCreatedAt'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'getCreatedAt'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'setUpdatedAt'));
+        $this->assertTrue(method_exists($this->CrudEntity, 'getUpdatedAt'));
     }
 }

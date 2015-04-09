@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection,
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
     Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
-    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Model\Error,
     Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder;
 
@@ -24,7 +24,7 @@ use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
- * Transaction service
+ * Transaction GET handler
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
@@ -33,8 +33,8 @@ class TransactionGetHandler implements TransactionHandlerInterface
     /**
      * Constructor
      *
-     * @param EntityManager $entityManager
-     * @param ErrorBuilder $errorBuilder
+     * @param EntityManager $entityManager entityManager
+     * @param ErrorBuilder  $errorBuilder  errorBuilder
      */
     public function __construct(
         EntityManager $entityManager,
@@ -45,7 +45,9 @@ class TransactionGetHandler implements TransactionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Supports method
+     *
+     * @return string
      */
     public function supports()
     {
@@ -53,17 +55,25 @@ class TransactionGetHandler implements TransactionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Handle
+     *
+     * @param Transaction                         $transaction Transaction
+     * @param CrudEntityInterface|ArrayCollection $data        Data
+     * @param ConstraintViolationList|null        $violations  Violations
+     *
+     * @throws FeatureNotImplementedException
+     *
+     * @return CrudEntityInterface|CollectionResponse
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
     {
-        if ($data instanceof CRUDEntityInterface) {
+        if ($data instanceof CrudEntityInterface) {
             $data = $this->handleEntity($transaction, $data);
         } elseif ($data instanceof ArrayCollection) {
             $data = $this->handleCollection($transaction, $data);
         } else {
             throw new FeatureNotImplementedException(
-                get_class($data) . ' class is not supported by transactions (GET). Instance of CRUDEntity needed.'
+                get_class($data) . ' class is not supported by transactions (GET). Instance of CrudEntity needed.'
             );
         }
         return $data;
@@ -71,10 +81,15 @@ class TransactionGetHandler implements TransactionHandlerInterface
 
     /**
      * Handle entity
+     *
+     * @param Transaction         $transaction transaction
+     * @param CrudEntityInterface $entity      entity
+     *
+     * @return CrudEntityInterface
      */
-    private function handleEntity(Transaction $transaction, CRUDEntityInterface $data)
+    private function handleEntity(Transaction $transaction, CrudEntityInterface $entity)
     {
-        $success = $this->isEntityManaged($data);
+        $success = $this->isEntityManaged($entity);
         $status = $success ? Transaction::STATUS_OK : Transaction::STATUS_NOT_FOUND;
 
         $transaction->setStatus($status);
@@ -82,17 +97,22 @@ class TransactionGetHandler implements TransactionHandlerInterface
 
         if (!$success) {
             $this->errorBuilder->addCustomError(
-                $data->getId(),
+                $entity->getId(),
                 new Error('Entity not found', Transaction::STATUS_NOT_FOUND, null, Error::CONTEXT_GLOBAL)
             );
             $this->errorBuilder->setTransactionErrors($transaction);
         }
 
-        return $data;
+        return $entity;
     }
 
     /**
      * Handle collection
+     *
+     * @param Transaction $transaction transaction
+     * @param mixed       $data        data
+     *
+     * @return CollectionResponse
      */
     private function handleCollection(Transaction $transaction, $data)
     {
@@ -106,10 +126,12 @@ class TransactionGetHandler implements TransactionHandlerInterface
 
     /**
      * Is entity managed
-     * @param CRUDEntityInterface $entity
+     *
+     * @param CrudEntityInterface $entity entity
+     *
      * @return bool
      */
-    private function isEntityManaged(CRUDEntityInterface $entity)
+    private function isEntityManaged(CrudEntityInterface $entity)
     {
         return UnitOfWork::STATE_MANAGED === $this->entityManager->getUnitOfWork()->getEntityState($entity);
     }

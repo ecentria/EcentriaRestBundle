@@ -25,7 +25,7 @@ class InArrayValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof InArray) {
-            throw new \Exception('This constraint must be instance of EcentriaSubscriptionsBundle:InArray');
+            throw new \Exception('This constraint must be instance of EcentriaCommunicationApiBundle:InArray');
         }
         if (!in_array($value, $constraint->values)) {
             $this->context->addViolation(

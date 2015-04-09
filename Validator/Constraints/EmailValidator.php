@@ -27,7 +27,7 @@ class EmailValidator extends BaseEmailValidator
     public function validate($entity, Constraint $constraint)
     {
         if (!$constraint instanceof Email) {
-            throw new \Exception('This constraint must be instance of EcentriaSubscriptionsBundle:Email');
+            throw new \Exception('This constraint must be instance of EcentriaCommunicationApiBundle:Email');
         }
         $method = $constraint->dependencyGetter;
         $getter = $constraint->emailGetter;

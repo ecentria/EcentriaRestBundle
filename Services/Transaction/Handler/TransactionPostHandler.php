@@ -15,7 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection,
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
     Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
-    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder,
     Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\CoreRestBundle\Services\UUID;
@@ -24,7 +24,7 @@ use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
- * Transaction service
+ * Transaction POST handler
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
@@ -33,9 +33,9 @@ class TransactionPostHandler implements TransactionHandlerInterface
     /**
      * Constructor
      *
-     * @param EntityManager $entityManager
-     * @param ErrorBuilder $errorBuilder
-     * @param NoticeBuilder $noticeBuilder
+     * @param EntityManager $entityManager entityManager
+     * @param ErrorBuilder  $errorBuilder  errorBuilder
+     * @param NoticeBuilder $noticeBuilder noticeBuilder
      */
     public function __construct(
         EntityManager $entityManager,
@@ -48,7 +48,9 @@ class TransactionPostHandler implements TransactionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Supports method
+     *
+     * @return string
      */
     public function supports()
     {
@@ -56,7 +58,15 @@ class TransactionPostHandler implements TransactionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Handle
+     *
+     * @param Transaction                         $transaction Transaction
+     * @param CrudEntityInterface|ArrayCollection $data        Data
+     * @param ConstraintViolationList|null        $violations  Violations
+     *
+     * @throws FeatureNotImplementedException
+     *
+     * @return CrudEntityInterface|CollectionResponse
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
     {
@@ -70,7 +80,11 @@ class TransactionPostHandler implements TransactionHandlerInterface
         $transaction->setSuccess($success);
 
         if ($data instanceof ArrayCollection) {
-            $data = $this->handleCollection($transaction, $data);
+            if ($data->isEmpty()) {
+                $data = $this->handleEmptyCollection($transaction, $data);
+            } else {
+                $data = $this->handleCollection($transaction, $data);
+            }
         } else {
             throw new FeatureNotImplementedException(
                 get_class($data) . ' class is not supported by transactions (POST). Instance of ArrayCollection needed.'
@@ -83,8 +97,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
     /**
      * Handle collection
      *
-     * @param Transaction $baseTransaction
-     * @param ArrayCollection|CRUDEntityInterface[] $data
+     * @param Transaction                           $baseTransaction Base transaction
+     * @param ArrayCollection|CrudEntityInterface[] $data            Data
      *
      * @return ArrayCollection|CollectionResponse
      */
@@ -123,6 +137,26 @@ class TransactionPostHandler implements TransactionHandlerInterface
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
         $data = new CollectionResponse($data);
         $data->setShowAssociations(true);
+
+        return $data;
+    }
+
+    /**
+     * Handle empty collection
+     *
+     * @param Transaction                           $baseTransaction Base transaction
+     * @param ArrayCollection|CrudEntityInterface[] $data            Data
+     *
+     * @return ArrayCollection|CollectionResponse
+     */
+    private function handleEmptyCollection(Transaction $baseTransaction, ArrayCollection $data)
+    {
+        $this->noticeBuilder->setTransactionNotices($baseTransaction);
+        $data = new CollectionResponse($data);
+        $data->setShowAssociations(true);
+
+        $baseTransaction->setSuccess(false);
+        $baseTransaction->setStatus(Transaction::STATUS_CONFLICT);
 
         return $data;
     }

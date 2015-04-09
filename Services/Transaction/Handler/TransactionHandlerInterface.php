@@ -14,7 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
     Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
-    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
+    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
 
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -35,11 +35,11 @@ interface TransactionHandlerInterface
     /**
      * Handle
      *
-     * @param Transaction $transaction
-     * @param CRUDEntityInterface|ArrayCollection $data
-     * @param ConstraintViolationList|null $violations
+     * @param Transaction                         $transaction Transaction
+     * @param CrudEntityInterface|ArrayCollection $data        Data
+     * @param ConstraintViolationList|null        $violations  Violations
      *
-     * @return CRUDEntityInterface|CollectionResponse
+     * @return CrudEntityInterface|CollectionResponse
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null);
 }

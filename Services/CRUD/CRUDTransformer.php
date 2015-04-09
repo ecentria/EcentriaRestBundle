@@ -15,14 +15,17 @@ use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Serializer;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
  * CRUD Transformer
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDTransformer
+class CrudTransformer
 {
     /**
      * Entity manager
@@ -55,36 +58,72 @@ class CRUDTransformer
     /**
      * Constructor
      *
-     * @param EntityManager $entityManager
-     * @param AnnotationReader $annotationsReader
-     * @param Serializer $serializer
+     * @param EntityManager      $entityManager     entityManager
+     * @param AnnotationReader   $annotationsReader annotationsReader
+     * @param Serializer         $serializer        serializer
+     * @param RecursiveValidator $validator         validator
      */
     public function __construct(
         EntityManager $entityManager,
         AnnotationReader $annotationsReader,
-        Serializer $serializer
+        Serializer $serializer,
+        RecursiveValidator $validator
     ) {
         $this->entityManager = $entityManager;
         $this->annotationsReader = $annotationsReader;
         $this->serializer = $serializer;
+        $this->validator = $validator;
     }
 
     /**
      * Initializing class metadata
      *
-     * @param string $className
+     * @param string $className className
+     *
+     * @return void
      */
     public function initializeClassMetadata($className)
     {
         $this->classMetadata = $this->entityManager->getClassMetadata($className);
     }
 
+    /**
+     * GetUniqueSearchConditions
+     *
+     * @param CrudEntityInterface $entity entity
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
+    public function getUniqueSearchConditions(CrudEntityInterface $entity)
+    {
+        $fields = [];
+
+        $annotation = $this->annotationsReader->getClassAnnotation(
+            $this->getClassMetadata()->getReflectionClass(),
+            'Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntity'
+        );
+
+        if (!$annotation) {
+            return $fields;
+        }
+
+        /** @var UniqueEntity $annotation */
+        foreach ($annotation->fields as $field) {
+            $getter = $this->getPropertyGetter($field);
+            $fields[$field] = $entity->$getter();
+        }
+
+        return $fields;
+    }
 
     /**
      * Is property transform granted
      *
-     * @param string $property
-     * @param string $action
+     * @param string $property property
+     * @param string $action   action
+     *
      * @return bool
      */
     public function isPropertyAccessible($property, $action)
@@ -111,15 +150,17 @@ class CRUDTransformer
     /**
      * Transform property value
      *
-     * @param string $property
-     * @param mixed $value
-     * @param ArrayCollection $collection
+     * @param string          $property   property
+     * @param mixed           $value      value
+     * @param ArrayCollection $collection collection
+     *
      * @return object
      */
     public function transformPropertyValue($property, $value, ArrayCollection $collection = null)
     {
         if ($this->transformationNeeded($property, $value)) {
             $targetClass = $this->getClassMetadata()->getAssociationTargetClass(ucfirst($property));
+
             if (is_null($collection)) {
                 $value = $this->processValue($value, $targetClass);
             } else {
@@ -136,8 +177,8 @@ class CRUDTransformer
     /**
      * Processing mixed value
      *
-     * @param mixed $value
-     * @param string $targetClass
+     * @param mixed  $value       value
+     * @param string $targetClass targetClass
      *
      * @return mixed
      */
@@ -154,8 +195,8 @@ class CRUDTransformer
     /**
      * Process array value
      *
-     * @param array $value
-     * @param string $targetClass
+     * @param mixed  $value       value
+     * @param string $targetClass targetClass
      *
      * @return array|mixed|null|object
      */
@@ -169,6 +210,10 @@ class CRUDTransformer
         $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
         if (!$value) {
             $value = $deserializedValue;
+            $violations = $this->validator->validate($value);
+            if (!$violations->count()) {
+                $this->entityManager->persist($value);
+            }
         }
         return $value;
     }
@@ -176,7 +221,8 @@ class CRUDTransformer
     /**
      * Getter for property setter
      *
-     * @param $property
+     * @param string $property property
+     *
      * @return string
      */
     public function getPropertySetter($property)
@@ -187,7 +233,8 @@ class CRUDTransformer
     /**
      * Getter for property getter
      *
-     * @param $property
+     * @param string $property property
+     *
      * @return string
      */
     public function getPropertyGetter($property)
@@ -198,11 +245,13 @@ class CRUDTransformer
     /**
      * Processing property value
      *
-     * @param object $object
-     * @param string $property
-     * @param mixed $value
-     * @param string $action
-     * @param ArrayCollection|null $collection
+     * @param object               $object     object
+     * @param string               $property   property
+     * @param mixed                $value      value
+     * @param string               $action     action
+     * @param ArrayCollection|null $collection collection
+     *
+     * @return void
      */
     public function processPropertyValue($object, $property, $value, $action, ArrayCollection $collection = null)
     {
@@ -217,8 +266,11 @@ class CRUDTransformer
     }
 
     /**
-     * @param ArrayCollection $collection
-     * @param $value
+     * FindByIdentifier
+     *
+     * @param ArrayCollection $collection collection
+     * @param mixed           $value      value
+     *
      * @return null|object
      */
     private function findByIdentifier(ArrayCollection $collection, $value)
@@ -237,8 +289,9 @@ class CRUDTransformer
     /**
      * Transformation needed?
      *
-     * @param string $property
-     * @param mixed $value
+     * @param string $property property
+     * @param mixed  $value    value
+     *
      * @return bool
      */
     private function transformationNeeded($property, $value)
