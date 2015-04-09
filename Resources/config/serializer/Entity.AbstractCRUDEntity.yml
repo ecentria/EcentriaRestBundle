@@ -1,7 +1,9 @@
 Ecentria\Libraries\CoreRestBundle\Entity\AbstractCrudEntity:
 
     properties:
+
         transaction:
+            serialized_name: transaction
             exclude: true
         embedded:
             exclude: true
