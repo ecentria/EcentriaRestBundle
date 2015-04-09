@@ -27,7 +27,9 @@ class TransactionSuccessValidator extends ConstraintValidator
     public function validate($entity, Constraint $constraint)
     {
         if (!$constraint instanceof TransactionSuccess) {
-            throw new \Exception('This constraint must be instance of EcentriaCommunicationApiBundle:TransactionSuccess');
+            throw new \Exception(
+                'This constraint must be instance of EcentriaCommunicationApiBundle:TransactionSuccess'
+            );
         }
 
         if (!$entity instanceof Transaction) {
@@ -46,7 +48,7 @@ class TransactionSuccessValidator extends ConstraintValidator
         if ($success != $correctSuccess) {
             $this->context->addViolation(
                 sprintf(
-                    "Transaction status is not correct. Should be %s",
+                    'Transaction status is not correct. Should be %s',
                     $correctSuccess
                 )
             );
