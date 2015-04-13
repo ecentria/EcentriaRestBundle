@@ -13,6 +13,7 @@ parameters:
     ecentria.api.transaction.handler.patch.class:  Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPatchHandler
     ecentria.api.transaction.handler.delete.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionDeleteHandler
     ecentria.api.transaction.handler.post.class:   Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPostHandler
+    ecentria.api.transaction.handler.put.class:    Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPutHandler
     ecentria.api.transaction.manager.class:        Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager
 
 services:
@@ -75,6 +76,15 @@ services:
 
     ecentria.api.transaction.handler.post:
         class: %ecentria.api.transaction.handler.post.class%
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @ecentria.api.builder.error
+            - @ecentria.api.builder.notice
+        tags:
+            - { name: ecentria.api.tag.transaction_handler }
+
+    ecentria.api.transaction.handler.put:
+        class: %ecentria.api.transaction.handler.put.class%
         arguments:
             - @doctrine.orm.default_entity_manager
             - @ecentria.api.builder.error

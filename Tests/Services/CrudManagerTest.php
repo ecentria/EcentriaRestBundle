@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudManager;
+use Ecentria\Libraries\CoreRestBundle\Tests\Entity\CircularReferenceEntity;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -83,34 +84,6 @@ class CrudManagerTest extends TestCase
     }
 
     /**
-     * TestValidationCollectionFailed
-     *
-     * @return void
-     */
-    public function testValidationCollectionFailed()
-    {
-        $entity1 = $this->prepareEntity();
-        $entity2 = $this->prepareEntity();
-        $entities = new ArrayCollection(
-            array($entity1, $entity2)
-        );
-        $violationList = $this->prepareViolationList();
-        $this->recursiveValidator->expects($this->exactly(2))
-            ->method('validate')
-            ->withConsecutive(
-                array($this->equalTo($entity1)),
-                array($this->equalTo($entity2))
-            )
-            ->willReturnOnConsecutiveCalls(
-                new ConstraintViolationList(),
-                $violationList
-            );
-        $violations = $this->crudManager->validateCollection($entities);
-
-        $this->assertEquals(1, $violations->count());
-    }
-
-    /**
      * TestValidationItemSuccess
      *
      * @return void
@@ -133,7 +106,9 @@ class CrudManagerTest extends TestCase
     public function testValidationCollectionSuccess()
     {
         $entity1 = $this->prepareEntity();
+        $entity1->setId('1');
         $entity2 = $this->prepareEntity();
+        $entity2->setId('2');
         $entities = new ArrayCollection(array($entity1, $entity2));
         $this->recursiveValidator->expects($this->exactly(2))
             ->method('validate')
@@ -157,14 +132,21 @@ class CrudManagerTest extends TestCase
      */
     public function testCreateEntityPersist()
     {
-        $entity = $this->prepareEntity();
+        $entity1 = $this->prepareEntity();
+        $entity1->setId(1);
+        $entity2 = $this->prepareEntity();
+        $entity2->setId(2);
+
         $entities = new ArrayCollection(
-            array($entity, $entity)
+            array($entity1, $entity2)
         );
 
         $this->entityManager->expects($this->exactly(2))
             ->method('persist')
-            ->with($entity);
+            ->withConsecutive(
+                [$entity1],
+                [$entity2]
+            );
 
         $this->entityManager->expects($this->once())
             ->method('flush')
@@ -177,7 +159,7 @@ class CrudManagerTest extends TestCase
         $this->crudManager->createCollection($entities);
 
         $this->assertEquals(
-            new ArrayCollection(array($entity, $entity)),
+            new ArrayCollection(array($entity1, $entity2)),
             $entities
         );
     }
@@ -308,7 +290,7 @@ class CrudManagerTest extends TestCase
     /**
      * Preparing EntityRepository
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit_Framework_MockObject_MockObject|CircularReferenceEntity
      */
     private function prepareEntity()
     {

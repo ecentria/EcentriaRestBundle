@@ -207,13 +207,13 @@ class CrudTransformer
             $targetClass,
             'json'
         );
-        $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
-        if (!$value) {
+
+        if ($deserializedValue->getId()) {
+            $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
+        }
+
+        if (!$value || !$deserializedValue->getId()) {
             $value = $deserializedValue;
-            $violations = $this->validator->validate($value);
-            if (!$violations->count()) {
-                $this->entityManager->persist($value);
-            }
         }
         return $value;
     }

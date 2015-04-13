@@ -13,6 +13,8 @@ namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
+use Ecentria\Bundle\CommunicationApiBundle\Entity\Contact;
+use Ecentria\Bundle\CommunicationApiBundle\Entity\Media;
 use Ecentria\Libraries\CoreRestBundle\Event\CrudEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
@@ -91,6 +93,33 @@ class CrudManager
     }
 
     /**
+     * Refresh entity
+     *
+     * @param CrudEntityInterface $entity entity
+     * @return null|CrudEntityInterface
+     */
+    public function refresh(CrudEntityInterface $entity)
+    {
+        $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
+        return $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
+    }
+
+    /**
+     * Refresh collection
+     *
+     * @param ArrayCollection $collection collection
+     *
+     * @return ArrayCollection
+     */
+    public function refreshCollection(ArrayCollection $collection)
+    {
+        foreach ($collection as $key => $item) {
+            $collection->set($key, $this->refresh($item));
+        }
+        return $collection;
+    }
+
+    /**
      * Mode setter
      *
      * @param string $mode Mode
@@ -140,6 +169,8 @@ class CrudManager
             Events::PRE_CREATE,
             new CrudEvent($entity)
         );
+
+
         $this->entityManager->persist($entity);
 
         if ($flush) {
@@ -202,9 +233,12 @@ class CrudManager
             throw new ValidationFailedException($violations);
         }
 
+
         foreach ($collection as $collectionItem) {
             $this->create($collectionItem, false);
         }
+
+
 
         $this->flush();
     }
@@ -243,26 +277,19 @@ class CrudManager
         foreach ($collection as $collectionItem) {
             $count = 0;
             foreach ($collection as $collectionItemToCompare) {
-                if ($collectionItemToCompare->getId() == $collectionItem->getId() && $collectionItem->getId()) {
-                    $count++;
+                if ($collectionItemToCompare->getId()) {
+                    if ($collectionItemToCompare->getId() == $collectionItem->getId()) {
+                        $count++;
+                    }
+                } else {
+                    if ($collectionItemToCompare->toArray() == $collectionItem->toArray()) {
+                        $count++;
+                    }
                 }
-            }
-            if ($count > 1) {
-                // TODO: move this to different class
-                $violation = new ConstraintViolation(
-                    'Collection contains duplicate entities',
-                    'Collection contains duplicate entities',
-                    array(
-                        'context' => Error::CONTEXT_GLOBAL
-                    ),
-                    $collectionItem,
-                    'id',
-                    '',
-                    null,
-                    409
-                );
-                $violations->add($violation);
-                return $violations;
+                if ($count > 1) {
+                    $collection->removeElement($collectionItem);
+                    $count--;
+                }
             }
         }
         return $violations;
@@ -390,7 +417,6 @@ class CrudManager
      */
     public function filterCollection(ArrayCollection $collection)
     {
-
         $unitOfWork = new CrudUnitOfWork();
         foreach ($collection as &$entity) {
 
@@ -411,7 +437,6 @@ class CrudManager
                 $unitOfWork->insert($entity);
             }
         }
-
         return $unitOfWork;
     }
 

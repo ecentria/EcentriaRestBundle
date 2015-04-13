@@ -134,13 +134,13 @@ class TransactionalListener implements EventSubscriberInterface
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
+        $request = $event->getRequest();
         $view = $event->getControllerResult();
 
         if (!$view instanceof View) {
             return;
         }
 
-        $request = $event->getRequest();
         $transaction = $request->get('transaction');
 
         if ($transaction instanceof Transaction) {
