@@ -91,6 +91,10 @@ class TransactionPostHandler implements TransactionHandlerInterface
             );
         }
 
+        if (!$transaction->getSuccess()) {
+            $data->getItems()->clear();
+        }
+
         return $data;
     }
 
