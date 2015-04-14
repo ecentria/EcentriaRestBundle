@@ -100,6 +100,7 @@ class CrudManager
      */
     public function refresh(CrudEntityInterface $entity)
     {
+        $this->crudTransformer->initializeClassMetadata(get_class($entity));
         $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
         return $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
     }
@@ -238,8 +239,6 @@ class CrudManager
             $this->create($collectionItem, false);
         }
 
-
-
         $this->flush();
     }
 
@@ -372,11 +371,10 @@ class CrudManager
     public function save(CrudEntityInterface $entity)
     {
         $violations = $this->validate($entity);
-
         if ($violations instanceof ConstraintViolationList) {
             throw new ValidationFailedException($violations);
         }
-        $this->flush($entity);
+        $this->flush();
     }
 
     /**
