@@ -416,7 +416,7 @@ class CrudManager
     public function filterCollection(ArrayCollection $collection)
     {
         $unitOfWork = new CrudUnitOfWork();
-        foreach ($collection as &$entity) {
+        foreach ($collection as $entity) {
 
             if ($entity->getId()) {
                 $crudEntity = $this->find(get_class($entity), $entity->getId());
