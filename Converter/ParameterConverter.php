@@ -11,7 +11,7 @@
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface;
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -31,6 +31,7 @@ class ParameterConverter extends BaseDoctrineParamConverter
         $name    = $configuration->getName();
         $class   = $configuration->getClass();
         $options = $this->getOptions($configuration);
+
         if (null === $request->attributes->get($name, false)) {
             $configuration->setIsOptional(true);
         }
@@ -40,7 +41,7 @@ class ParameterConverter extends BaseDoctrineParamConverter
             // find by criteria
             if (null === $object = $this->findOneBy($class, $request, $options)) {
                 $object = new $class();
-                if ($object instanceof CRUDEntityInterface) {
+                if ($object instanceof CrudEntityInterface) {
                     $object->setId($request->attributes->get('id'));
                 }
             }

@@ -6,13 +6,14 @@ parameters:
 
     ecentria.api.configuration.manager.class:      Ecentria\Libraries\CoreRestBundle\Services\ConfigurationManager
 
-    ecentria.api.crud.manager.class:               Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDManager
-    ecentria.api.crud.transformer.class:           Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer
+    ecentria.api.crud.manager.class:               Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudManager
+    ecentria.api.crud.transformer.class:           Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudTransformer
 
     ecentria.api.transaction.handler.get.class:    Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionGetHandler
     ecentria.api.transaction.handler.patch.class:  Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPatchHandler
     ecentria.api.transaction.handler.delete.class: Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionDeleteHandler
     ecentria.api.transaction.handler.post.class:   Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPostHandler
+    ecentria.api.transaction.handler.put.class:    Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPutHandler
     ecentria.api.transaction.manager.class:        Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager
 
 services:
@@ -48,6 +49,7 @@ services:
             - @doctrine.orm.default_entity_manager
             - @annotations.reader
             - @jms_serializer
+            - @ecentria.api.validator
 
     # Transaction
     ecentria.api.transaction.handler.get:
@@ -74,6 +76,15 @@ services:
 
     ecentria.api.transaction.handler.post:
         class: %ecentria.api.transaction.handler.post.class%
+        arguments:
+            - @doctrine.orm.default_entity_manager
+            - @ecentria.api.builder.error
+            - @ecentria.api.builder.notice
+        tags:
+            - { name: ecentria.api.tag.transaction_handler }
+
+    ecentria.api.transaction.handler.put:
+        class: %ecentria.api.transaction.handler.put.class%
         arguments:
             - @doctrine.orm.default_entity_manager
             - @ecentria.api.builder.error

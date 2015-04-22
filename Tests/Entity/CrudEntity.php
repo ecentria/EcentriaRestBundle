@@ -10,16 +10,18 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\AbstractCRUDEntity;
+use Ecentria\Libraries\CoreRestBundle\Entity\AbstractCrudEntity;
 
 /**
- * CRUDEntity
+ * CrudEntity
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDEntity extends AbstractCRUDEntity
+class CrudEntity extends AbstractCrudEntity
 {
     /**
+     * Identifier
+     *
      * @var mixed
      */
     protected $id;

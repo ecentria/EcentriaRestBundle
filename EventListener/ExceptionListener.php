@@ -32,7 +32,7 @@ class ExceptionListener
     /**
      * Constructor
      *
-     * @param TransactionResponseManager $transactionResponseManager
+     * @param TransactionResponseManager $transactionResponseManager transactionResponseManager
      */
     public function __construct(TransactionResponseManager $transactionResponseManager)
     {
@@ -47,9 +47,11 @@ class ExceptionListener
      * Response for method not allowed exception should also contain transaction.
      * So it is the best place to control response object
      *
-     * @param GetResponseForExceptionEvent $event
-     * @param string $name
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param GetResponseForExceptionEvent $event           event
+     * @param string                       $name            name
+     * @param EventDispatcherInterface     $eventDispatcher eventDispatcher
+     *
+     * @return void
      */
     public function onKernelException(
         GetResponseForExceptionEvent $event,
@@ -69,9 +71,9 @@ class ExceptionListener
     /**
      * Get correct response for validation failed exception
      *
-     * @param GetResponseForExceptionEvent $event
-     * @param EventDispatcherInterface $eventDispatcher
-     * @param ValidationFailedException $exception
+     * @param GetResponseForExceptionEvent $event           event
+     * @param EventDispatcherInterface     $eventDispatcher eventDispatcher
+     * @param ValidationFailedException    $exception       exception
      *
      * @return Response|null
      */

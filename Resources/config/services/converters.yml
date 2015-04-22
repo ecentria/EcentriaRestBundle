@@ -9,7 +9,6 @@ services:
     ecentria.api.converter.array_collection:
         class: %ecentria.api.converter.array_collection.class%
         arguments:
-            - @doctrine.orm.entity_manager
             - @ecentria.api.crud.transformer
         tags:
             - { name: request.param_converter, priority: false, converter: ecentria.api.converter.array_collection }

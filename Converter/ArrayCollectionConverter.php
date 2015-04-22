@@ -11,9 +11,8 @@
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudTransformer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,33 +25,29 @@ use Symfony\Component\HttpFoundation\Request;
 class ArrayCollectionConverter implements ParamConverterInterface
 {
     /**
-     * Entity manager
-     *
-     * @var EntityManager
-     */
-    private $entityManager;
-
-    /**
      * CRUD Transformer
      *
-     * @var CRUDTransformer
+     * @var CrudTransformer
      */
     private $crudTransformer;
 
     /**
      * Constructor
      *
-     * @param EntityManager $entityManager
-     * @param CRUDTransformer $crudTransformer
+     * @param CrudTransformer $crudTransformer crudTransformer
      */
-    function __construct(EntityManager $entityManager, CRUDTransformer $crudTransformer)
+    public function __construct(CrudTransformer $crudTransformer)
     {
-        $this->entityManager = $entityManager;
         $this->crudTransformer = $crudTransformer;
     }
 
     /**
-     * {@inheritdoc}
+     * Stores the object in the request.
+     *
+     * @param Request        $request       The request
+     * @param ParamConverter $configuration Contains the name, class and options of the object
+     *
+     * @return bool    True if the object has been successfully set, else false
      */
     public function apply(Request $request, ParamConverter $configuration)
     {
@@ -60,17 +55,18 @@ class ArrayCollectionConverter implements ParamConverterInterface
         $class = $configuration->getClass();
         $items = json_decode($request->getContent(), true);
         $collection = new ArrayCollection();
-        if (!is_array($items)) {
-            return false;
-        }
-        $this->crudTransformer->initializeClassMetadata($class);
-        foreach ($items as $item) {
-            $object = new $class();
-            foreach ($item as $property => $value) {
-                $this->crudTransformer->processPropertyValue($object, $property, $value, 'create', $collection);
+
+        if (is_array($items)) {
+            $this->crudTransformer->initializeClassMetadata($class);
+            foreach ($items as $item) {
+                $object = new $class();
+                foreach ($item as $property => $value) {
+                    $this->crudTransformer->processPropertyValue($object, $property, $value, 'create', $collection);
+                }
+                $collection->add($object);
             }
-            $collection->add($object);
         }
+
         $request->attributes->set($name, $collection);
 
         /** This attribute added to support exception listener */
@@ -80,7 +76,11 @@ class ArrayCollectionConverter implements ParamConverterInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Checks if the object is supported.
+     *
+     * @param ParamConverter $configuration Should be an instance of ParamConverter
+     *
+     * @return bool    True if the object is supported, else false
      */
     public function supports(ParamConverter $configuration)
     {

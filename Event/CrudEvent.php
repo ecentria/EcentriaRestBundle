@@ -9,6 +9,7 @@
  */
 namespace Ecentria\Libraries\CoreRestBundle\Event;
 
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**
@@ -16,7 +17,7 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDEvent extends Event
+class CrudEvent extends Event
 {
     /**
      * Entity
@@ -44,8 +45,10 @@ class CRUDEvent extends Event
 
     /**
      * Constructor
+     *
+     * @param CrudEntityInterface $entity entity
      */
-    public function __construct($entity)
+    public function __construct(CrudEntityInterface $entity)
     {
         $this->entity = $entity;
         $this->createdAt = new \DateTime();

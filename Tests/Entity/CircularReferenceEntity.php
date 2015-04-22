@@ -13,7 +13,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
 use Doctrine\ORM\Mapping as ORM,
     Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait,
     Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableTrait,
     Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait,
@@ -28,28 +28,11 @@ use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
  *      field="Parent"
  * )
  */
-class CircularReferenceEntity implements CRUDEntityInterface
+class CircularReferenceEntity implements CrudEntityInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;
     use TimestampableTrait;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
-    }
 
     /**
      * Identifier
@@ -68,7 +51,7 @@ class CircularReferenceEntity implements CRUDEntityInterface
     /**
      * Children
      *
-     * @var CircularReferenceEntity[]|ArrayCollection
+     * @var ArrayCollection|CircularReferenceEntity[]
      */
     private $Children;
 
@@ -81,9 +64,32 @@ class CircularReferenceEntity implements CRUDEntityInterface
     }
 
     /**
+     * Id getter
+     *
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Id setter
+     *
+     * @param mixed $id id
+     *
+     * @return CircularReferenceEntity
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
      * Sets parent channel
      *
-     * @param CircularReferenceEntity $parent
+     * @param CircularReferenceEntity $parent parent
      * @return CircularReferenceEntity
      */
     public function setParent(CircularReferenceEntity $parent = null)
@@ -113,7 +119,7 @@ class CircularReferenceEntity implements CRUDEntityInterface
     /**
      * Returns direct children as array
      *
-     * @return CircularReferenceEntity[]|ArrayCollection
+     * @return ArrayCollection|CircularReferenceEntity[]
      */
     public function getChildren()
     {
@@ -123,7 +129,9 @@ class CircularReferenceEntity implements CRUDEntityInterface
     /**
      * Adds child channel to collection
      *
-     * @param CircularReferenceEntity $child
+     * @param CircularReferenceEntity $child child
+     *
+     * @return void
      */
     private function addChild(CircularReferenceEntity $child)
     {
@@ -137,7 +145,9 @@ class CircularReferenceEntity implements CRUDEntityInterface
     /**
      * Removes child channel from collection
      *
-     * @param CircularReferenceEntity $child
+     * @param CircularReferenceEntity $child child
+     *
+     * @return void
      */
     private function removeChild(CircularReferenceEntity $child)
     {
@@ -148,7 +158,9 @@ class CircularReferenceEntity implements CRUDEntityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * toArray
+     *
+     * @return array
      */
     public function toArray()
     {

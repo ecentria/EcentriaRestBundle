@@ -19,7 +19,7 @@ use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-interface CRUDEntityInterface extends EmbeddedInterface, TransactionalInterface, TimestampableInterface
+interface CrudEntityInterface extends EmbeddedInterface, TransactionalInterface, TimestampableInterface
 {
     /**
      * Id getter
@@ -31,9 +31,9 @@ interface CRUDEntityInterface extends EmbeddedInterface, TransactionalInterface,
     /**
      * Id setter
      *
-     * @param mixed $id
+     * @param mixed $id id
      *
-     * @return self
+     * @return CrudEntityInterface
      */
     public function setId($id);
 

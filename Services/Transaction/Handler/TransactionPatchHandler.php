@@ -11,14 +11,14 @@
 namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler;
 
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
-    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder;
 
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
- * Transaction service
+ * Transaction PATCH handler
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
@@ -27,14 +27,17 @@ class TransactionPatchHandler implements TransactionHandlerInterface
     /**
      * Constructor
      *
-     * @param ErrorBuilder $errorBuilder
+     * @param ErrorBuilder $errorBuilder $errorBuilder
      */
-    public function __construct(ErrorBuilder $errorBuilder) {
+    public function __construct(ErrorBuilder $errorBuilder)
+    {
         $this->errorBuilder = $errorBuilder;
     }
 
     /**
-     * {@inheritdoc}
+     * Supports method
+     *
+     * @return string
      */
     public function supports()
     {
@@ -42,13 +45,21 @@ class TransactionPatchHandler implements TransactionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Handle
+     *
+     * @param Transaction                  $transaction Transaction
+     * @param CrudEntityInterface          $data        Data
+     * @param ConstraintViolationList|null $violations  Violations
+     *
+     * @throws FeatureNotImplementedException
+     *
+     * @return CrudEntityInterface
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
     {
-        if (!$data instanceof CRUDEntityInterface) {
+        if (!$data instanceof CrudEntityInterface) {
             throw new FeatureNotImplementedException(
-                get_class($data) . ' class is not supported by transactions (PATCH). Instance of CRUDEntity needed.'
+                get_class($data) . ' class is not supported by transactions (PATCH). Instance of CrudEntity needed.'
             );
         }
         

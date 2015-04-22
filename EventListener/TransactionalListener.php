@@ -37,6 +37,8 @@ use Symfony\Component\HttpKernel\Event\FilterControllerEvent,
 class TransactionalListener implements EventSubscriberInterface
 {
     /**
+     * Reader
+     *
      * @var Reader
      */
     protected $reader;
@@ -88,6 +90,8 @@ class TransactionalListener implements EventSubscriberInterface
      * configuration.
      *
      * @param FilterControllerEvent $event A FilterControllerEvent instance
+     *
+     * @return void
      */
     public function onKernelController(FilterControllerEvent $event)
     {
@@ -129,18 +133,19 @@ class TransactionalListener implements EventSubscriberInterface
     /**
      * Let's process transaction
      *
-     * @param GetResponseForControllerResultEvent $event
+     * @param GetResponseForControllerResultEvent $event event
+     *
      * @return void
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
+        $request = $event->getRequest();
         $view = $event->getControllerResult();
 
         if (!$view instanceof View) {
             return;
         }
 
-        $request = $event->getRequest();
         $transaction = $request->get('transaction');
 
         if ($transaction instanceof Transaction) {
@@ -156,7 +161,9 @@ class TransactionalListener implements EventSubscriberInterface
     /**
      * On kernel terminate
      *
-     * @param PostResponseEvent $postResponseEvent
+     * @param PostResponseEvent $postResponseEvent postResponseEvent
+     *
+     * @return void
      */
     public function onKernelTerminate(PostResponseEvent $postResponseEvent)
     {
@@ -169,14 +176,16 @@ class TransactionalListener implements EventSubscriberInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Get subscribed events
+     *
+     * @return array
      */
     public static function getSubscribedEvents()
     {
         return array(
             KernelEvents::CONTROLLER => 'onKernelController',
-            KernelEvents::VIEW  => array('onKernelView', 300),
-            KernelEvents::TERMINATE => 'onKernelTerminate'
+            KernelEvents::VIEW       => array('onKernelView', 300),
+            KernelEvents::TERMINATE  => 'onKernelTerminate'
         );
     }
 }

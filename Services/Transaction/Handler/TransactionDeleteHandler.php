@@ -1,5 +1,4 @@
 <?php
-// @codingStandardsIgnoreFile - until DO-5738 is resolved!
 /*
  * This file is part of the Ecentria software.
  *
@@ -11,21 +10,15 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler;
 
-use Doctrine\Common\Collections\ArrayCollection,
-    Doctrine\ORM\EntityManager;
-
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
-    Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
-    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CRUDEntityInterface,
-    Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder,
-    Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder,
-    Ecentria\Libraries\CoreRestBundle\Services\UUID;
+    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
+    Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder;
 
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
- * Transaction service
+ * Transaction DELETE handler
  *
  * @author Alex Niedre <alex.niedre@intexsys.lv>
  */
@@ -42,7 +35,9 @@ class TransactionDeleteHandler implements TransactionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Supports method
+     *
+     * @return string
      */
     public function supports()
     {
@@ -50,13 +45,21 @@ class TransactionDeleteHandler implements TransactionHandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Handle
+     *
+     * @param Transaction                  $transaction Transaction
+     * @param CrudEntityInterface          $data        Data
+     * @param ConstraintViolationList|null $violations  Violations
+     *
+     * @throws FeatureNotImplementedException
+     *
+     * @return CrudEntityInterface
      */
     public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
     {
-        if (!$data instanceof CRUDEntityInterface) {
+        if (!$data instanceof CrudEntityInterface) {
             throw new FeatureNotImplementedException(
-                get_class($data) . ' class is not supported by transactions (DELETE). Instance of CRUDEntity needed.'
+                get_class($data) . ' class is not supported by transactions (DELETE). Instance of CrudEntity needed.'
             );
         }
 

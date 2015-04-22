@@ -12,17 +12,18 @@ namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CRUDTransformer;
+use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
  * CRUD manager test
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDTransformerTest extends TestCase
+class CrudTransformerTest extends TestCase
 {
     /**
      * Entity manager
@@ -41,33 +42,48 @@ class CRUDTransformerTest extends TestCase
     /**
      * Crud transformer
      *
-     * @var CRUDTransformer
+     * @var CrudTransformer
      */
     private $crudTransformer;
 
     /**
+     * Serializer
+     *
      * @var \PHPUnit_Framework_MockObject_MockObject|Serializer
      */
     private $serializer;
 
     /**
+     * RecursiveValidator
+     *
+     * @var \PHPUnit_Framework_MockObject_MockObject|RecursiveValidator
+     */
+    private $validator;
+
+    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
+     *
+     * @return void
      */
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
         $this->annotationsReader = $this->prepareAnnotationReader();
         $this->serializer = $this->prepareSerializer();
-        $this->crudTransformer = new CRUDTransformer(
+        $this->validator = $this->prepareValidator();
+        $this->crudTransformer = new CrudTransformer(
             $this->entityManager,
             $this->annotationsReader,
-            $this->serializer
+            $this->serializer,
+            $this->validator
         );
     }
 
     /**
      * Test for initializing class metadata
+     *
+     * @return void
      */
     public function testInitializeClassMetadata()
     {
@@ -80,6 +96,8 @@ class CRUDTransformerTest extends TestCase
 
     /**
      * Testing is property accessible exception
+     *
+     * @return void
      */
     public function testIsPropertyAccessibleException()
     {
@@ -89,6 +107,8 @@ class CRUDTransformerTest extends TestCase
 
     /**
      * Testing is property accessible
+     *
+     * @return void
      */
     public function testIsPropertyAccessible()
     {
@@ -163,6 +183,8 @@ class CRUDTransformerTest extends TestCase
 
     /**
      * Testing transformation of a null value
+     *
+     * @return void
      */
     public function testTransformPropertyValueNull()
     {
@@ -171,6 +193,8 @@ class CRUDTransformerTest extends TestCase
 
     /**
      * Testing transform of a value without association
+     *
+     * @return void
      */
     public function testTransformPropertyValueSimple()
     {
@@ -190,10 +214,12 @@ class CRUDTransformerTest extends TestCase
 
     /**
      * Testing transform of a value with association and null collection
+     *
+     * @return void
      */
     public function testTransformPropertyValueAssociationWithNullCollection()
     {
-        $class = new \stdClass;
+        $class = new \stdClass();
         $class->id = 'string';
 
         $this->entityManager->expects($this->once())
@@ -214,13 +240,15 @@ class CRUDTransformerTest extends TestCase
 
         $classMetadata->expects($this->once())
             ->method('getAssociationTargetClass')
-            ->willReturn(new \stdClass);
+            ->willReturn(new \stdClass());
 
         $this->assertEquals($class, $this->crudTransformer->transformPropertyValue('first', 'string'));
     }
 
     /**
      * Testing transform of a value with association with collection
+     *
+     * @return void
      */
     public function testTransformPropertyValueAssociationWithCollection()
     {
@@ -257,13 +285,23 @@ class CRUDTransformerTest extends TestCase
     }
 
     /**
+     * Prepare
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject|ClassMetadata
      */
     private function prepareClassMetadata()
     {
         return $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadata')
             ->disableOriginalConstructor()
-            ->setMethods(array('hasAssociation', 'getReflectionProperty', 'getAssociationTargetClass', 'getSingleIdentifierFieldName', 'hasField'))
+            ->setMethods(
+                array(
+                    'hasAssociation',
+                    'getReflectionProperty',
+                    'getAssociationTargetClass',
+                    'getSingleIdentifierFieldName',
+                    'hasField'
+                )
+            )
             ->getMock();
     }
 
@@ -326,6 +364,18 @@ class CRUDTransformerTest extends TestCase
     private function prepareSerializer()
     {
         return $this->getMockBuilder('\JMS\Serializer\Serializer')
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
+    /**
+     * PrepareValidator
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject|RecursiveValidator
+     */
+    private function prepareValidator()
+    {
+        return $this->getMockBuilder('\Symfony\Component\Validator\Validator\RecursiveValidator')
             ->disableOriginalConstructor()
             ->getMock();
     }

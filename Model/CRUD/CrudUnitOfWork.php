@@ -17,19 +17,19 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CRUDUnitOfWork
+class CrudUnitOfWork
 {
     /**
      * CRUD entities to insert
      *
-     * @var ArrayCollection|CRUDEntityInterface[]
+     * @var ArrayCollection|CrudEntityInterface[]
      */
     private $insertions;
 
     /**
      * CRUD entities to update
      *
-     * @var ArrayCollection|CRUDEntityInterface[]
+     * @var ArrayCollection|CrudEntityInterface[]
      */
     private $updates;
 
@@ -45,10 +45,11 @@ class CRUDUnitOfWork
     /**
      * Add insertion
      *
-     * @param CRUDEntityInterface $entity
-     * @return self
+     * @param CrudEntityInterface $entity entity
+     *
+     * @return CrudUnitOfWork
      */
-    public function insert(CRUDEntityInterface $entity)
+    public function insert(CrudEntityInterface $entity)
     {
         $this->insertions->add($entity);
         return $this;
@@ -57,10 +58,11 @@ class CRUDUnitOfWork
     /**
      * Add insertion
      *
-     * @param CRUDEntityInterface $entity
-     * @return self
+     * @param CrudEntityInterface $entity entity
+     *
+     * @return CrudUnitOfWork
      */
-    public function update(CRUDEntityInterface $entity)
+    public function update(CrudEntityInterface $entity)
     {
         $this->updates->add($entity);
         return $this;
@@ -69,7 +71,7 @@ class CRUDUnitOfWork
     /**
      * Insertions getter
      *
-     * @return ArrayCollection|CRUDEntityInterface[]
+     * @return ArrayCollection|CrudEntityInterface[]
      */
     public function getInsertions()
     {
@@ -79,7 +81,7 @@ class CRUDUnitOfWork
     /**
      * Updates getter
      *
-     * @return ArrayCollection|CRUDEntityInterface[]
+     * @return ArrayCollection|CrudEntityInterface[]
      */
     public function getUpdates()
     {
@@ -93,9 +95,11 @@ class CRUDUnitOfWork
      */
     public function all()
     {
-        return new ArrayCollection(array_merge(
-            $this->insertions->toArray(),
-            $this->updates->toArray()
-        ));
+        return new ArrayCollection(
+            array_merge(
+                $this->insertions->toArray(),
+                $this->updates->toArray()
+            )
+        );
     }
 }

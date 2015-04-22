@@ -98,9 +98,9 @@ NelmioApiDocBundle:
 ```
 
 
-## E) Using CRUDEntity with Transactions
+## E) Using CrudEntity with Transactions
 
-First of all you need to extend you entity from CRUDEntity.
+First of all you need to extend you entity from CrudEntity.
 
 Controller for entity must be annotated as:
 
