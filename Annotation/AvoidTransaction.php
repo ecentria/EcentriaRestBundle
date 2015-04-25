@@ -15,6 +15,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 /**
  * @Annotation
  *
+ * Used for controller action to avoid creating transaction.
+ *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
 class AvoidTransaction extends ConfigurationAnnotation

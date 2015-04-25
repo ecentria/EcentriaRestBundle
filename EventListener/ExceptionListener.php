@@ -10,6 +10,7 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\EventListener;
 
+use Ecentria\Libraries\CoreRestBundle\Model\Alias;
 use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
 use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
 use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
@@ -27,8 +28,6 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
  */
 class ExceptionListener
 {
-    const DATA_ALIAS = 'data_alias';
-
     /**
      * Constructor
      *
@@ -92,7 +91,7 @@ class ExceptionListener
         }
 
         $data = $request->get(
-            $request->get(self::DATA_ALIAS)
+            $request->get(Alias::DATA)
         );
 
         $violations = $exception->getConstraintViolationList();

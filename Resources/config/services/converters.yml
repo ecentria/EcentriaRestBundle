@@ -3,6 +3,7 @@ parameters:
     ecentria.api.converter.array_collection.class: Ecentria\Libraries\CoreRestBundle\Converter\ArrayCollectionConverter
     ecentria.api.converter.json.class:             Ecentria\Libraries\CoreRestBundle\Converter\JsonConverter
     ecentria.api.converter.parameter.class:        Ecentria\Libraries\CoreRestBundle\Converter\ParameterConverter
+    ecentria.api.converter.entity.class:           Ecentria\Libraries\CoreRestBundle\Converter\EntityConverter
 
 services:
 
@@ -24,3 +25,10 @@ services:
             - @doctrine
         tags:
             - { name: request.param_converter, priority: false, converter: ecentria.api.converter.parameter }
+
+    ecentria.api.converter.entity:
+        class: %ecentria.api.converter.entity.class%
+        arguments:
+            - @doctrine
+        tags:
+            - { name: request.param_converter, priority: false, converter: ecentria.api.converter.entity }

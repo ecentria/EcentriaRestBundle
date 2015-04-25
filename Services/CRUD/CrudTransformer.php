@@ -76,6 +76,36 @@ class CrudTransformer
     }
 
     /**
+     * Array to collection transform
+     *
+     * @param array  $data  Data
+     * @param string $class Given collection class
+     *
+     * @return ArrayCollection
+     */
+    public function arrayToCollection(array $data, $class)
+    {
+        $collection = new ArrayCollection();
+        if (is_array($data)) {
+            $this->initializeClassMetadata($class);
+            foreach ($data as $item) {
+                $object = new $class();
+                foreach ($item as $property => $value) {
+                    $this->processPropertyValue(
+                        $object,
+                        $property,
+                        $value,
+                        'create',
+                        $collection
+                    );
+                }
+                $collection->add($object);
+            }
+        }
+        return $collection;
+    }
+
+    /**
      * Initializing class metadata
      *
      * @param string $className className

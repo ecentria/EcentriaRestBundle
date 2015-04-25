@@ -28,12 +28,12 @@ class TransactionSuccessValidator extends ConstraintValidator
     {
         if (!$constraint instanceof TransactionSuccess) {
             throw new \Exception(
-                'This constraint must be instance of EcentriaCommunicationApiBundle:TransactionSuccess'
+                'This constraint must be instance of CoreRestBundle:TransactionSuccess'
             );
         }
 
         if (!$entity instanceof Transaction) {
-            throw new \Exception('This entity must be instance of EcentriaCommunicationApiBundle:Transaction');
+            throw new \Exception('This entity must be instance of CoreRestBundle:Transaction');
         }
 
         $success = $entity->getSuccess();

@@ -16,6 +16,9 @@ use Doctrine\Common\Annotations\Annotation;
  * @Annotation
  * @Target("PROPERTY")
  *
+ * Used for model (entity) property to avoid update or create.
+ * As parameter it gets array of actions: {“update”, “create"}
+ *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
 final class PropertyRestriction extends Annotation

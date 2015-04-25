@@ -2,7 +2,7 @@
 /*
  * This file is part of the Ecentria software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, Ecentria, Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -10,54 +10,47 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
-use Ecentria\Libraries\CoreRestBundle\EventListener\ExceptionListener;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Modified DoctrineParamConverter.
+ * Parameter converter
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class ParameterConverter extends BaseDoctrineParamConverter
+class ParameterConverter implements ParamConverterInterface
 {
     /**
-     * {@inheritdoc}
+     * Stores the object in the request.
+     *
+     * @param Request        $request       The request
+     * @param ParamConverter $configuration Contains the name, class and options of the object
+     *
+     * @return bool    True if the object has been successfully set, else false
      */
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $name    = $configuration->getName();
-        $class   = $configuration->getClass();
-        $options = $this->getOptions($configuration);
-
-        if (null === $request->attributes->get($name, false)) {
-            $configuration->setIsOptional(true);
-        }
-
-        // find by identifier?
-        if (null === $object = $this->find($class, $request, $options, $name)) {
-            // find by criteria
-            if (null === $object = $this->findOneBy($class, $request, $options)) {
-                $object = new $class();
-                if ($object instanceof CrudEntityInterface) {
-                    $object->setId($request->attributes->get('id'));
-                }
-            }
-        }
-
-        $request->attributes->set($name, $object);
+        $options = $configuration->getOptions();
 
         if (!empty($options['parameters'])) {
             foreach ($options['parameters'] as $parameter) {
-                $request->attributes->set($parameter, $request->query->get($parameter));
+                $request->attributes->set($parameter, $request->get($parameter));
             }
         }
 
-        /** This attribute added to support exception listener */
-        $request->attributes->set(ExceptionListener::DATA_ALIAS, $name);
+        return true;
+    }
 
+    /**
+     * Checks if the object is supported.
+     *
+     * @param ParamConverter $configuration Should be an instance of ParamConverter
+     *
+     * @return bool True if the object is supported, else false
+     */
+    public function supports(ParamConverter $configuration)
+    {
         return true;
     }
 }

@@ -40,11 +40,11 @@ class ResponseListener
         $data = $view->getData();
 
         if ($data instanceof EmbeddedInterface && $data->showAssociations() === null) {
-            $data->setShowAssociations((bool) $embedded);
+            $data->setShowAssociations($embedded);
         }
 
         if ($data instanceof CollectionResponse) {
-            $data->setInheritedShowAssociations((bool) $embedded);
+            $data->setInheritedShowAssociations($embedded);
         }
     }
 }
