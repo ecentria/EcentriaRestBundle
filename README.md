@@ -100,7 +100,9 @@ NelmioApiDocBundle:
 
 ## Annotations
 
-# Transactional
+There are several useful annotations.
+
+### Transactional
 
 Used for controller to enable transaction system.
 
@@ -130,7 +132,7 @@ use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
  */
 ```
 
-# AvoidTransaction
+### AvoidTransaction
 
 Used for controller action to avoid creating transaction.
 
@@ -143,7 +145,7 @@ use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
  */
 ```
 
-# PropertyRestriction
+### PropertyRestriction
 
 
 Used for model (entity) property to avoid update or create.
