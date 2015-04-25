@@ -25,7 +25,9 @@ class ResponseListener
     /**
      * Let's embed our response
      *
-     * @param GetResponseForControllerResultEvent $event
+     * @param GetResponseForControllerResultEvent $event Event
+     *
+     * @return void
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {

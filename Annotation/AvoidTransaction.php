@@ -13,6 +13,8 @@ namespace Ecentria\Libraries\CoreRestBundle\Annotation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
 /**
+ * AvoidTransaction
+ *
  * @Annotation
  *
  * Used for controller action to avoid creating transaction.

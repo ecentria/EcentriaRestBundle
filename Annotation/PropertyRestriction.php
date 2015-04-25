@@ -12,6 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Annotation;
 use Doctrine\Common\Annotations\Annotation;
 
 /**
+ * PropertyRestriction
  *
  * @Annotation
  * @Target("PROPERTY")
@@ -31,7 +32,7 @@ final class PropertyRestriction extends Annotation
      * - update
      * - all (default)
      *
-     * @param string $action
+     * @param string $action Action
      * @return bool
      */
     public function isGranted($action)

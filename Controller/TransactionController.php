@@ -28,6 +28,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as Sensio;
 class TransactionController extends FOSRestController implements ClassResourceInterface
 {
     /**
+     * Get transaction
+     *
+     * @param Transaction $transactionEntity Transaction entity
+     *
      * @FOS\Route(
      *      pattern="transaction-service/{id}",
      *      requirements = {
@@ -51,7 +55,6 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      *      }
      * )
      *
-     * @param Transaction $transactionEntity
      * @return View
      */
     public function getAction(Transaction $transactionEntity)

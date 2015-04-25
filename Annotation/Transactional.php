@@ -13,6 +13,8 @@ namespace Ecentria\Libraries\CoreRestBundle\Annotation;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
 /**
+ * Transactional
+ *
  * @Annotation
  *
  * Used for controller to enable transaction system.
@@ -51,7 +53,7 @@ class Transactional extends ConfigurationAnnotation
     /**
      * {@inheritDoc}
      */
-    public final function __construct(array $data)
+    final public function __construct (array $data)
     {
         if (!isset($data['model']) || !isset($data['relatedRoute'])) {
             throw new \Exception('Need to configure "model" as entity class and "relatedRoute" as route to get action');
