@@ -129,6 +129,7 @@ Used for controller to enable transaction system.
          * )
          */
         
+        
 * ### AvoidTransaction
 
     Used for controller action to avoid creating transaction.
@@ -138,6 +139,7 @@ Used for controller to enable transaction system.
         /**
          * @EcentriaAnnotation\AvoidTransaction()
          */
+        
         
 * ### PropertyRestriction
 Used for model (entity) property to avoid update or create.
