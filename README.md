@@ -107,13 +107,13 @@ There are several useful annotations.
  * ### Transactional
 Used for controller to enable transaction system.
     
-    **<model>**
+    **model**
 
         Every controller must work with defined resource.
         Model parameter should be equal to full path to your
         entity that current controller works with.
 
-    **<relatedRoute>**
+    **relatedRoute**
 
         Every model should have route leading to get action.
         Related route parameter must be equal to current route name.
