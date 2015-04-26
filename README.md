@@ -14,22 +14,19 @@ Installation
 ## A) Install Ecentria Generic Service Bundle
 
 Add the repository to your composer.json file 
-```
+
     "repositories": [
         ...
         { "type": "vcs", "url": "ssh://git@stash.dev.opticplanet.net/lib/corerestbundle.git" }
     ]
-```
+
 Add via composer command
 
-``` bash
-$ php composer.phar require ecentria/core-rest-bundle dev-master
-```
+    $ php composer.phar require ecentria/core-rest-bundle dev-master
 
 Or Add via composer.json directly
-```
-"ecentria/core-rest-bundle": "dev-master"
-```
+
+    "ecentria/core-rest-bundle": "dev-master"
 
 ## B) Enable the bundle
 
