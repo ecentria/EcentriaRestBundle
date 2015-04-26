@@ -120,47 +120,35 @@ Used for controller to enable transaction system.
 
     Example:
 
-    ``` php
-    <?php
-    
-    use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
-    
-    /**
-     * @EcentriaAnnotation\Transactional(
-     *   model="Path to you entity",
-     *   relatedRoute="your_get_entity_route"
-     * )
-     */
-    ```
-
+        use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+        
+        /**
+         * @EcentriaAnnotation\Transactional(
+         *   model="Path to you entity",
+         *   relatedRoute="your_get_entity_route"
+         * )
+         */
+        
 * ### AvoidTransaction
 
     Used for controller action to avoid creating transaction.
 
-    ``` php
-    <?php
-    
-    use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
-    
-    /**
-     * @EcentriaAnnotation\AvoidTransaction()
-     */
-    ```
-
+        use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+        
+        /**
+         * @EcentriaAnnotation\AvoidTransaction()
+         */
+        
 * ### PropertyRestriction
 Used for model (entity) property to avoid update or create.
 As parameter it gets array of actions: {“update”, “create"}
 
-    ``` php
-    <?php
-    
-    use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
-    
-    /**
-     * @EcentriaAnnotation\PropertyRestriction({"update", "create"})
-     */
-    ```
-
+        use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+        
+        /**
+         * @EcentriaAnnotation\PropertyRestriction({"update", "create"})
+         */
+         
 
 ## That's it!
 Everything is in place to start building out REST services.
