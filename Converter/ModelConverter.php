@@ -11,17 +11,46 @@
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Ecentria\Libraries\CoreRestBundle\Model\Alias;
+use Ecentria\Libraries\CoreRestBundle\Model\Validatable\ValidatableInterface;
+use JMS\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
- * Simple json param converter
+ * Array collection converter
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class JsonConverter implements ParamConverterInterface
+class ModelConverter implements ParamConverterInterface
 {
+    /**
+     * Serializer
+     *
+     * @var Serializer
+     */
+    private $serializer;
+
+    /**
+     * Validator
+     *
+     * @var RecursiveValidator
+     */
+    private $validator;
+
+    /**
+     * Constructor
+     *
+     * @param Serializer         $serializer Serializer
+     * @param RecursiveValidator $validator  Validator
+     */
+    public function __construct(Serializer $serializer, RecursiveValidator $validator)
+    {
+        $this->serializer = $serializer;
+        $this->validator = $validator;
+    }
+
     /**
      * Stores the object in the request.
      *
@@ -33,23 +62,31 @@ class JsonConverter implements ParamConverterInterface
     public function apply(Request $request, ParamConverter $configuration)
     {
         $name = $configuration->getName();
-        $value = json_decode($request->getContent(), true);
+        $class = $configuration->getClass();
 
-        $options = $configuration->getOptions();
+        $success = false;
+        try {
+            $model = $this->serializer->deserialize($request->getContent(), $class, 'json');
+            $success = true;
+        } catch (\Exception $e) {
+            $model = new $class();
+        }
 
-        if (!empty($options['parameters'])) {
-            foreach ($options['parameters'] as $parameter) {
-                if (isset($value[$parameter])) {
-                    $request->attributes->set($parameter, $value[$parameter]);
-                }
-            }
+        /**
+         * Validate if possible
+         */
+        if ($model instanceof ValidatableInterface) {
+            $violations = $this->validator->validate($model);
+            $valid = $success && !((bool) $violations->count());
+            $model->setViolations($violations);
+            $model->setValid($valid);
         }
 
         /**
          * Adding transformed collection
          * to request attribute.
          */
-        $request->attributes->set($name, $value);
+        $request->attributes->set($name, $model);
 
         /**
          * Alias to access current collection
