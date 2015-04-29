@@ -343,6 +343,18 @@ class CrudManager
     }
 
     /**
+     * Clear entity manager
+     *
+     * @param string|null $entityName entityName
+     *
+     * @return void
+     */
+    public function clearEntityManager($entityName = null)
+    {
+        $this->entityManager->clear($entityName);
+    }
+
+    /**
      * Updating one entity
      *
      * @param CrudEntityInterface $entity Entity
