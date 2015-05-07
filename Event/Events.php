@@ -17,6 +17,11 @@ namespace Ecentria\Libraries\CoreRestBundle\Event;
 final class Events
 {
     /**
+     * Event that will be thrown before creating entities collection
+     */
+    const COLLECTION_PRE_CREATE = 'ecentria.api.event.crud.collection.pre_create';
+
+    /**
      * Event that will be thrown before creating entity
      */
     const PRE_CREATE = 'ecentria.api.event.crud.pre_create';

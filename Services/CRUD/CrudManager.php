@@ -15,6 +15,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Bundle\CommunicationApiBundle\Entity\Contact;
 use Ecentria\Bundle\CommunicationApiBundle\Entity\Media;
+use Ecentria\Libraries\CoreRestBundle\Event\CrudCollectionEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\CrudEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
@@ -42,7 +43,7 @@ class CrudManager
      *
      * @var EntityManager
      */
-    private $entityManager;
+    public $entityManager;
 
     /**
      * Validator
@@ -95,14 +96,29 @@ class CrudManager
     /**
      * Refresh entity
      *
-     * @param CrudEntityInterface $entity entity
+     * @param CrudEntityInterface &$entity entity
+     * @param mixed               $id      id
+     *
      * @return null|CrudEntityInterface
      */
-    public function refresh(CrudEntityInterface $entity)
+    public function refresh(CrudEntityInterface &$entity, $id = null)
     {
-        $this->crudTransformer->initializeClassMetadata(get_class($entity));
-        $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
-        return $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
+        $result = null;
+        if ($id) {
+            $result = $this->entityManager->find(get_class($entity), $id);
+        } else {
+            $this->crudTransformer->initializeClassMetadata(get_class($entity));
+            $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
+            if (!empty($conditions)) {
+                $result = $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
+            }
+        }
+
+        if ($result instanceof $entity) {
+            $entity = $result;
+        }
+
+        return $entity;
     }
 
     /**
@@ -171,7 +187,6 @@ class CrudManager
             new CrudEvent($entity)
         );
 
-
         $this->entityManager->persist($entity);
 
         if ($flush) {
@@ -210,6 +225,11 @@ class CrudManager
      */
     public function createCollection(ArrayCollection $collection, $processUnitOfWork = false)
     {
+        $this->eventDispatcher->dispatch(
+            Events::COLLECTION_PRE_CREATE,
+            new CrudCollectionEvent($collection)
+        );
+
         if ($processUnitOfWork) {
             $unitOfWork = $this->filterCollection($collection);
             $collection = $unitOfWork->getInsertions();
@@ -323,6 +343,7 @@ class CrudManager
     public function update(CrudEntityInterface $entity)
     {
         $this->save($entity);
+
         $this->eventDispatcher->dispatch(
             Events::POST_UPDATE,
             new CrudEvent($entity)
@@ -386,7 +407,7 @@ class CrudManager
         if ($violations instanceof ConstraintViolationList) {
             throw new ValidationFailedException($violations);
         }
-        $this->flush();
+        $this->flush($entity);
     }
 
     /**
@@ -425,11 +446,10 @@ class CrudManager
      *
      * @return CrudUnitOfWork
      */
-    public function filterCollection(ArrayCollection $collection)
+    public function filterCollection(ArrayCollection $collection, $replace = true)
     {
         $unitOfWork = new CrudUnitOfWork();
         foreach ($collection as $entity) {
-
             if ($entity->getId()) {
                 $crudEntity = $this->find(get_class($entity), $entity->getId());
             } else {
@@ -439,9 +459,11 @@ class CrudManager
             }
 
             if ($crudEntity instanceof CrudEntityInterface) {
-                $key = $collection->indexOf($entity);
-                $collection->remove($key);
-                $collection->set($key, $crudEntity);
+                if ($replace) {
+                    $key = $collection->indexOf($entity);
+                    $collection->remove($key);
+                    $collection->set($key, $crudEntity);
+                }
                 $unitOfWork->update($crudEntity);
             } else {
                 $unitOfWork->insert($entity);
