@@ -443,6 +443,7 @@ class CrudManager
      * Filtering collection
      *
      * @param ArrayCollection|CrudEntityInterface[] $collection Collection
+     * @param bool                                  $replace    replace
      *
      * @return CrudUnitOfWork
      */
