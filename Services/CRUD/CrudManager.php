@@ -43,7 +43,7 @@ class CrudManager
      *
      * @var EntityManager
      */
-    public $entityManager;
+    private $entityManager;
 
     /**
      * Validator
@@ -207,11 +207,23 @@ class CrudManager
      *
      * @return void
      */
-    private function flush(CrudEntityInterface $entity = null)
+    public function flush(CrudEntityInterface $entity = null)
     {
         if ($this->getMode() !== self::MODE_DRY_RUN) {
             $this->entityManager->flush($entity);
         }
+    }
+
+    /**
+     * Flush
+     *
+     * @param CrudEntityInterface $entity Entity
+     *
+     * @return void
+     */
+    public function persist(CrudEntityInterface $entity = null)
+    {
+        $this->entityManager->persist($entity);
     }
 
     /**
