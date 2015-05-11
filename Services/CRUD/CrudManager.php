@@ -13,8 +13,6 @@ namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
-use Ecentria\Bundle\CommunicationApiBundle\Entity\Contact;
-use Ecentria\Bundle\CommunicationApiBundle\Entity\Media;
 use Ecentria\Libraries\CoreRestBundle\Event\CrudCollectionEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\CrudEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
