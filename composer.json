@@ -2,7 +2,7 @@
     "name": "ecentria/core-rest-bundle",
     "type": "symfony-bundle",
     "minimum-stability": "dev",
-    "description": "Core REST bundle that all Ecentria REST services will extend.",
+    "description": "Goal of this bundle is to simplify process of creating APIs with Symfony. We use already well-coded libraries, combine them together to simplify process and not to re-invent the wheel. We've chose REST and HATEOS to have unified standards of API requests and responses.",
     "keywords": ["ecentria", "library", "rest", "core"],
     "homepage": "http://stash.dev.opticplanet.net/projects/LIB/repos/corerestbundle/browse",
     "license": "MIT",
