@@ -11,33 +11,44 @@
 namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
 use Ecentria\Libraries\CoreRestBundle\Model\Alias;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudTransformer;
+use Ecentria\Libraries\CoreRestBundle\Model\Validatable\ValidatableInterface;
+use JMS\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
  * Array collection converter
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class ArrayCollectionConverter implements ParamConverterInterface
+class ModelConverter implements ParamConverterInterface
 {
     /**
-     * CRUD Transformer
+     * Serializer
      *
-     * @var CrudTransformer
+     * @var Serializer
      */
-    private $crudTransformer;
+    private $serializer;
+
+    /**
+     * Validator
+     *
+     * @var RecursiveValidator
+     */
+    private $validator;
 
     /**
      * Constructor
      *
-     * @param CrudTransformer $crudTransformer crudTransformer
+     * @param Serializer         $serializer Serializer
+     * @param RecursiveValidator $validator  Validator
      */
-    public function __construct(CrudTransformer $crudTransformer)
+    public function __construct(Serializer $serializer, RecursiveValidator $validator)
     {
-        $this->crudTransformer = $crudTransformer;
+        $this->serializer = $serializer;
+        $this->validator = $validator;
     }
 
     /**
@@ -46,22 +57,42 @@ class ArrayCollectionConverter implements ParamConverterInterface
      * @param Request        $request       The request
      * @param ParamConverter $configuration Contains the name, class and options of the object
      *
-     * @return bool    True if the object has been successfully set, else false
+     * @throws \InvalidArgumentException
+     *
+     * @return bool True if the object has been successfully set, else false
      */
     public function apply(Request $request, ParamConverter $configuration)
     {
         $name = $configuration->getName();
         $class = $configuration->getClass();
 
-        $data = json_decode($request->getContent(), true);
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException($class . ' class does not exist.');
+        }
 
-        $collection = $this->crudTransformer->arrayToCollection($data, $class);
+        $success = false;
+        try {
+            $model = $this->serializer->deserialize($request->getContent(), $class, 'json');
+            $success = true;
+        } catch (\Exception $e) {
+            $model = new $class();
+        }
+
+        /**
+         * Validate if possible
+         */
+        if ($model instanceof ValidatableInterface) {
+            $violations = $this->validator->validate($model);
+            $valid = $success && !((bool) $violations->count());
+            $model->setViolations($violations);
+            $model->setValid($valid);
+        }
 
         /**
          * Adding transformed collection
          * to request attribute.
          */
-        $request->attributes->set($name, $collection);
+        $request->attributes->set($name, $model);
 
         /**
          * Alias to access current collection

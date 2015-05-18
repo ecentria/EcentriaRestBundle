@@ -2,22 +2,19 @@
 /*
  * This file is part of the ecentria group, inc. software.
  *
- * (c) 2015, ecentria group, inc.
+ * (c) 2015, ecentria
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Model;
+
+namespace Ecentria\Libraries\CoreRestBundle\Exception;
 
 /**
- * Events
+ * Creator data type exception
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-final class Alias
+class CreatorDataTypeException extends \Exception
 {
-    /**
-     * Alias for any request attribute data
-     */
-    const DATA = 'alias.data';
 }

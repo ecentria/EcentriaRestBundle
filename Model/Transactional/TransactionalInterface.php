@@ -1,8 +1,8 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,7 +24,7 @@ interface TransactionalInterface
      *
      * @param Transaction|null $transaction
      *
-     * @return self
+     * @return TransactionalInterface
      */
     public function setTransaction(Transaction $transaction = null);
 

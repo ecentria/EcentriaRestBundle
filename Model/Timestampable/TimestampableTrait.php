@@ -1,8 +1,8 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -43,7 +43,11 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
+     * @param \DateTime $createdAt
+     *
      * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::setCreatedAt
+     *
+     * @return TimestampableTrait
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
@@ -55,6 +59,8 @@ trait TimestampableTrait
      * {@inheritdoc}
      *
      * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::getCreatedAt
+     *
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -64,7 +70,11 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
+     * @param \DateTime $updatedAt
+     *
      * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::setUpdatedAt
+     *
+     * @return TimestampableTrait
      */
     public function setUpdatedAt(\DateTime $updatedAt)
     {
@@ -76,6 +86,8 @@ trait TimestampableTrait
      * {@inheritdoc}
      *
      * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::getUpdatedAt
+     *
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {

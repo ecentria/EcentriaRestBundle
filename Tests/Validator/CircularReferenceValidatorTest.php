@@ -1,8 +1,8 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,11 +25,15 @@ use Symfony\Component\Validator\Context\ExecutionContext;
 class CircularReferenceValidatorTest extends TestCase
 {
     /**
+     * Context Mock
+     *
      * @var \PHPUnit_Framework_MockObject_MockObject|ExecutionContext
      */
     protected $context;
 
     /**
+     * Entity Manager Mock
+     *
      * @var \PHPUnit_Framework_MockObject_MockObject|EntityManager
      */
     protected $entityManager;
@@ -64,6 +68,8 @@ class CircularReferenceValidatorTest extends TestCase
 
     /**
      * Testing setting itself as a parent
+     *
+     * @return void
      */
     public function testItselfAsParent()
     {
@@ -86,6 +92,8 @@ class CircularReferenceValidatorTest extends TestCase
 
     /**
      * Testing circular reference
+     *
+     * @return void
      */
     public function testCircularReference()
     {
@@ -127,6 +135,8 @@ class CircularReferenceValidatorTest extends TestCase
 
     /**
      * Testing circular reference
+     *
+     * @return void
      */
     public function testCircularReferenceAllEntitiesAreWrong()
     {
@@ -186,6 +196,8 @@ class CircularReferenceValidatorTest extends TestCase
 
     /**
      * Testing circular reference
+     *
+     * @return void
      */
     public function testCircularReference1()
     {
@@ -222,6 +234,8 @@ class CircularReferenceValidatorTest extends TestCase
 
     /**
      * Testing circular reference
+     *
+     * @return void
      */
     public function testCircularReferenceFatalErrorOnGetParents()
     {
@@ -233,8 +247,7 @@ class CircularReferenceValidatorTest extends TestCase
                     'test2',
                     'test1'
                 )
-            )
-        ;
+            );
 
         $channel1 = new CircularReferenceEntity();
         $channel1->setId('test1');

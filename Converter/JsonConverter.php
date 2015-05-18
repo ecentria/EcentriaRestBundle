@@ -1,8 +1,8 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2015, Ecentria, Inc
+ * (c) 2015, ecentria
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -34,6 +34,16 @@ class JsonConverter implements ParamConverterInterface
     {
         $name = $configuration->getName();
         $value = json_decode($request->getContent(), true);
+
+        $options = $configuration->getOptions();
+
+        if (!empty($options['parameters'])) {
+            foreach ($options['parameters'] as $parameter) {
+                if (isset($value[$parameter])) {
+                    $request->attributes->set($parameter, $value[$parameter]);
+                }
+            }
+        }
 
         /**
          * Adding transformed collection

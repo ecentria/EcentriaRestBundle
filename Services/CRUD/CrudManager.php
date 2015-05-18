@@ -1,8 +1,8 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,8 +13,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
-use Ecentria\Bundle\CommunicationApiBundle\Entity\Contact;
-use Ecentria\Bundle\CommunicationApiBundle\Entity\Media;
+use Ecentria\Libraries\CoreRestBundle\Event\CrudCollectionEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\CrudEvent;
 use Ecentria\Libraries\CoreRestBundle\Event\Events;
 use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
@@ -95,14 +94,29 @@ class CrudManager
     /**
      * Refresh entity
      *
-     * @param CrudEntityInterface $entity entity
-     * @return null|CrudEntityInterface
+     * @param CrudEntityInterface &$entity entity
+     * @param mixed               $id      id
+     *
+     * @return CrudEntityInterface
      */
-    public function refresh(CrudEntityInterface $entity)
+    public function refresh(CrudEntityInterface &$entity, $id = null)
     {
-        $this->crudTransformer->initializeClassMetadata(get_class($entity));
-        $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
-        return $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
+        $result = null;
+        if ($id) {
+            $result = $this->entityManager->find(get_class($entity), $id);
+        } else {
+            $this->crudTransformer->initializeClassMetadata(get_class($entity));
+            $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
+            if (!empty($conditions)) {
+                $result = $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
+            }
+        }
+
+        if ($result instanceof $entity) {
+            $entity = $result;
+        }
+
+        return $entity;
     }
 
     /**
@@ -171,7 +185,6 @@ class CrudManager
             new CrudEvent($entity)
         );
 
-
         $this->entityManager->persist($entity);
 
         if ($flush) {
@@ -192,11 +205,23 @@ class CrudManager
      *
      * @return void
      */
-    private function flush(CrudEntityInterface $entity = null)
+    public function flush(CrudEntityInterface $entity = null)
     {
         if ($this->getMode() !== self::MODE_DRY_RUN) {
             $this->entityManager->flush($entity);
         }
+    }
+
+    /**
+     * Persist
+     *
+     * @param CrudEntityInterface $entity Entity
+     *
+     * @return void
+     */
+    public function persist(CrudEntityInterface $entity)
+    {
+        $this->entityManager->persist($entity);
     }
 
     /**
@@ -210,6 +235,11 @@ class CrudManager
      */
     public function createCollection(ArrayCollection $collection, $processUnitOfWork = false)
     {
+        $this->eventDispatcher->dispatch(
+            Events::COLLECTION_PRE_CREATE,
+            new CrudCollectionEvent($collection)
+        );
+
         if ($processUnitOfWork) {
             $unitOfWork = $this->filterCollection($collection);
             $collection = $unitOfWork->getInsertions();
@@ -323,6 +353,7 @@ class CrudManager
     public function update(CrudEntityInterface $entity)
     {
         $this->save($entity);
+
         $this->eventDispatcher->dispatch(
             Events::POST_UPDATE,
             new CrudEvent($entity)
@@ -386,7 +417,7 @@ class CrudManager
         if ($violations instanceof ConstraintViolationList) {
             throw new ValidationFailedException($violations);
         }
-        $this->flush();
+        $this->flush($entity);
     }
 
     /**
@@ -422,14 +453,14 @@ class CrudManager
      * Filtering collection
      *
      * @param ArrayCollection|CrudEntityInterface[] $collection Collection
+     * @param bool                                  $replace    replace
      *
      * @return CrudUnitOfWork
      */
-    public function filterCollection(ArrayCollection $collection)
+    public function filterCollection(ArrayCollection $collection, $replace = true)
     {
         $unitOfWork = new CrudUnitOfWork();
         foreach ($collection as $entity) {
-
             if ($entity->getId()) {
                 $crudEntity = $this->find(get_class($entity), $entity->getId());
             } else {
@@ -439,9 +470,11 @@ class CrudManager
             }
 
             if ($crudEntity instanceof CrudEntityInterface) {
-                $key = $collection->indexOf($entity);
-                $collection->remove($key);
-                $collection->set($key, $crudEntity);
+                if ($replace) {
+                    $key = $collection->indexOf($entity);
+                    $collection->remove($key);
+                    $collection->set($key, $crudEntity);
+                }
                 $unitOfWork->update($crudEntity);
             } else {
                 $unitOfWork->insert($entity);

@@ -1,8 +1,8 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -17,6 +17,8 @@ use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
+ * Error Builder
+ *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
 class ErrorBuilder
@@ -40,6 +42,8 @@ class ErrorBuilder
      * Process violations
      *
      * @param ConstraintViolationList|ConstraintViolation[] $violations
+     *
+     * @return void
      */
     public function processViolations(ConstraintViolationList $violations = null)
     {
@@ -55,6 +59,8 @@ class ErrorBuilder
      * Process violation
      *
      * @param ConstraintViolation $violation
+     *
+     * @return void
      */
     private function processViolation(ConstraintViolation $violation)
     {
@@ -72,6 +78,7 @@ class ErrorBuilder
     }
 
     /**
+     * Determine context
      *
      * @param ConstraintViolation $violation
      * @return string
@@ -82,7 +89,6 @@ class ErrorBuilder
         $isGlobal = isset($parameters['context']) && $parameters['context'] === Error::CONTEXT_GLOBAL;
         return $isGlobal ? Error::CONTEXT_GLOBAL : Error::CONTEXT_DATA;
     }
-
 
     /**
      * Errors getter
@@ -139,6 +145,8 @@ class ErrorBuilder
      *
      * @param string|int $id
      * @param Error $error
+     *
+     * @return void
      */
     public function addCustomError($id, Error $error)
     {
@@ -150,7 +158,9 @@ class ErrorBuilder
     /**
      * Setting transaction errors
      *
-     * @param Transaction $transaction
+     * @param Transaction &$transaction
+     *
+     * @return void
      */
     public function setTransactionErrors(Transaction &$transaction)
     {

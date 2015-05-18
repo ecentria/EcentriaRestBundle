@@ -1,14 +1,43 @@
 <?php
+/**
+ * Test Bootstrap
+ *
+ * @copyright 2015 Ecentria
+ * @package   EcentriaRestBundle
+ * @author    Ruslan Zavacky <ruslan.zavacky@intexsys.lv>
+ */
+
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Composer\Autoload\ClassLoader;
 
-call_user_func(function() {
-    if (! is_file($autoloadFile = __DIR__.'/../../../../../autoload.php')) {
-        throw new \RuntimeException('Did not find vendor/autoload.php. Did you run "composer install --dev"?');
+/**
+ * @var ClassLoader $loader
+ */
+$loader = require __DIR__ . '/../vendor/autoload.php';
+
+if (!$loader) {
+    die(<<<'EOT'
+You must set up the project dependencies, run the following commands:
+wget http://getcomposer.org/composer.phar
+php composer.phar install
+EOT
+    );
+}
+
+AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
+
+spl_autoload_register(
+    function ($class) {
+        if (0 === strpos($class, 'Ecentria\\Libraries\\CoreRestBundle\\')) {
+            $path = __DIR__ . '/../' . implode('/', array_slice(explode('\\', $class), 2)) . '.php';
+            if (!stream_resolve_include_path($path)) {
+                return false;
+            }
+            require_once $path;
+            return true;
+        }
+        return false;
     }
+);
 
-    $loader = require $autoloadFile;
-    $loader->add('Ecentria\Libraries\CoreRestBundle\Tests', __DIR__);
-
-    AnnotationRegistry::registerLoader('class_exists');
-    //AnnotationRegistry::registerFile(__DIR__.'/../vendor/doctrine/phpcr-odm/lib/Doctrine/ODM/PHPCR/Mapping/Annotations/DoctrineAnnotations.php');
-});
+return $loader;

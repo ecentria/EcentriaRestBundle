@@ -1,8 +1,8 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -28,7 +28,7 @@ interface TimestampableInterface
      * Created setter
      *
      * @param \DateTime $createdAt
-     * @return self
+     * @return TimestampableInterface
      */
     public function setCreatedAt(\DateTime $createdAt);
 
@@ -43,7 +43,7 @@ interface TimestampableInterface
      * Set updated at
      *
      * @param \DateTime $updatedAt
-     * @return self
+     * @return TimestampableInterface
      */
     public function setUpdatedAt(\DateTime $updatedAt);
 }
