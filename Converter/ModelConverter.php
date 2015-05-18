@@ -63,10 +63,29 @@ class ModelConverter implements ParamConverterInterface
     {
         $name = $configuration->getName();
         $class = $configuration->getClass();
+        $options = $configuration->getOptions();
+
+        if (isset($options['query'])) {
+            $content = new \stdClass();
+            $metadata = $this->serializer->getMetadataFactory()->getMetadataForClass($class);
+            foreach ($metadata->propertyMetadata as $propertyMetadata) {
+                if (!$propertyMetadata->readOnly) {
+                    $property = $propertyMetadata->name;
+                    $value = $request->query->get($propertyMetadata->name);
+                    if (!is_null($value)) {
+                        $content->$property = $request->query->get($propertyMetadata->name);
+                    }
+                }
+            }
+            $content = json_encode($content);
+        } else {
+            $content = $request->getContent();
+        }
+
 
         $success = false;
         try {
-            $model = $this->serializer->deserialize($request->getContent(), $class, 'json');
+            $model = $this->serializer->deserialize($content, $class, 'json');
             $success = true;
         } catch (\Exception $e) {
             $model = new $class();
