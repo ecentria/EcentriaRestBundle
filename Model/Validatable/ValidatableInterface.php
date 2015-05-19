@@ -43,7 +43,7 @@ interface ValidatableInterface
     public function setValid($valid);
 
     /**
-     * isValid
+     * Is valid
      *
      * @return bool
      */

@@ -8,32 +8,32 @@
 * file that was distributed with this source code.
 */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\Creator;
+namespace Ecentria\Libraries\CoreRestBundle\Model\RequestCreator;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Services\Creator;
+use Ecentria\Libraries\CoreRestBundle\Services\RequestCreator;
 
 /**
  * Creator strategy interface
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-interface CreatorStrategyInterface
+interface RequestCreatorStrategyInterface
 {
     /**
      * Apply
      *
-     * @param Creator         $creator Creator
+     * @param RequestCreator  $creator Creator
      * @param ArrayCollection $data    Data
      *
      * @return bool
      */
-    public function apply(Creator $creator, ArrayCollection $data);
+    public function apply(RequestCreator $creator, ArrayCollection $data);
 
     /**
      * Create
      *
-     * @return CreatorStrategyInterface
+     * @return RequestCreatorStrategyInterface
      */
     public static function create();
 }
