@@ -2,7 +2,7 @@
 /*
  * This file is part of the Ecentria software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, Ecentria, Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -22,7 +22,6 @@ use JMS\Serializer\Annotation as JMS;
  */
 trait ValidatableTrait
 {
-
     /**
      * Constraint violation list
      *
@@ -76,7 +75,7 @@ trait ValidatableTrait
     }
 
     /**
-     * isValid
+     * Is valid
      *
      * @return bool
      */

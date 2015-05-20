@@ -97,7 +97,7 @@ class CrudManager
      * @param CrudEntityInterface &$entity entity
      * @param mixed               $id      id
      *
-     * @return null|CrudEntityInterface
+     * @return CrudEntityInterface
      */
     public function refresh(CrudEntityInterface &$entity, $id = null)
     {
@@ -213,13 +213,13 @@ class CrudManager
     }
 
     /**
-     * Flush
+     * Persist
      *
      * @param CrudEntityInterface $entity Entity
      *
      * @return void
      */
-    public function persist(CrudEntityInterface $entity = null)
+    public function persist(CrudEntityInterface $entity)
     {
         $this->entityManager->persist($entity);
     }

@@ -2,7 +2,7 @@
 /*
  * This file is part of the Ecentria software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, Ecentria, Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -36,9 +36,7 @@ class ErrorResponse
     {
         /** @var ConstraintViolation $violation */
         foreach ($violations as $violation) {
-            $error = [];
-            $error[] = $violation->getMessage();
-            $this->errors[$violation->getPropertyPath()] = $error;
+            $this->errors[$violation->getPropertyPath()] = [$violation->getMessage()];
         }
     }
 }

@@ -57,7 +57,9 @@ class ModelConverter implements ParamConverterInterface
      * @param Request        $request       The request
      * @param ParamConverter $configuration Contains the name, class and options of the object
      *
-     * @return bool    True if the object has been successfully set, else false
+     * @throws \InvalidArgumentException
+     *
+     * @return bool True if the object has been successfully set, else false
      */
     public function apply(Request $request, ParamConverter $configuration)
     {
@@ -82,6 +84,10 @@ class ModelConverter implements ParamConverterInterface
             $content = $request->getContent();
         }
 
+
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException($class . ' class does not exist.');
+        }
 
         $success = false;
         try {

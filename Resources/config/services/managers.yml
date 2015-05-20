@@ -16,7 +16,7 @@ parameters:
     ecentria.api.transaction.handler.put.class:    Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionPutHandler
     ecentria.api.transaction.manager.class:        Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager
 
-    ecentria.api.creator.class:                    Ecentria\Libraries\CoreRestBundle\Services\Creator
+    ecentria.api.request_creator.class:            Ecentria\Libraries\CoreRestBundle\Services\RequestCreator
 
 services:
 
@@ -99,8 +99,8 @@ services:
             arguments: [~]
 
     # Creator
-    ecentria.api.creator:
-        class: %ecentria.api.creator.class%
+    ecentria.api.request_creator:
+        class: %ecentria.api.request_creator.class%
         arguments:
             - @ecentria.api.crud.manager
             - @request_stack

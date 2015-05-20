@@ -12,7 +12,7 @@ namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Exception\CreatorDataTypeException;
-use Ecentria\Libraries\CoreRestBundle\Model\Creator\CreatorStrategyInterface;
+use Ecentria\Libraries\CoreRestBundle\Model\RequestCreator\RequestCreatorStrategyInterface;
 use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
 use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudUnitOfWork;
 use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudManager;
@@ -27,7 +27,7 @@ use Symfony\Component\Routing\Router;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class Creator
+class RequestCreator
 {
     /**
      * CrudManager
@@ -87,12 +87,12 @@ class Creator
     /**
      * Apply recipe
      *
-     * @param CreatorStrategyInterface $strategy Strategy
-     * @param mixed                    $data     Data
+     * @param RequestCreatorStrategyInterface $strategy Strategy
+     * @param mixed                           $data     Data
      *
      * @return bool
      */
-    public function applyStrategy(CreatorStrategyInterface $strategy, $data)
+    public function applyStrategy(RequestCreatorStrategyInterface $strategy, $data)
     {
         $collection = $this->normalize($data);
         return $strategy->apply($this, $collection);
@@ -134,18 +134,6 @@ class Creator
     public function getLastResponse()
     {
         return $this->lastResponse;
-    }
-
-    /**
-     * Setter
-     *
-     * @param Response $response Response
-     * @return Creator
-     */
-    public function setLastResponse(Response $response)
-    {
-        $this->lastResponse = $response;
-        return $this;
     }
 
     /**
@@ -213,7 +201,7 @@ class Creator
     }
 
     /**
-     * Post
+     * Patch
      *
      * @param string $route Route
      * @param array  $data  Data
@@ -228,7 +216,7 @@ class Creator
     }
 
     /**
-     * Send
+     * Do request
      *
      * @param string $route      route
      * @param mixed  $content    content
@@ -237,7 +225,7 @@ class Creator
      *
      * @return Response
      */
-    public function doRequest($route, $content, $method = 'POST', $parameters = [])
+    private function doRequest($route, $content, $method = 'POST', $parameters = [])
     {
         if ($content instanceof ArrayCollection) {
             $content = $this->collectionToArray($content);
