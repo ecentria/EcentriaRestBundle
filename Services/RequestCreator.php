@@ -137,18 +137,6 @@ class RequestCreator
     }
 
     /**
-     * Setter
-     *
-     * @param Response $response Response
-     * @return RequestCreator
-     */
-    public function setLastResponse(Response $response)
-    {
-        $this->lastResponse = $response;
-        return $this;
-    }
-
-    /**
      * ClearTransaction
      *
      * @return void
@@ -228,7 +216,7 @@ class RequestCreator
     }
 
     /**
-     * Send
+     * Do request
      *
      * @param string $route      route
      * @param mixed  $content    content
@@ -237,7 +225,7 @@ class RequestCreator
      *
      * @return Response
      */
-    public function doRequest($route, $content, $method = 'POST', $parameters = [])
+    private function doRequest($route, $content, $method = 'POST', $parameters = [])
     {
         if ($content instanceof ArrayCollection) {
             $content = $this->collectionToArray($content);
