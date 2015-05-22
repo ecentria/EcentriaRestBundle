@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\Transactional;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\Transactional;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
 
 /**
  * Transactional trait
@@ -34,7 +34,7 @@ trait TransactionalTrait
      *
      * @param Transaction|null $transaction
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface::setTransaction
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface::setTransaction
      *
      * @return TransactionalTrait
      */
@@ -47,7 +47,7 @@ trait TransactionalTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface::getTransaction
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface::getTransaction
      *
      * @return Transaction|null
      */

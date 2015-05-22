@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\EventListener;
+namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 

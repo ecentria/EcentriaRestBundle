@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Validator\Constraints;
+namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\EmailValidator as BaseEmailValidator;
@@ -27,7 +27,7 @@ class EmailValidator extends BaseEmailValidator
     public function validate($entity, Constraint $constraint)
     {
         if (!$constraint instanceof Email) {
-            throw new \Exception('This constraint must be instance of EcentriaCoreRestBundle:Email');
+            throw new \Exception('This constraint must be instance of EcentriaRestBundle:Email');
         }
         $method = $constraint->dependencyGetter;
         $getter = $constraint->emailGetter;

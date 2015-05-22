@@ -1,10 +1,11 @@
 <?php
-/**
- * Test Bootstrap
+/*
+ * This file is part of the ecentria group, inc. software.
  *
- * @copyright 2015 Ecentria
- * @package   EcentriaRestBundle
- * @author    Ruslan Zavacky <ruslan.zavacky@intexsys.lv>
+ * (c) 2015, ecentria group, inc.
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
@@ -28,7 +29,7 @@ AnnotationRegistry::registerLoader(array($loader, 'loadClass'));
 
 spl_autoload_register(
     function ($class) {
-        if (0 === strpos($class, 'Ecentria\\Libraries\\CoreRestBundle\\')) {
+        if (0 === strpos($class, 'Ecentria\\Libraries\\EcentriaRestBundle\\')) {
             $path = __DIR__ . '/../' . implode('/', array_slice(explode('\\', $class), 2)) . '.php';
             if (!stream_resolve_include_path($path)) {
                 return false;

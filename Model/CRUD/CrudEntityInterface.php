@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\CRUD;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\CRUD;
 
-use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
 
 /**
  * CRUD entity interface

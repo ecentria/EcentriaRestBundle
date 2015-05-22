@@ -1,21 +1,21 @@
 <?php
 /*
- * This file is part of the ecentria group, inc. software.
+ * This file is part of the Ecentria software.
  *
- * (c) 2015, ecentria
+ * (c) 2015, OpticsPlanet, Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Exception\CreatorDataTypeException;
-use Ecentria\Libraries\CoreRestBundle\Model\RequestCreator\RequestCreatorStrategyInterface;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudUnitOfWork;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudManager;
+use Ecentria\Libraries\EcentriaRestBundle\Exception\CreatorDataTypeException;
+use Ecentria\Libraries\EcentriaRestBundle\Model\RequestCreator\RequestCreatorStrategyInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudUnitOfWork;
+use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;

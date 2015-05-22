@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Annotation;
+namespace Ecentria\Libraries\EcentriaRestBundle\Annotation;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
@@ -23,7 +23,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
  */
 class AvoidTransaction extends ConfigurationAnnotation
 {
-    const NAME = 'Ecentria\\Libraries\\CoreRestBundle\\Annotation\\AvoidTransaction';
+    const NAME = 'Ecentria\\Libraries\\EcentriaRestBundle\\Annotation\\AvoidTransaction';
 
     /**
      * {@inheritDoc}

@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Entity;
+namespace Ecentria\Libraries\EcentriaRestBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
+use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAssert;
 
 /**
  * Transaction entity

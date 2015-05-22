@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\AbstractCrudEntity;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity;
 
 /**
  * CrudEntity

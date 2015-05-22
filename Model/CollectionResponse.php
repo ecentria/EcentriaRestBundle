@@ -8,14 +8,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait;
 
 use JMS\Serializer\Annotation as Serializer;
 

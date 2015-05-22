@@ -8,10 +8,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
 
 /**
  * Notice builder

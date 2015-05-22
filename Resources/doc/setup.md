@@ -8,16 +8,16 @@ Add the repository to your composer.json file
 
     "repositories": [
         ...
-        { "type": "vcs", "url": "ssh://git@stash.dev.opticplanet.net/lib/corerestbundle.git" }
+        { "type": "vcs", "url": "https://github.com/ecentria/EcentriaRestBundle" }
     ]
 
 Add via composer command
 
-    $ php composer.phar require ecentria/core-rest-bundle dev-master
+    $ php composer.phar require ecentria/ecentria-rest-bundle dev-master
 
 Or Add via composer.json directly
 
-    "ecentria/core-rest-bundle": "dev-master"
+    "ecentria/ecentria-rest-bundle": "dev-master"
 
 B: Enable the bundle
 --------------------
@@ -32,7 +32,7 @@ public function registerBundles()
 {
     $bundles = array(
         // ...
-         new Ecentria\Libraries\CoreRestBundle\EcentriaLibrariesCoreRestBundle(),
+         new Ecentria\Libraries\EcentriaRestBundle\EcentriaRestBundle(),
          new FOS\RestBundle\FOSRestBundle(),
          new JMS\SerializerBundle\JMSSerializerBundle(),
          new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
@@ -80,8 +80,8 @@ D: Update app/config/routing.yml
 Modify app/config/routing.yml and add the following:
 
 ``` yaml
-_ecentria_libnraries_core_rest_bundle:
-    resource: "@EcentriaLibrariesCoreRestBundle/Resources/config/routing.yml"
+_ecentria_libraries_core_rest_bundle:
+    resource: "@EcentriaRestBundle/Resources/config/routing.yml"
 
 NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"

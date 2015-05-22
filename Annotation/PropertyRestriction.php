@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Annotation;
+namespace Ecentria\Libraries\EcentriaRestBundle\Annotation;
 
 use Doctrine\Common\Annotations\Annotation;
 
@@ -24,7 +24,7 @@ use Doctrine\Common\Annotations\Annotation;
  */
 final class PropertyRestriction extends Annotation
 {
-    const NAME = 'Ecentria\\Libraries\\CoreRestBundle\\Annotation\\PropertyRestriction';
+    const NAME = 'Ecentria\\Libraries\\EcentriaRestBundle\\Annotation\\PropertyRestriction';
 
     /**
      * Is granted for:

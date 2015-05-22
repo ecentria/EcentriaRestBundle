@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Entity;
+namespace Ecentria\Libraries\EcentriaRestBundle\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait,
-    Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableTrait,
-    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableTrait,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait;
 
 /**
  * Abstract CRUD entity class

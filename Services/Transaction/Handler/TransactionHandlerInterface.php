@@ -8,13 +8,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
-    Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
-    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+    Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
+    Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
 
 use Symfony\Component\Validator\ConstraintViolationList;
 

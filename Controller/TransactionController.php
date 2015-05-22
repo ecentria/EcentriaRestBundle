@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Controller;
+namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
 
 use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\FOSRestController,
@@ -41,7 +41,7 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      *
      * @Sensio\ParamConverter(
      *      "transactionEntity",
-     *      class="Ecentria\Libraries\CoreRestBundle\Entity\Transaction",
+     *      class="Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction",
      *      converter = "ecentria.api.converter.entity"
      * )
      *

@@ -1,4 +1,4 @@
-Ecentria\Libraries\CoreRestBundle\Entity\AbstractCrudEntity:
+Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity:
 
     properties:
 

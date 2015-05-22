@@ -7,9 +7,10 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Event;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
+namespace Ecentria\Libraries\EcentriaRestBundle\Event;
+
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
 use Symfony\Component\EventDispatcher\Event;
 
 /**

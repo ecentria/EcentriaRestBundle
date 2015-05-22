@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Validator\Constraints;
+namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 

@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Annotation;
+namespace Ecentria\Libraries\EcentriaRestBundle\Annotation;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
@@ -34,7 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
  */
 class Transactional extends ConfigurationAnnotation
 {
-    const NAME = 'Ecentria\\Libraries\\CoreRestBundle\\Annotation\\Transactional';
+    const NAME = 'Ecentria\\Libraries\\EcentriaRestBundle\\Annotation\\Transactional';
 
     /**
      * Model (entity namespace)

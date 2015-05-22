@@ -7,16 +7,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
+
+namespace Ecentria\Libraries\EcentriaRestBundle\Services\CRUD;
 
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Inflector\Inflector;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
-use Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntity;
+use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Serializer;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
@@ -132,7 +133,7 @@ class CrudTransformer
 
         $annotation = $this->annotationsReader->getClassAnnotation(
             $this->getClassMetadata()->getReflectionClass(),
-            'Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntity'
+            'Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\UniqueEntity'
         );
 
         if (!$annotation) {

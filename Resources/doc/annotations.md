@@ -20,7 +20,7 @@ Used for controller to enable transaction system.
 Example:
 
 ```php
-use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
 
 /**
  * @EcentriaAnnotation\Transactional(
@@ -36,7 +36,7 @@ AvoidTransaction
 Used for controller action to avoid creating transaction.
 
 ```php
-use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
 
 /**
  * @EcentriaAnnotation\AvoidTransaction()
@@ -50,7 +50,7 @@ Used for model (entity) property to avoid update or create.
 As parameter it gets array of actions: {“update”, “create"}
 
 ```php
-use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
 
 /**
  * @EcentriaAnnotation\PropertyRestriction({"update", "create"})

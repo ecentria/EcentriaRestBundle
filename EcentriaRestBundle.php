@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle;
+namespace Ecentria\Libraries\EcentriaRestBundle;
 
-use Ecentria\Libraries\CoreRestBundle\DependencyInjection\Compiler\TransactionHandlerPass;
+use Ecentria\Libraries\EcentriaRestBundle\DependencyInjection\Compiler\TransactionHandlerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  *
  */
-class EcentriaLibrariesCoreRestBundle extends Bundle
+class EcentriaRestBundle extends Bundle
 {
     /**
      * Build

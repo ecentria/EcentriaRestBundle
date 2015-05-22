@@ -8,11 +8,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudTransformer;
+use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
+use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
@@ -154,12 +154,12 @@ class CrudTransformerTest extends TestCase
         $this->annotationsReader->expects($this->exactly(6))
             ->method('getPropertyAnnotation')
             ->withConsecutive(
-                array($reflectionProperty1, 'Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction'),
-                array($reflectionProperty1, 'Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction'),
-                array($reflectionProperty2, 'Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction'),
-                array($reflectionProperty2, 'Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction'),
-                array($reflectionProperty3, 'Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction'),
-                array($reflectionProperty3, 'Ecentria\Libraries\CoreRestBundle\Annotation\PropertyRestriction')
+                array($reflectionProperty1, 'Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction'),
+                array($reflectionProperty1, 'Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction'),
+                array($reflectionProperty2, 'Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction'),
+                array($reflectionProperty2, 'Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction'),
+                array($reflectionProperty3, 'Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction'),
+                array($reflectionProperty3, 'Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction')
             )
             ->willReturnOnConsecutiveCalls(
                 $propertyRestriction1,

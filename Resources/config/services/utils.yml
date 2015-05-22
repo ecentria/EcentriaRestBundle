@@ -1,6 +1,6 @@
 parameters:
 
-    ecentria.fos_rest.native_json_encode_serializer.class: Ecentria\Libraries\CoreRestBundle\Services\NativeJsonEncodeSerializer
+    ecentria.fos_rest.native_json_encode_serializer.class: Ecentria\Libraries\EcentriaRestBundle\Services\NativeJsonEncodeSerializer
 
 services:
 

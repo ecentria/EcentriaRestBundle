@@ -2,16 +2,16 @@
 /*
  * This file is part of the ecentria group, inc. software.
  *
- * (c) 2015, ecentria
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Converter;
+namespace Ecentria\Libraries\EcentriaRestBundle\Converter;
 
-use Ecentria\Libraries\CoreRestBundle\Model\Alias;
-use Ecentria\Libraries\CoreRestBundle\Model\Validatable\ValidatableInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Alias;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
 use JMS\Serializer\Serializer;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
@@ -65,6 +65,29 @@ class ModelConverter implements ParamConverterInterface
     {
         $name = $configuration->getName();
         $class = $configuration->getClass();
+        $options = $configuration->getOptions();
+
+        if (isset($options['query'])) {
+            $content = new \stdClass();
+            $metadata = $this->serializer->getMetadataFactory()->getMetadataForClass($class);
+            foreach ($metadata->propertyMetadata as $propertyMetadata) {
+                if (!$propertyMetadata->readOnly) {
+                    $property = $propertyMetadata->name;
+                    $value = $request->query->get($propertyMetadata->name);
+                    if (!is_null($value)) {
+                        $content->$property = $request->query->get($propertyMetadata->name);
+                    }
+                }
+            }
+            $content = json_encode($content);
+        } else {
+            $content = $request->getContent();
+        }
+
+
+        if (!class_exists($class)) {
+            throw new \InvalidArgumentException($class . ' class does not exist.');
+        }
 
         if (!class_exists($class)) {
             throw new \InvalidArgumentException($class . ' class does not exist.');
@@ -72,7 +95,7 @@ class ModelConverter implements ParamConverterInterface
 
         $success = false;
         try {
-            $model = $this->serializer->deserialize($request->getContent(), $class, 'json');
+            $model = $this->serializer->deserialize($content, $class, 'json');
             $success = true;
         } catch (\Exception $e) {
             $model = new $class();

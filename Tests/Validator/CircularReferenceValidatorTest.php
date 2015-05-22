@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Tests\Validator;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Validator;
 
 use Doctrine\ORM\EntityManager;
-use Ecentria\Libraries\CoreRestBundle\Tests\Entity\CircularReferenceEntity;
-use Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReference;
-use Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReferenceValidator;
+use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
+use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReference;
+use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReferenceValidator;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContext;
 

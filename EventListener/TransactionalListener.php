@@ -8,17 +8,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\EventListener;
+namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
 use Doctrine\Common\Annotations\Reader,
     Doctrine\ORM\EntityManager,
     Doctrine\Common\Util\ClassUtils;
 
-use Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction,
-    Ecentria\Libraries\CoreRestBundle\Annotation\Transactional,
-    Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
-    Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder,
-    Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
+use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
+    Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
+    Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionBuilder,
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager;
 
 use FOS\RestBundle\View\View;
 

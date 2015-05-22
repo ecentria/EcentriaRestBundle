@@ -7,7 +7,8 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Validator\Constraints;
+
+namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -25,7 +26,7 @@ class InArrayValidator extends ConstraintValidator
     public function validate($value, Constraint $constraint)
     {
         if (!$constraint instanceof InArray) {
-            throw new \Exception('This constraint must be instance of CoreRestBundle:InArray');
+            throw new \Exception('This constraint must be instance of EcentriaRestBundle:InArray');
         }
         if (!in_array($value, $constraint->values)) {
             $this->context->addViolation(

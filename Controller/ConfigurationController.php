@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Controller;
+namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
-use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
+use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
 
 use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\FOSRestController,

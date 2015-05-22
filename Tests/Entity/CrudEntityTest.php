@@ -8,12 +8,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Tests\Entity;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 

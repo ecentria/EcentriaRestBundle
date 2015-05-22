@@ -1,7 +1,7 @@
-CoreRestBundle Documentation
+EcentriaRestBundle Documentation
 ============================
 
-Available documentation for CoreRestBundle
+Available documentation for EcentriaRestBundle
 ------------------------------------------
 
 * [Setup](setup.md)
@@ -12,6 +12,6 @@ Available documentation for CoreRestBundle
 * [Transactions](transactions.md)
 * [CRUD](crud.md)
 
-Contributing to CoreRestBundle
+Contributing to EcentriaRestBundle
 ------------------------------
 

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
 /**
  * UUID generator

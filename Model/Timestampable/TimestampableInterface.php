@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\Timestampable;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable;
 
 /**
  * Transactional interface

@@ -1,4 +1,4 @@
-Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse:
+Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse:
 
     properties:
         showAssociations:

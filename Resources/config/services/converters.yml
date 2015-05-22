@@ -1,10 +1,10 @@
 parameters:
 
-    ecentria.api.converter.model.class:            Ecentria\Libraries\CoreRestBundle\Converter\ModelConverter
-    ecentria.api.converter.array_collection.class: Ecentria\Libraries\CoreRestBundle\Converter\ArrayCollectionConverter
-    ecentria.api.converter.json.class:             Ecentria\Libraries\CoreRestBundle\Converter\JsonConverter
-    ecentria.api.converter.parameter.class:        Ecentria\Libraries\CoreRestBundle\Converter\ParameterConverter
-    ecentria.api.converter.entity.class:           Ecentria\Libraries\CoreRestBundle\Converter\EntityConverter
+    ecentria.api.converter.model.class:            Ecentria\Libraries\EcentriaRestBundle\Converter\ModelConverter
+    ecentria.api.converter.array_collection.class: Ecentria\Libraries\EcentriaRestBundle\Converter\ArrayCollectionConverter
+    ecentria.api.converter.json.class:             Ecentria\Libraries\EcentriaRestBundle\Converter\JsonConverter
+    ecentria.api.converter.parameter.class:        Ecentria\Libraries\EcentriaRestBundle\Converter\ParameterConverter
+    ecentria.api.converter.entity.class:           Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter
 
 services:
 

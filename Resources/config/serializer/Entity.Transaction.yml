@@ -1,4 +1,4 @@
-Ecentria\Libraries\CoreRestBundle\Entity\Transaction:
+Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction:
 
     relations:
 

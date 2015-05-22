@@ -1,17 +1,17 @@
 <?php
 /*
-* This file is part of the ecentria group, inc. software.
+* This file is part of the Ecentria software.
 *
-* (c) 2015, ecentria
+* (c) 2015, OpticsPlanet, Inc
 *
 * For the full copyright and license information, please view the LICENSE
 * file that was distributed with this source code.
 */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\RequestCreator;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\RequestCreator;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Services\RequestCreator;
+use Ecentria\Libraries\EcentriaRestBundle\Services\RequestCreator;
 
 /**
  * Creator strategy interface

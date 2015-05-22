@@ -8,7 +8,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\CRUD;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\CRUD;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
