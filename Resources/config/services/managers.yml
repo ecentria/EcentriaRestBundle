@@ -2,6 +2,7 @@ parameters:
 
     ecentria.api.builder.error.class:              Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder
     ecentria.api.builder.notice.class:             Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder
+    ecentria.api.builder.info.class:               Ecentria\Libraries\CoreRestBundle\Services\InfoBuilder
     ecentria.api.builder.transaction.class:        Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionBuilder
 
     ecentria.api.configuration.manager.class:      Ecentria\Libraries\CoreRestBundle\Services\ConfigurationManager
@@ -26,6 +27,9 @@ services:
 
     ecentria.api.builder.notice:
         class: %ecentria.api.builder.notice.class%
+
+    ecentria.api.builder.info:
+        class: %ecentria.api.builder.info.class%
 
     ecentria.api.builder.transaction:
         class: %ecentria.api.builder.transaction.class%

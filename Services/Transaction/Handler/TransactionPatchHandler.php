@@ -62,7 +62,7 @@ class TransactionPatchHandler implements TransactionHandlerInterface
                 get_class($data) . ' class is not supported by transactions (PATCH). Instance of CrudEntity needed.'
             );
         }
-        
+
         $this->errorBuilder->processViolations($violations);
         $this->errorBuilder->setTransactionErrors($transaction);
 
