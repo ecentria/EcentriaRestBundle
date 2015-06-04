@@ -216,6 +216,21 @@ class RequestCreator
     }
 
     /**
+     * Put
+     *
+     * @param string $route Route
+     * @param array  $data  Data
+     * @param mixed  $id    Id
+     *
+     * @return Response
+     */
+    public function put($route, array $data, $id)
+    {
+        $this->lastResponse = $this->doRequest($route, array($data), 'PUT', ['id' => $id]);
+        return $this->lastResponse;
+    }
+
+    /**
      * Do request
      *
      * @param string $route      route
