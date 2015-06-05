@@ -95,7 +95,9 @@ class RequestCreator
     public function applyStrategy(RequestCreatorStrategyInterface $strategy, $data)
     {
         $collection = $this->normalize($data);
-        return $strategy->apply($this, $collection);
+        $isSuccess = $strategy->apply($this, $collection);
+        $this->requestStack->getMasterRequest()->attributes->set('info_messages', $strategy->getMessages());
+        return $isSuccess;
     }
 
     /**
