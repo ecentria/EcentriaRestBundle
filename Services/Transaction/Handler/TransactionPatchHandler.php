@@ -10,6 +10,7 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
     Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder;
@@ -47,16 +48,21 @@ class TransactionPatchHandler implements TransactionHandlerInterface
     /**
      * Handle
      *
-     * @param Transaction                  $transaction Transaction
-     * @param CrudEntityInterface          $data        Data
-     * @param ConstraintViolationList|null $violations  Violations
+     * @param Transaction                         $transaction  Transaction
+     * @param CrudEntityInterface|ArrayCollection $data         Data
+     * @param ConstraintViolationList|null        $violations   Violations
+     * @param ArrayCollection|null                $infoMessages Info messages
      *
      * @throws FeatureNotImplementedException
      *
      * @return CrudEntityInterface
      */
-    public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
-    {
+    public function handle(
+        Transaction $transaction,
+        $data,
+        ConstraintViolationList $violations = null,
+        ArrayCollection $infoMessages = null
+    ) {
         if (!$data instanceof CrudEntityInterface) {
             throw new FeatureNotImplementedException(
                 get_class($data) . ' class is not supported by transactions (PATCH). Instance of CrudEntity needed.'

@@ -47,17 +47,22 @@ class TransactionResponseManager
     /**
      * Handle
      *
-     * @param Transaction             $transaction transaction
-     * @param mixed                   $data        data
-     * @param ConstraintViolationList $violations  violations
+     * @param Transaction             $transaction  Transaction
+     * @param mixed                   $data         Data
+     * @param ConstraintViolationList $violations   Violations
+     * @param ArrayCollection         $infoMessages Info messages
      *
      * @throws FeatureNotImplementedException
      * @throws \Exception
      *
      * @return CollectionResponse|CrudEntityInterface
      */
-    public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
-    {
+    public function handle(
+        Transaction $transaction,
+        $data,
+        ConstraintViolationList $violations = null,
+        ArrayCollection $infoMessages = null
+    ) {
         if (is_array($data)) {
             $data = new ArrayCollection($data);
         }
@@ -68,7 +73,7 @@ class TransactionResponseManager
                 throw new \Exception('Handler must be instance of TransactionHandlerInterface');
             }
             if ($handler->supports() === $transaction->getMethod()) {
-                $data = $handler->handle($transaction, $data, $violations);
+                $data = $handler->handle($transaction, $data, $violations, $infoMessages);
                 $handled = true;
             }
         }

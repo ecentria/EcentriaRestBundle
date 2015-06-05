@@ -20,6 +20,7 @@ use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
     Ecentria\Libraries\CoreRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\CoreRestBundle\Services\UUID;
 
+use Ecentria\Libraries\CoreRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -31,20 +32,51 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionPostHandler implements TransactionHandlerInterface
 {
     /**
+     * Entity manager
+     *
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * Info builder
+     *
+     * @var InfoBuilder
+     */
+    private $infoBuilder;
+
+    /**
+     * Error builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
+     * Notice builder
+     *
+     * @var NoticeBuilder
+     */
+    private $noticeBuilder;
+
+    /**
      * Constructor
      *
      * @param EntityManager $entityManager entityManager
      * @param ErrorBuilder  $errorBuilder  errorBuilder
      * @param NoticeBuilder $noticeBuilder noticeBuilder
+     * @param InfoBuilder   $infoBuilder   infoBuilder
      */
     public function __construct(
         EntityManager $entityManager,
         ErrorBuilder $errorBuilder,
-        NoticeBuilder $noticeBuilder
+        NoticeBuilder $noticeBuilder,
+        InfoBuilder $infoBuilder
     ) {
         $this->entityManager = $entityManager;
         $this->errorBuilder = $errorBuilder;
         $this->noticeBuilder = $noticeBuilder;
+        $this->infoBuilder = $infoBuilder;
     }
 
     /**
@@ -60,18 +92,27 @@ class TransactionPostHandler implements TransactionHandlerInterface
     /**
      * Handle
      *
-     * @param Transaction                         $transaction Transaction
-     * @param CrudEntityInterface|ArrayCollection $data        Data
-     * @param ConstraintViolationList|null        $violations  Violations
+     * @param Transaction                         $transaction  Transaction
+     * @param CrudEntityInterface|ArrayCollection $data         Data
+     * @param ConstraintViolationList|null        $violations   Violations
+     * @param ArrayCollection|null                $infoMessages Info messages
      *
      * @throws FeatureNotImplementedException
      *
      * @return CrudEntityInterface|CollectionResponse
      */
-    public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
-    {
+    public function handle(
+        Transaction $transaction,
+        $data,
+        ConstraintViolationList $violations = null,
+        ArrayCollection $infoMessages = null
+    ) {
         $this->errorBuilder->processViolations($violations);
         $this->errorBuilder->setTransactionErrors($transaction);
+
+        if ($infoMessages) {
+            $this->infoBuilder->setMessages($infoMessages);
+        }
 
         $success = !$this->errorBuilder->hasErrors();
         $status = $success ? Transaction::STATUS_CREATED : Transaction::STATUS_CONFLICT;
@@ -141,6 +182,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
         $data = new CollectionResponse($data);
         $data->setShowAssociations(true);
+
+        $this->infoBuilder->setTransactionMessages($baseTransaction);
 
         return $data;
     }

@@ -57,16 +57,21 @@ class TransactionGetHandler implements TransactionHandlerInterface
     /**
      * Handle
      *
-     * @param Transaction                         $transaction Transaction
-     * @param CrudEntityInterface|ArrayCollection $data        Data
-     * @param ConstraintViolationList|null        $violations  Violations
+     * @param Transaction                         $transaction  Transaction
+     * @param CrudEntityInterface|ArrayCollection $data         Data
+     * @param ConstraintViolationList|null        $violations   Violations
+     * @param ArrayCollection|null                $infoMessages Info messages
      *
      * @throws FeatureNotImplementedException
      *
      * @return CrudEntityInterface|CollectionResponse
      */
-    public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
-    {
+    public function handle(
+        Transaction $transaction,
+        $data,
+        ConstraintViolationList $violations = null,
+        ArrayCollection $infoMessages = null
+    ) {
         if ($data instanceof CrudEntityInterface) {
             $data = $this->handleEntity($transaction, $data);
         } elseif ($data instanceof ArrayCollection) {

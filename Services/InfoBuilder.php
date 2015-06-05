@@ -11,6 +11,7 @@
 namespace Ecentria\Libraries\CoreRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
 
 
 /**
@@ -36,14 +37,14 @@ class InfoBuilder
     }
 
     /**
-     * Add message
+     * Set messages
      *
-     * @param string $message Message
+     * @param ArrayCollection $messages Messages
      * @return $this
      */
-    public function addMessage($message)
+    public function setMessages(ArrayCollection $messages)
     {
-        $this->messages->add($message);
+        $this->messages = $messages;
         return $this;
     }
 
@@ -55,5 +56,17 @@ class InfoBuilder
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    /**
+     * Set transaction messages
+     *
+     * @param Transaction $transaction Transaction
+     * @return $this
+     */
+    public function setTransactionMessages(Transaction $transaction)
+    {
+        $transaction->getMessages()->set('info', $this->messages);
+        return $this;
     }
 }

@@ -14,6 +14,7 @@ use Doctrine\Common\Annotations\Reader,
     Doctrine\ORM\EntityManager,
     Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\CoreRestBundle\Annotation\Transactional,
     Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
@@ -151,8 +152,14 @@ class TransactionalListener implements EventSubscriberInterface
         if ($transaction instanceof Transaction) {
             $data = $view->getData();
             $violations = $request->get('violations');
+
+            $infoMessages = $request->get('info_messages');
+
+            $infoMessages = new ArrayCollection();
+            $infoMessages->set('sent_message', 'added'); // @todo change this
+
             $view->setData(
-                $this->transactionResponseManager->handle($transaction, $data, $violations)
+                $this->transactionResponseManager->handle($transaction, $data, $violations, $infoMessages)
             );
             $view->setStatusCode($transaction->getStatus());
         }

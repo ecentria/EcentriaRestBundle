@@ -86,6 +86,7 @@ services:
             - @doctrine.orm.default_entity_manager
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
+            - @ecentria.api.builder.info
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
@@ -95,6 +96,7 @@ services:
             - @doctrine.orm.default_entity_manager
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
+            - @ecentria.api.builder.info
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
