@@ -151,7 +151,6 @@ class TransactionalListener implements EventSubscriberInterface
         if ($transaction instanceof Transaction) {
             $data = $view->getData();
             $violations = $request->get('violations');
-
             $view->setData(
                 $this->transactionResponseManager->handle($transaction, $data, $violations)
             );

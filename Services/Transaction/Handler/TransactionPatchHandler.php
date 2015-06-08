@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
     Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\CoreRestBundle\Services\ErrorBuilder;
