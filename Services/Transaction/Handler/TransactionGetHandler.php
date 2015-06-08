@@ -65,11 +65,8 @@ class TransactionGetHandler implements TransactionHandlerInterface
      *
      * @return CrudEntityInterface|CollectionResponse
      */
-    public function handle(
-        Transaction $transaction,
-        $data,
-        ConstraintViolationList $violations = null
-    ) {
+    public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
+    {
         if ($data instanceof CrudEntityInterface) {
             $data = $this->handleEntity($transaction, $data);
         } elseif ($data instanceof ArrayCollection) {

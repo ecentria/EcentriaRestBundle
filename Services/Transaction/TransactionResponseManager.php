@@ -47,20 +47,17 @@ class TransactionResponseManager
     /**
      * Handle
      *
-     * @param Transaction             $transaction Transaction
-     * @param mixed                   $data        Data
-     * @param ConstraintViolationList $violations  Violations
+     * @param Transaction             $transaction transaction
+     * @param mixed                   $data        data
+     * @param ConstraintViolationList $violations  violations
      *
      * @throws FeatureNotImplementedException
      * @throws \Exception
      *
      * @return CollectionResponse|CrudEntityInterface
      */
-    public function handle(
-        Transaction $transaction,
-        $data,
-        ConstraintViolationList $violations = null
-    ) {
+    public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
+    {
         if (is_array($data)) {
             $data = new ArrayCollection($data);
         }

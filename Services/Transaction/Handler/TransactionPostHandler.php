@@ -100,11 +100,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
      *
      * @return CrudEntityInterface|CollectionResponse
      */
-    public function handle(
-        Transaction $transaction,
-        $data,
-        ConstraintViolationList $violations = null
-    ) {
+    public function handle(Transaction $transaction, $data, ConstraintViolationList $violations = null)
+    {
         $this->errorBuilder->processViolations($violations);
         $this->errorBuilder->setTransactionErrors($transaction);
 
