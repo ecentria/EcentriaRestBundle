@@ -112,3 +112,4 @@ services:
             - @request_stack
             - @router
             - @kernel
+            - @ecentria.api.builder.info

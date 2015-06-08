@@ -48,10 +48,9 @@ class TransactionPatchHandler implements TransactionHandlerInterface
     /**
      * Handle
      *
-     * @param Transaction                         $transaction  Transaction
-     * @param CrudEntityInterface|ArrayCollection $data         Data
-     * @param ConstraintViolationList|null        $violations   Violations
-     * @param ArrayCollection|null                $infoMessages Info messages
+     * @param Transaction                         $transaction Transaction
+     * @param CrudEntityInterface|ArrayCollection $data        Data
+     * @param ConstraintViolationList|null        $violations  Violations
      *
      * @throws FeatureNotImplementedException
      *
@@ -60,8 +59,7 @@ class TransactionPatchHandler implements TransactionHandlerInterface
     public function handle(
         Transaction $transaction,
         $data,
-        ConstraintViolationList $violations = null,
-        ArrayCollection $infoMessages = null
+        ConstraintViolationList $violations = null
     ) {
         if (!$data instanceof CrudEntityInterface) {
             throw new FeatureNotImplementedException(

@@ -154,9 +154,6 @@ class TransactionalListener implements EventSubscriberInterface
             $violations = $request->get('violations');
             $infoMessages = $request->get('info_messages');
 
-            $infoMessages = new ArrayCollection();
-            $infoMessages->set('sent_message', 'added'); // @todo change this
-
             $view->setData(
                 $this->transactionResponseManager->handle($transaction, $data, $violations, $infoMessages)
             );

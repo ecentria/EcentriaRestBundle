@@ -37,25 +37,16 @@ class InfoBuilder
     }
 
     /**
-     * Set messages
+     * Add message
      *
-     * @param ArrayCollection $messages Messages
+     * @param string $key     Key
+     * @param string $message Message
      * @return $this
      */
-    public function setMessages(ArrayCollection $messages)
+    public function addMessage($key, $message)
     {
-        $this->messages = $messages;
+        $this->messages->set($key, $message);
         return $this;
-    }
-
-    /**
-     * Get messages
-     *
-     * @return ArrayCollection
-     */
-    public function getMessages()
-    {
-        return $this->messages;
     }
 
     /**

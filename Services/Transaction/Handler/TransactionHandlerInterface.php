@@ -35,17 +35,15 @@ interface TransactionHandlerInterface
     /**
      * Handle
      *
-     * @param Transaction                         $transaction  Transaction
-     * @param CrudEntityInterface|ArrayCollection $data         Data
-     * @param ConstraintViolationList|null        $violations   Violations
-     * @param ArrayCollection|null                $infoMessages Info messages
+     * @param Transaction                         $transaction Transaction
+     * @param CrudEntityInterface|ArrayCollection $data        Data
+     * @param ConstraintViolationList|null        $violations  Violations
      *
      * @return CrudEntityInterface|CollectionResponse
      */
     public function handle(
         Transaction $transaction,
         $data,
-        ConstraintViolationList $violations = null,
-        ArrayCollection $infoMessages = null
+        ConstraintViolationList $violations = null
     );
 }

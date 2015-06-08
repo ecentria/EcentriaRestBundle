@@ -65,23 +65,33 @@ class RequestCreator
     private $lastResponse;
 
     /**
+     * Info builder
+     *
+     * @var InfoBuilder
+     */
+    private $infoBuilder;
+
+    /**
      * Constructor
      *
      * @param CrudManager     $crudManager  CrudManager
      * @param RequestStack    $requestStack Request stack
      * @param Router          $router       Router
      * @param KernelInterface $kernel       Kernel
+     * @param InfoBuilder     $infoBuilder  Info builder
      */
     public function __construct(
         CrudManager $crudManager,
         RequestStack $requestStack,
         Router $router,
-        KernelInterface $kernel
+        KernelInterface $kernel,
+        InfoBuilder $infoBuilder
     ) {
         $this->crudManager = $crudManager;
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->kernel = $kernel;
+        $this->infoBuilder = $infoBuilder;
     }
 
     /**
@@ -95,9 +105,19 @@ class RequestCreator
     public function applyStrategy(RequestCreatorStrategyInterface $strategy, $data)
     {
         $collection = $this->normalize($data);
-        $isSuccess = $strategy->apply($this, $collection);
-        $this->requestStack->getMasterRequest()->attributes->set('info_messages', $strategy->getMessages());
-        return $isSuccess;
+        return $strategy->apply($this, $collection);
+    }
+
+    /**
+     * Add info message
+     *
+     * @param string $key     Key
+     * @param string $message Message
+     * @return void
+     */
+    public function addInfoMessage($key, $message)
+    {
+        $this->infoBuilder->addMessage($key, $message);
     }
 
     /**

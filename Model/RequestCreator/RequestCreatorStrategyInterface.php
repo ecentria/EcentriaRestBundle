@@ -31,13 +31,6 @@ interface RequestCreatorStrategyInterface
     public function apply(RequestCreator $creator, ArrayCollection $data);
 
     /**
-     * Get info messages
-     *
-     * @return ArrayCollection
-     */
-    public function getMessages();
-
-    /**
      * Create
      *
      * @return RequestCreatorStrategyInterface

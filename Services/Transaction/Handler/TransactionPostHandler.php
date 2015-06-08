@@ -92,10 +92,9 @@ class TransactionPostHandler implements TransactionHandlerInterface
     /**
      * Handle
      *
-     * @param Transaction                         $transaction  Transaction
-     * @param CrudEntityInterface|ArrayCollection $data         Data
-     * @param ConstraintViolationList|null        $violations   Violations
-     * @param ArrayCollection|null                $infoMessages Info messages
+     * @param Transaction                         $transaction Transaction
+     * @param CrudEntityInterface|ArrayCollection $data        Data
+     * @param ConstraintViolationList|null        $violations  Violations
      *
      * @throws FeatureNotImplementedException
      *
@@ -104,15 +103,10 @@ class TransactionPostHandler implements TransactionHandlerInterface
     public function handle(
         Transaction $transaction,
         $data,
-        ConstraintViolationList $violations = null,
-        ArrayCollection $infoMessages = null
+        ConstraintViolationList $violations = null
     ) {
         $this->errorBuilder->processViolations($violations);
         $this->errorBuilder->setTransactionErrors($transaction);
-
-        if ($infoMessages) {
-            $this->infoBuilder->setMessages($infoMessages);
-        }
 
         $success = !$this->errorBuilder->hasErrors();
         $status = $success ? Transaction::STATUS_CREATED : Transaction::STATUS_CONFLICT;
