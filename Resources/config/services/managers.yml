@@ -18,6 +18,8 @@ parameters:
 
     ecentria.api.request_creator.class:            Ecentria\Libraries\EcentriaRestBundle\Services\RequestCreator
 
+    ecentria.api.request_creator.class:            Ecentria\Libraries\CoreRestBundle\Services\RequestCreator
+
 services:
 
     # Builders

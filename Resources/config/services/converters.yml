@@ -1,5 +1,4 @@
 parameters:
-
     ecentria.api.converter.model.class:            Ecentria\Libraries\EcentriaRestBundle\Converter\ModelConverter
     ecentria.api.converter.array_collection.class: Ecentria\Libraries\EcentriaRestBundle\Converter\ArrayCollectionConverter
     ecentria.api.converter.json.class:             Ecentria\Libraries\EcentriaRestBundle\Converter\JsonConverter
@@ -7,7 +6,6 @@ parameters:
     ecentria.api.converter.entity.class:           Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter
 
 services:
-
     ecentria.api.converter.model:
         class: %ecentria.api.converter.model.class%
         arguments:

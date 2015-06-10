@@ -83,12 +83,7 @@ class ModelConverter implements ParamConverterInterface
         } else {
             $content = $request->getContent();
         }
-
-
-        if (!class_exists($class)) {
-            throw new \InvalidArgumentException($class . ' class does not exist.');
-        }
-
+        
         if (!class_exists($class)) {
             throw new \InvalidArgumentException($class . ' class does not exist.');
         }
