@@ -1,19 +1,19 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Entity;
+namespace Ecentria\Libraries\EcentriaRestBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
-use Ecentria\Libraries\CoreRestBundle\Validator\Constraints as EcentriaAssert;
+use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAssert;
 
 /**
  * Transaction entity
@@ -68,7 +68,6 @@ class Transaction
      *
      * @var string
      * @ORM\Column(name="related_id", type="string", nullable=true)
-     *
      */
     private $relatedId;
 
@@ -213,7 +212,7 @@ class Transaction
      * Id setter
      *
      * @param int $id
-     * @return self
+     * @return Transaction
      */
     public function setId($id)
     {
@@ -226,7 +225,7 @@ class Transaction
      *
      * @param string $model
      *
-     * @return self
+     * @return Transaction
      */
     public function setModel($model)
     {
@@ -295,7 +294,7 @@ class Transaction
      *
      * @param string $method
      *
-     * @return self
+     * @return Transaction
      */
     public function setMethod($method)
     {
@@ -318,7 +317,7 @@ class Transaction
      *
      * @param string $requestSource
      *
-     * @return self
+     * @return Transaction
      */
     public function setRequestSource($requestSource)
     {
@@ -341,7 +340,7 @@ class Transaction
      *
      * @param string $requestId
      *
-     * @return self
+     * @return Transaction
      */
     public function setRequestId($requestId)
     {
@@ -364,7 +363,7 @@ class Transaction
      *
      * @param \DateTime $createdAt
      *
-     * @return self
+     * @return Transaction
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
@@ -387,7 +386,7 @@ class Transaction
      *
      * @param \DateTime $updatedAt
      *
-     * @return self
+     * @return Transaction
      */
     public function setUpdatedAt(\DateTime $updatedAt)
     {
@@ -410,7 +409,7 @@ class Transaction
      *
      * @param int $status
      *
-     * @return self
+     * @return Transaction
      */
     public function setStatus($status)
     {
@@ -433,7 +432,7 @@ class Transaction
      *
      * @param boolean $success
      *
-     * @return self
+     * @return Transaction
      */
     public function setSuccess($success)
     {
@@ -456,7 +455,7 @@ class Transaction
      *
      * @param ArrayCollection|null $messages
      *
-     * @return self
+     * @return Transaction
      */
     public function setMessages(ArrayCollection $messages = null)
     {

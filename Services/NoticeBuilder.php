@@ -1,17 +1,17 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
 
 /**
  * Notice builder
@@ -43,6 +43,8 @@ class NoticeBuilder
 
     /**
      * Success
+     *
+     * @return void
      */
     public function addSuccess()
     {
@@ -52,6 +54,8 @@ class NoticeBuilder
 
     /**
      * Fail
+     *
+     * @return void
      */
     public function addFail()
     {
@@ -67,9 +71,9 @@ class NoticeBuilder
     public function getNotices()
     {
         return array(
-            'total' => $this->total,
+            'total'   => $this->total,
             'success' => $this->success,
-            'failed' => $this->failed
+            'failed'  => $this->failed
         );
     }
 
@@ -80,13 +84,15 @@ class NoticeBuilder
      */
     public function isEmpty()
     {
-        return ! (bool) $this->total;
+        return !(bool) $this->total;
     }
 
     /**
      * Setting transaction notices
      *
-     * @param Transaction $transaction
+     * @param Transaction &$transaction
+     *
+     * @return void
      */
     public function setTransactionNotices(Transaction &$transaction)
     {
@@ -102,5 +108,4 @@ class NoticeBuilder
             $transaction->setMessages($messages);
         }
     }
-
 }

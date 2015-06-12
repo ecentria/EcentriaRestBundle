@@ -1,17 +1,18 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2015, Ecentria, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Converter;
 
-use Ecentria\Libraries\CoreRestBundle\Model\Alias;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
+namespace Ecentria\Libraries\EcentriaRestBundle\Converter;
+
+use Ecentria\Libraries\EcentriaRestBundle\Model\Alias;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
 use Symfony\Component\HttpFoundation\Request;

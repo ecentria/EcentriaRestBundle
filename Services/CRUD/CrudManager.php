@@ -1,24 +1,24 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services\CRUD;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services\CRUD;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
-use Ecentria\Libraries\CoreRestBundle\Event\CrudCollectionEvent;
-use Ecentria\Libraries\CoreRestBundle\Event\CrudEvent;
-use Ecentria\Libraries\CoreRestBundle\Event\Events;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface;
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudUnitOfWork;
-use Ecentria\Libraries\CoreRestBundle\Model\Error;
+use Ecentria\Libraries\EcentriaRestBundle\Event\CrudCollectionEvent;
+use Ecentria\Libraries\EcentriaRestBundle\Event\CrudEvent;
+use Ecentria\Libraries\EcentriaRestBundle\Event\Events;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudUnitOfWork;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Error;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolation;

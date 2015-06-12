@@ -1,19 +1,19 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Entity;
+namespace Ecentria\Libraries\EcentriaRestBundle\Entity;
 
-use Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait,
-    Ecentria\Libraries\CoreRestBundle\Model\Timestampable\TimestampableTrait,
-    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableTrait,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait;
 
 /**
  * Abstract CRUD entity class

@@ -1,16 +1,16 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle;
+namespace Ecentria\Libraries\EcentriaRestBundle;
 
-use Ecentria\Libraries\CoreRestBundle\DependencyInjection\Compiler\TransactionHandlerPass;
+use Ecentria\Libraries\EcentriaRestBundle\DependencyInjection\Compiler\TransactionHandlerPass;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -21,12 +21,14 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  *
  */
-class EcentriaLibrariesCoreRestBundle extends Bundle
+class EcentriaRestBundle extends Bundle
 {
     /**
      * Build
      *
      * @param ContainerBuilder $container
+     *
+     * @return void
      */
     public function build(ContainerBuilder $container)
     {

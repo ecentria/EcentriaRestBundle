@@ -1,21 +1,21 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedTrait,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalTrait;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait;
 
 use JMS\Serializer\Annotation as Serializer;
 
@@ -50,7 +50,7 @@ class CollectionResponse implements EmbeddedInterface, TransactionalInterface
      * Items setter
      *
      * @param ArrayCollection $items
-     * @return self
+     * @return CollectionResponse
      */
     public function setItems(ArrayCollection $items)
     {
@@ -72,6 +72,8 @@ class CollectionResponse implements EmbeddedInterface, TransactionalInterface
      * Setting association to show
      *
      * @param mixed $value
+     *
+     * @return void
      */
     public function setInheritedShowAssociations($value)
     {
@@ -82,4 +84,3 @@ class CollectionResponse implements EmbeddedInterface, TransactionalInterface
         }
     }
 }
-

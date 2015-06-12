@@ -1,17 +1,17 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
-use Ecentria\Libraries\CoreRestBundle\Services\UUID;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
 /**
  * Transaction service
@@ -60,7 +60,7 @@ class TransactionBuilder
      *
      * @param string $requestMethod
      *
-     * @return self
+     * @return TransactionBuilder
      */
     public function setRequestMethod($requestMethod)
     {
@@ -73,7 +73,7 @@ class TransactionBuilder
      *
      * @param string $requestSource
      *
-     * @return self
+     * @return TransactionBuilder
      */
     public function setRequestSource($requestSource)
     {
@@ -86,7 +86,7 @@ class TransactionBuilder
      *
      * @param string $model
      *
-     * @return self
+     * @return TransactionBuilder
      */
     public function setModel($model)
     {
@@ -99,7 +99,7 @@ class TransactionBuilder
      *
      * @param string $relatedRoute
      *
-     * @return self
+     * @return TransactionBuilder
      */
     public function setRelatedRoute($relatedRoute)
     {
@@ -112,7 +112,7 @@ class TransactionBuilder
      *
      * @param string $relatedId
      *
-     * @return self
+     * @return TransactionBuilder
      */
     public function setRelatedId($relatedId)
     {

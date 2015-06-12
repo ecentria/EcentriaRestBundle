@@ -1,14 +1,14 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Annotation;
+namespace Ecentria\Libraries\EcentriaRestBundle\Annotation;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
 
@@ -34,7 +34,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ConfigurationAnnotation;
  */
 class Transactional extends ConfigurationAnnotation
 {
-    const NAME = 'Ecentria\\Libraries\\CoreRestBundle\\Annotation\\Transactional';
+    const NAME = 'Ecentria\\Libraries\\EcentriaRestBundle\\Annotation\\Transactional';
 
     /**
      * Model (entity namespace)

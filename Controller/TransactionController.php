@@ -1,16 +1,16 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Controller;
+namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
 
 use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\FOSRestController,
@@ -41,7 +41,7 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      *
      * @Sensio\ParamConverter(
      *      "transactionEntity",
-     *      class="Ecentria\Libraries\CoreRestBundle\Entity\Transaction",
+     *      class="Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction",
      *      converter = "ecentria.api.converter.entity"
      * )
      *

@@ -1,21 +1,21 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Services\Transaction;
+namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction,
-    Ecentria\Libraries\CoreRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse,
-    Ecentria\Libraries\CoreRestBundle\Services\Transaction\Handler\TransactionHandlerInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+    Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler\TransactionHandlerInterface;
 
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;

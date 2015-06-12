@@ -1,9 +1,9 @@
 parameters:
 
-    ecentria.api.constraint.circular_reference.class: Ecentria\Libraries\CoreRestBundle\Validator\Constraints\CircularReferenceValidator
-    ecentria.api.constraint.email.class:              Ecentria\Libraries\CoreRestBundle\Validator\Constraints\EmailValidator
-    ecentria.api.constraint.in_array.class:           Ecentria\Libraries\CoreRestBundle\Validator\Constraints\InArrayValidator
-    ecentria.api.constraint.unique_entity.class:      Ecentria\Libraries\CoreRestBundle\Validator\Constraints\UniqueEntityValidator
+    ecentria.api.constraint.circular_reference.class: Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReferenceValidator
+    ecentria.api.constraint.email.class:              Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\EmailValidator
+    ecentria.api.constraint.in_array.class:           Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\InArrayValidator
+    ecentria.api.constraint.unique_entity.class:      Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\UniqueEntityValidator
 
     ecentria.api.validator.class:                     Symfony\Component\Validator\Validator\RecursiveValidator
 

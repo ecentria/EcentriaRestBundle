@@ -1,19 +1,19 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\EventListener;
+namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
-use Ecentria\Libraries\CoreRestBundle\Model\Alias;
-use Ecentria\Libraries\CoreRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\CoreRestBundle\Model\Embedded\EmbeddedInterface;
-use Ecentria\Libraries\CoreRestBundle\Services\Transaction\TransactionResponseManager;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Alias;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;

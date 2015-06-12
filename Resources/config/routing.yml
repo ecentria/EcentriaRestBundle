@@ -1,17 +1,17 @@
 configuration:
     type:     rest
-    resource: Ecentria\Libraries\CoreRestBundle\Controller\ConfigurationController
+    resource: Ecentria\Libraries\EcentriaRestBundle\Controller\ConfigurationController
 
 transaction-service:
     type:     rest
-    resource: Ecentria\Libraries\CoreRestBundle\Controller\TransactionController
+    resource: Ecentria\Libraries\EcentriaRestBundle\Controller\TransactionController
     options:
         expose: true
 
 status:
     type:     rest
-    resource: Ecentria\Libraries\CoreRestBundle\Controller\StatusController
+    resource: Ecentria\Libraries\EcentriaRestBundle\Controller\StatusController
 
 ping:
     type:     rest
-    resource: Ecentria\Libraries\CoreRestBundle\Controller\PingController
+    resource: Ecentria\Libraries\EcentriaRestBundle\Controller\PingController

@@ -1,16 +1,16 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\Transactional;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\Transactional;
 
-use Ecentria\Libraries\CoreRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
 
 /**
  * Transactional trait
@@ -32,7 +32,11 @@ trait TransactionalTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface::setTransaction
+     * @param Transaction|null $transaction
+     *
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface::setTransaction
+     *
+     * @return TransactionalTrait
      */
     public function setTransaction(Transaction $transaction = null)
     {
@@ -43,7 +47,9 @@ trait TransactionalTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Transactional\TransactionalInterface::getTransaction
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface::getTransaction
+     *
+     * @return Transaction|null
      */
     public function getTransaction()
     {
