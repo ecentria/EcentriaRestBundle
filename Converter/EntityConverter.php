@@ -105,7 +105,7 @@ class EntityConverter extends BaseDoctrineParamConverter
     {
         $data = $create ? json_decode($request->getContent(), true) : array();
         $object = $this->crudTransformer->arrayToObject($data, $class);
-        if ($object instanceof ValidatableInterface) {
+        if ($object instanceof ValidatableInterface && $create) {
             $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
             $valid = !((bool) $violations->count());
             $object->setViolations($violations);

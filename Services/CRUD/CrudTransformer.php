@@ -105,7 +105,7 @@ class CrudTransformer
     }
 
     /**
-     * Array to object parameter validation
+     * Array to object property validation
      *
      * @param array  $data  Object fields
      * @param string $class Class name of object to test
