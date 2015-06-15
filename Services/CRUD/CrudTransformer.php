@@ -121,7 +121,7 @@ class CrudTransformer
                         new ConstraintViolation(
                             "This is not a valid property of $class",
                             "This is not a valid property of $class",
-                            array($property, $class),
+                            array(),
                             null,
                             $property,
                             $value
