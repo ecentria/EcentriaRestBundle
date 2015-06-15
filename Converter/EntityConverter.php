@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Converter;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\Alias;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
 use Symfony\Component\HttpFoundation\Request;
@@ -104,6 +105,12 @@ class EntityConverter extends BaseDoctrineParamConverter
     {
         $data = $create ? json_decode($request->getContent(), true) : array();
         $object = $this->crudTransformer->arrayToObject($data, $class);
+        if ($object instanceof ValidatableInterface) {
+            $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
+            $valid = !((bool) $violations->count());
+            $object->setViolations($violations);
+            $object->setValid($valid);
+        }
         if (!$create && $object instanceof CrudEntityInterface) {
             $object->setId($request->attributes->get('id'));
         }

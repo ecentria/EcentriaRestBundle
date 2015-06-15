@@ -92,32 +92,45 @@ class CrudTransformer
         $this->initializeClassMetadata($class);
         $object = new $class();
         if (is_array($data)) {
-            $badProperties = new ConstraintViolationList();
             foreach ($data as $property => $value) {
-                $success = $this->processPropertyValue(
+                $this->processPropertyValue(
                     $object,
                     $property,
                     $value,
                     'create'
                 );
-                if (!$success) {
+            }
+        }
+        return $object;
+    }
+
+    /**
+     * Array to object parameter validation
+     *
+     * @param array  $data  Object fields
+     * @param string $class Class name of object to test
+     * @return ConstraintViolationList
+     */
+    public function arrayToObjectPropertyValidation(array $data, $class)
+    {
+        $badProperties = new ConstraintViolationList();
+        if (is_array($data)) {
+            foreach ($data as $property => $value) {
+                if (!$this->isPropertyAccessible($property, 'create')) {
                     $badProperties->add(
                         new ConstraintViolation(
-                            "The '$property' field is not a valid property of $class",
-                            "The '$property' field is not a valid property of $class",
+                            "This is not a valid property of $class",
+                            "This is not a valid property of $class",
                             array($property, $class),
-                            $object,
+                            null,
                             $property,
                             $value
                         )
                     );
                 }
             }
-            if ($badProperties->count()) {
-                throw new ValidationFailedException($badProperties);
-            }
         }
-        return $object;
+        return $badProperties;
     }
 
     /**
@@ -326,20 +339,17 @@ class CrudTransformer
      * @param string               $action     action
      * @param ArrayCollection|null $collection collection
      *
-     * @return boolean Was processing successful?
+     * @return void
      */
     public function processPropertyValue($object, $property, $value, $action, ArrayCollection $collection = null)
     {
         if (!$this->isPropertyAccessible($property, $action)) {
-            return false;
+            return;
         }
         $value = $this->transformPropertyValue($property, $value, $collection);
         $method = $this->getPropertySetter($property);
         if (method_exists($object, $method)) {
             $object->$method($value);
-            return true;
-        } else {
-            return false;
         }
     }
 

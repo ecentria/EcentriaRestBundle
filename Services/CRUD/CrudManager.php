@@ -17,6 +17,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Event\CrudCollectionEvent;
 use Ecentria\Libraries\EcentriaRestBundle\Event\CrudEvent;
 use Ecentria\Libraries\EcentriaRestBundle\Event\Events;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudUnitOfWork;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Error;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -235,9 +236,11 @@ class CrudManager
     public function createOne(CrudEntityInterface $object)
     {
         $this->create($object, false);
-        $violations = $this->validateCollection(new ArrayCollection(array($object)));
-        if ($violations->count()) {
-            throw new ValidationFailedException($violations);
+        if ($object instanceof ValidatableInterface) {
+            $object->getViolations()->addAll($this->validateCollection(new ArrayCollection(array($object))));
+            if ($object->getViolations()->count()) {
+                throw new ValidationFailedException($object->getViolations());
+            }
         }
         $this->flush();
     }
