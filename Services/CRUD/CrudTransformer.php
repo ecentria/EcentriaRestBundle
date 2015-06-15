@@ -19,6 +19,9 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Serializer;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
+use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
@@ -77,10 +80,51 @@ class CrudTransformer
     }
 
     /**
-     * Array to collection transform
+     * Array to object transformation
      *
-     * @param array  $data  Data
-     * @param string $class Given collection class
+     * @param array  $data  Object fields
+     * @param string $class Class name of object to create
+     * @return mixed
+     * @throws ConstraintViolation
+     */
+    public function arrayToObject(array $data, $class)
+    {
+        $this->initializeClassMetadata($class);
+        $object = new $class();
+        if (is_array($data)) {
+            $badProperties = new ConstraintViolationList();
+            foreach ($data as $property => $value) {
+                $success = $this->processPropertyValue(
+                    $object,
+                    $property,
+                    $value,
+                    'create'
+                );
+                if (!$success) {
+                    $badProperties->add(
+                        new ConstraintViolation(
+                            "The '$property' field is not a valid property of $class",
+                            "The '$property' field is not a valid property of $class",
+                            array($property, $class),
+                            $object,
+                            $property,
+                            $value
+                        )
+                    );
+                }
+            }
+            if ($badProperties->count()) {
+                throw new ValidationFailedException($badProperties);
+            }
+        }
+        return $object;
+    }
+
+    /**
+     * Array to object collection transformation
+     *
+     * @param array  $data  Array of individual object field arrays
+     * @param string $class Given collection class name of object to create
      *
      * @return ArrayCollection
      */
@@ -282,17 +326,20 @@ class CrudTransformer
      * @param string               $action     action
      * @param ArrayCollection|null $collection collection
      *
-     * @return void
+     * @return boolean Was processing successful?
      */
     public function processPropertyValue($object, $property, $value, $action, ArrayCollection $collection = null)
     {
         if (!$this->isPropertyAccessible($property, $action)) {
-            return;
+            return false;
         }
         $value = $this->transformPropertyValue($property, $value, $collection);
         $method = $this->getPropertySetter($property);
         if (method_exists($object, $method)) {
             $object->$method($value);
+            return true;
+        } else {
+            return false;
         }
     }
 
