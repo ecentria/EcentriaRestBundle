@@ -19,7 +19,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-interface CrudEntityInterface extends EmbeddedInterface, TransactionalInterface, TimestampableInterface
+interface CrudEntityInterface
 {
     /**
      * Id getter

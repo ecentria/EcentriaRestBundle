@@ -225,6 +225,24 @@ class CrudManager
     }
 
     /**
+     * Create one object
+     *
+     * @param CrudEntityInterface $object Object to create
+     *
+     * @throws ValidationFailedException
+     * @return void
+     */
+    public function createOne(CrudEntityInterface $object)
+    {
+        $this->create($object, false);
+        $violations = $this->validateCollection(new ArrayCollection(array($object)));
+        if ($violations->count()) {
+            throw new ValidationFailedException($violations);
+        }
+        $this->flush();
+    }
+
+    /**
      * Creating collection
      *
      * @param ArrayCollection|CrudEntityInterface[] $collection        Collection
