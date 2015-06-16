@@ -237,7 +237,7 @@ class CrudManager
     {
         $this->create($object, false);
         if ($object instanceof ValidatableInterface) {
-            $object->getViolations()->addAll($this->validateCollection(new ArrayCollection(array($object))));
+            $object->getViolations()->addAll($this->validate($object));
             if ($object->getViolations()->count()) {
                 throw new ValidationFailedException($object->getViolations());
             }

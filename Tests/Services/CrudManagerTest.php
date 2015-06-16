@@ -74,7 +74,7 @@ class CrudManagerTest extends TestCase
             '\Symfony\Component\EventDispatcher\EventDispatcher',
             array('dispatch')
         );
-        $this->crudTransformer = $this->prepareCRUDTransformet();
+        $this->crudTransformer = $this->prepareCRUDTransformer();
         $this->crudManager = new CrudManager(
             $this->entityManager,
             $this->recursiveValidator,
@@ -266,7 +266,7 @@ class CrudManagerTest extends TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function prepareCRUDTransformet()
+    private function prepareCRUDTransformer()
     {
         return $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer')
             ->disableOriginalConstructor()
