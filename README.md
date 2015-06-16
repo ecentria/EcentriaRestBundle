@@ -8,12 +8,12 @@ of API requests and responses.
 Documentation
 -------------
 
-Documentation for Ecentria Rest Bundle is in [Resources/doc/index.md](https://github.com/ecentria/EcentriaRestBundle/blob/master/Resources/doc/index.md)
+Documentation for Ecentria Rest Bundle is in [Resources/doc/index.md](Resources/doc/index.md)
 
 Installation
 ------------
 
-Installation instructions can be found in the [documentation](https://github.com/ecentria/EcentriaRestBundle/blob/master/Resources/doc/setup.md)
+Installation instructions can be found in the [documentation](Resources/doc/setup.md)
 
 License
 -------
