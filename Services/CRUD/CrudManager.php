@@ -237,7 +237,10 @@ class CrudManager
     {
         $this->create($object, false);
         if ($object instanceof ValidatableInterface) {
-            $object->getViolations()->addAll($this->validate($object));
+            $validation = $this->validate($object);
+            if ($validation instanceof ConstraintViolationListInterface) {
+                $object->getViolations()->addAll($validation);
+            }
             if ($object->getViolations()->count()) {
                 throw new ValidationFailedException($object->getViolations());
             }
