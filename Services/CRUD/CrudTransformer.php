@@ -91,15 +91,13 @@ class CrudTransformer
     {
         $this->initializeClassMetadata($class);
         $object = new $class();
-        if (is_array($data)) {
-            foreach ($data as $property => $value) {
-                $this->processPropertyValue(
-                    $object,
-                    $property,
-                    $value,
-                    'create'
-                );
-            }
+        foreach ($data as $property => $value) {
+            $this->processPropertyValue(
+                $object,
+                $property,
+                $value,
+                'create'
+            );
         }
         return $object;
     }
@@ -114,20 +112,18 @@ class CrudTransformer
     public function arrayToObjectPropertyValidation(array $data, $class)
     {
         $badProperties = new ConstraintViolationList();
-        if (is_array($data)) {
-            foreach ($data as $property => $value) {
-                if (!$this->isPropertyAccessible($property, 'create')) {
-                    $badProperties->add(
-                        new ConstraintViolation(
-                            "This is not a valid property of $class",
-                            "This is not a valid property of $class",
-                            array(),
-                            null,
-                            $property,
-                            $value
-                        )
-                    );
-                }
+        foreach ($data as $property => $value) {
+            if (!$this->isPropertyAccessible($property, 'create')) {
+                $badProperties->add(
+                    new ConstraintViolation(
+                        "This is not a valid property of $class",
+                        "This is not a valid property of $class",
+                        array(),
+                        null,
+                        $property,
+                        $value
+                    )
+                );
             }
         }
         return $badProperties;

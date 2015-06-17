@@ -76,13 +76,15 @@ class EntityConverter extends BaseDoctrineParamConverter
     }
 
     /**
-     * @param $class
-     * @param $request
-     * @param $options
-     * @param $name
+     * Find object
+     *
+     * @param string  $class   Class name
+     * @param Request $request HTTP request
+     * @param array   $options Param converter options
+     * @param string  $name    Name of object
      * @return bool|mixed
      */
-    private function findObject($class, $request, $options, $name)
+    private function findObject($class, Request $request, array $options, $name)
     {
         $object = null;
         // find by identifier?
@@ -96,9 +98,10 @@ class EntityConverter extends BaseDoctrineParamConverter
     /**
      * Create New Object
      *
-     * @param string  $class
-     * @param Request $request
-     * @param bool    $create
+     * @param string  $class   Class name
+     * @param Request $request HTTP request
+     * @param bool    $create  Should a missing object be created?
+     * @param array   $options Param converter options
      * @return CrudEntityInterface|mixed
      */
     private function createNewObject($class, Request $request, $create, $options)
