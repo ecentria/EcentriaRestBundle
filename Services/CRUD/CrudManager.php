@@ -227,29 +227,6 @@ class CrudManager
     }
 
     /**
-     * Create one object
-     *
-     * @param CrudEntityInterface $object Object to create
-     *
-     * @throws ValidationFailedException
-     * @return void
-     */
-    public function createOne(CrudEntityInterface $object)
-    {
-        $this->create($object, false);
-        if ($object instanceof ValidatableInterface) {
-            $validation = $this->validate($object);
-            if ($validation instanceof ConstraintViolationListInterface) {
-                $object->getViolations()->addAll($validation);
-            }
-            if ($object->getViolations()->count()) {
-                throw new ValidationFailedException($object->getViolations());
-            }
-        }
-        $this->flush();
-    }
-
-    /**
      * Creating collection
      *
      * @param ArrayCollection|CrudEntityInterface[] $collection        Collection
@@ -438,11 +415,16 @@ class CrudManager
      */
     public function save(CrudEntityInterface $entity)
     {
-        $violations = $this->validate($entity);
-        if ($violations instanceof ConstraintViolationList) {
-            throw new ValidationFailedException($violations);
+        if ($entity instanceof ValidatableInterface) {
+            $validation = $this->validate($entity);
+            if ($validation instanceof ConstraintViolationListInterface) {
+                $entity->getViolations()->addAll($validation);
+            }
+            if ($entity->getViolations()->count()) {
+                throw new ValidationFailedException($entity->getViolations());
+            }
         }
-        $this->flush($entity);
+        $this->flush();
     }
 
     /**
