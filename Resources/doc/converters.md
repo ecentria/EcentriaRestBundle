@@ -6,19 +6,22 @@ Converters helps to get data from request in suitable format.
 ArrayCollectionConverter
 ------------------------
 
+```
 /**
   * @Sensio\ParamConverter(
   *      "subscriptions",
   *      class="Ecentria\Bundle\CommunicationApiBundle\Entity\Subscription",
   *      converter = "ecentria.api.converter.array_collection"
   * )
-  */ 
+  */
+```
 
 EntityConverter
 ---------------
 
 For retrieving doctrine entities based upon simple id parameters contained in the request.
 
+```
 /**
   * @Sensio\ParamConverter(
   *      "subscription",
@@ -28,9 +31,11 @@ For retrieving doctrine entities based upon simple id parameters contained in th
   *
   * @Route("/subscription/{id}", ...
   */
+```
 
 Also includes a mode for creation of entities with potential one to one and one to many relationships.
 
+```
 /**
  * @Sensio\ParamConverter(
  *      "credit",
@@ -49,20 +54,24 @@ Also includes a mode for creation of entities with potential one to one and one 
  * @Route("/account/{accountId}/credit", ...
  *
  */
+```
 
 JsonConverter
 -------------
 
+```
 /**
   * @Sensio\ParamConverter(
   *      "data",
   *      converter = "ecentria.api.converter.json"
   * )
-  */ 
+  */
+```
 
 ParameterConverter
 ------------------
 
+```
 /**
   * @Sensio\ParamConverter(
   *      converter = “ecentria.api.converter.parameter”,
@@ -71,3 +80,4 @@ ParameterConverter
   *      }
   * )
   */
+```
