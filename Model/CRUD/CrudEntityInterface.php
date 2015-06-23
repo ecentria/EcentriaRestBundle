@@ -19,23 +19,31 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-interface CrudEntityInterface
+interface CrudEntityInterface extends EmbeddedInterface, TransactionalInterface
 {
     /**
-     * Id getter
+     * Primary key getter
      *
      * @return mixed
      */
-    public function getId();
+    public function getPrimaryKey();
 
     /**
-     * Id setter
+     * Ids getter
+     * array of 'id' => value - Used to generate routes: i.e /author/{authorId}/book/{bookId}
      *
-     * @param mixed $id id
+     * @return array
+     */
+    public function getIds();
+
+    /**
+     * Ids setter
+     *
+     * @param array $ids array of 'id' => value - should set the property of each 'id' with the value
      *
      * @return CrudEntityInterface
      */
-    public function setId($id);
+    public function setIds($ids);
 
     /**
      * Returns an array that is enough to update entity

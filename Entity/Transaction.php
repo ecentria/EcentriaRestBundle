@@ -67,9 +67,9 @@ class Transaction
      * Related entity
      *
      * @var string
-     * @ORM\Column(name="related_id", type="string", nullable=true)
+     * @ORM\Column(name="related_ids", type="array", nullable=true)
      */
-    private $relatedId;
+    private $relatedIds;
 
     /**
      * Related entity
@@ -244,26 +244,26 @@ class Transaction
     }
 
     /**
-     * RelatedId setter
+     * RelatedIds setter
      *
-     * @param string $relatedId
+     * @param array $relatedIds
      *
      * @return $this
      */
-    public function setRelatedId($relatedId)
+    public function setRelatedIds($relatedIds)
     {
-        $this->relatedId = $relatedId;
+        $this->relatedIds = $relatedIds;
         return $this;
     }
 
     /**
      * RelatedId getter
      *
-     * @return string
+     * @return array
      */
-    public function getRelatedId()
+    public function getRelatedIds()
     {
-        return $this->relatedId;
+        return $this->relatedIds;
     }
 
     /**

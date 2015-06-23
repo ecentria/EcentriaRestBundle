@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\ORM\EntityManager;
 
+use Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
@@ -20,6 +21,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -85,6 +87,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
             } else {
                 $data = $this->handleCollection($transaction, $data);
             }
+        } else if ($data instanceof CrudEntityInterface) {
+            $this->handleEntity($transaction, $data);
         } else {
             throw new FeatureNotImplementedException(
                 get_class($data) . ' class is not supported by transactions (POST). Instance of ArrayCollection needed.'
@@ -92,7 +96,13 @@ class TransactionPostHandler implements TransactionHandlerInterface
         }
 
         if (!$transaction->getSuccess()) {
-            $data->getItems()->clear();
+            if ($data instanceof ArrayCollection) {
+                $data->getItems()->clear();
+            } else {
+                $transaction->setRelatedIds(null);
+                $data = new CollectionResponse(new ArrayCollection(array()));
+                $data->setShowAssociations(true);
+            }
         }
 
         return $data;
@@ -109,33 +119,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
     private function handleCollection(Transaction $baseTransaction, ArrayCollection $data)
     {
         foreach ($data as $entity) {
-
             $transaction = clone $baseTransaction;
-
-            $transaction->setRequestSource(Transaction::SOURCE_SERVICE);
-            $transaction->setId(UUID::generate());
-            $transaction->setRequestId(microtime());
-            $transaction->setRelatedId($entity->getId());
-
-            $errors = $this->errorBuilder->getEntityErrors($entity->getId());
-            $messages = new ArrayCollection();
-
-            $success = $errors->isEmpty();
-            $status = $success ? Transaction::STATUS_CREATED : Transaction::STATUS_CONFLICT;
-
-            $transaction->setStatus($status);
-            $transaction->setSuccess($success);
-
-            if ($success) {
-                $this->noticeBuilder->addSuccess();
-            } else {
-                $messages->set('errors', $errors);
-                $this->noticeBuilder->addFail();
-            }
-
-            $transaction->setMessages($messages);
-            $this->entityManager->persist($transaction);
-            $entity->setTransaction($transaction);
+            $this->handleEntity($transaction, $entity);
         }
 
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
@@ -143,6 +128,41 @@ class TransactionPostHandler implements TransactionHandlerInterface
         $data->setShowAssociations(true);
 
         return $data;
+    }
+
+    /**
+     * Handle individual entity
+     *
+     * @param Transaction        $transaction Transaction
+     * @param AbstractCrudEntity $entity      Entity
+     */
+    private function handleEntity($transaction, AbstractCrudEntity $entity)
+    {
+        $transaction->setRequestSource(Transaction::SOURCE_SERVICE);
+        $transaction->setId(UUID::generate());
+        $transaction->setRequestId(microtime());
+        $transaction->setRelatedIds($entity->getIds());
+
+
+        $errors = $this->errorBuilder->getEntityErrors($entity->getPrimaryKey());
+        $messages = new ArrayCollection();
+
+        $success = $errors->isEmpty();
+        $status = $success ? Transaction::STATUS_CREATED : Transaction::STATUS_CONFLICT;
+
+        $transaction->setStatus($status);
+        $transaction->setSuccess($success);
+
+        if ($success) {
+            $this->noticeBuilder->addSuccess();
+        } else {
+            $messages->set('errors', $errors);
+            $this->noticeBuilder->addFail();
+        }
+
+        $transaction->setMessages($messages);
+        $this->entityManager->persist($transaction);
+        $entity->setTransaction($transaction);
     }
 
     /**

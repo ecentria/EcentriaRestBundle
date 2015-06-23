@@ -23,27 +23,34 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-abstract class AbstractCrudEntity implements CrudEntityInterface, EmbeddedInterface, TransactionalInterface, TimestampableInterface
+abstract class AbstractCrudEntity implements CrudEntityInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;
-    use TimestampableTrait;
 
     /**
-     * Id getter
+     * Primary key getter
      *
      * @return mixed
      */
-    abstract public function getId();
+    abstract public function getPrimaryKey();
 
     /**
-     * Id setter
+     * Ids getter
+     * array of 'id' => value - Used to generate routes: i.e /author/{authorId}/book/{bookId}
      *
-     * @param mixed $id id
+     * @return array
+     */
+    abstract public function getIds();
+
+    /**
+     * Ids setter
+     *
+     * @param array $ids array of 'id' => value - should set the property of each 'id' with the value
      *
      * @return CrudEntityInterface
      */
-    abstract public function setId($id);
+    abstract public function setIds($ids);
 
     /**
      * Returns an array that is enough to update entity

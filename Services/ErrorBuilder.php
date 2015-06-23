@@ -64,7 +64,7 @@ class ErrorBuilder
      */
     private function processViolation(ConstraintViolation $violation)
     {
-        $id = $violation->getRoot()->getId();
+        $id = $violation->getRoot()->getPrimaryKey();
         $errors = $this->getEntityErrors($id);
         $context = $this->determineContext($violation);
         $error = new Error(

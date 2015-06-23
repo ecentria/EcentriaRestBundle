@@ -106,7 +106,9 @@ class EntityConverter extends BaseDoctrineParamConverter
      */
     private function createNewObject($class, Request $request, $create, $options)
     {
-        $data = $create ? json_decode($request->getContent(), true) : array();
+        $ids = [];
+        $data = $create ? json_decode($request->getContent(), true) : [];
+
         $object = $this->crudTransformer->arrayToObject($data, $class);
         if ($object instanceof ValidatableInterface && $create) {
             $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
@@ -115,7 +117,10 @@ class EntityConverter extends BaseDoctrineParamConverter
             $object->setValid($valid);
         }
         if (!$create && $object instanceof CrudEntityInterface) {
-            $object->setId($request->attributes->get('id'));
+            foreach ($object->getIds() as $field => $value) {
+                $ids[$field] = $request->attributes->get($field);
+            }
+            $object->setIds($ids);
         }
         if (isset($options['references'])) {
             $references = !is_array(current($options['references'])) ? array($options['references']) : $options['references'];

@@ -49,11 +49,11 @@ class TransactionBuilder
     protected $relatedRoute;
 
     /**
-     * Related id
+     * Related ids
      *
      * @var string
      */
-    protected $relatedId;
+    protected $relatedIds;
 
     /**
      * RequestMethod setter
@@ -108,15 +108,15 @@ class TransactionBuilder
     }
 
     /**
-     * RelatedId setter
+     * RelatedIds setter
      *
-     * @param string $relatedId
+     * @param string $relatedIds
      *
      * @return TransactionBuilder
      */
-    public function setRelatedId($relatedId)
+    public function setRelatedIds($relatedIds)
     {
-        $this->relatedId = $relatedId;
+        $this->relatedIds = $relatedIds;
         return $this;
     }
 
@@ -125,9 +125,9 @@ class TransactionBuilder
      *
      * @return string
      */
-    public function getRelatedId()
+    public function getRelatedIds()
     {
-        return $this->relatedId;
+        return $this->relatedIds;
     }
 
     /**
@@ -141,7 +141,7 @@ class TransactionBuilder
         $transaction = new Transaction();
         $transaction->setMethod($this->requestMethod)
             ->setRelatedRoute($this->relatedRoute)
-            ->setRelatedId($this->relatedId)
+            ->setRelatedIds($this->relatedIds)
             ->setRequestId(microtime())
             ->setId(UUID::generate())
             ->setRequestSource($this->requestSource)
