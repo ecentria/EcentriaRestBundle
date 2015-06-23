@@ -19,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConve
 use Symfony\Component\HttpFoundation\Request;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Validator\Exception\RuntimeException;
 
 /**
  * Modified DoctrineParamConverter.
@@ -108,7 +109,9 @@ class EntityConverter extends BaseDoctrineParamConverter
     {
         $ids = [];
         $data = $create ? json_decode($request->getContent(), true) : [];
-
+        if (!is_array($data)) {
+            throw new RuntimeException('Invalid JSON request content');
+        }
         $object = $this->crudTransformer->arrayToObject($data, $class);
         if ($object instanceof ValidatableInterface && $create) {
             $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
