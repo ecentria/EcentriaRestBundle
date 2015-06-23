@@ -96,7 +96,7 @@ class CrudTransformer
                 $object,
                 $property,
                 $value,
-                'create'
+                PropertyRestriction::CREATE
             );
         }
         return $object;
@@ -113,7 +113,7 @@ class CrudTransformer
     {
         $badProperties = new ConstraintViolationList();
         foreach ($data as $property => $value) {
-            if (!$this->isPropertyAccessible($property, 'create')) {
+            if (!$this->isPropertyAccessible($property, PropertyRestriction::CREATE)) {
                 $badProperties->add(
                     new ConstraintViolation(
                         "This is not a valid property of $class",
@@ -149,7 +149,7 @@ class CrudTransformer
                         $object,
                         $property,
                         $value,
-                        'create',
+                        PropertyRestriction::CREATE,
                         $collection
                     );
                 }
