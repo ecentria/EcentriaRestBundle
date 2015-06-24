@@ -119,8 +119,10 @@ class TransactionPostHandler implements TransactionHandlerInterface
     private function handleCollection(Transaction $baseTransaction, ArrayCollection $data)
     {
         foreach ($data as $entity) {
-            $transaction = clone $baseTransaction;
-            $this->handleEntity($transaction, $entity);
+            if ($entity instanceof CrudEntityInterface) {
+                $transaction = clone $baseTransaction;
+                $this->handleEntity($transaction, $entity);
+            }
         }
 
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
