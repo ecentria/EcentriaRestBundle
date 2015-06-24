@@ -106,9 +106,9 @@ class CrudManagerTest extends TestCase
     public function testValidationCollectionSuccess()
     {
         $entity1 = $this->prepareEntity();
-        $entity1->setId('1');
+        $entity1->setIds(array('id' => 1));
         $entity2 = $this->prepareEntity();
-        $entity2->setId('2');
+        $entity2->setIds(array('id' => 2));
         $entities = new ArrayCollection(array($entity1, $entity2));
         $this->recursiveValidator->expects($this->exactly(2))
             ->method('validate')
@@ -133,9 +133,9 @@ class CrudManagerTest extends TestCase
     public function testCreateEntityPersist()
     {
         $entity1 = $this->prepareEntity();
-        $entity1->setId(1);
+        $entity1->setIds(array('id' => 1));
         $entity2 = $this->prepareEntity();
-        $entity2->setId(2);
+        $entity2->setIds(array('id' => 2));
 
         $entities = new ArrayCollection(
             array($entity1, $entity2)
@@ -173,18 +173,18 @@ class CrudManagerTest extends TestCase
     {
         $entity = $this->prepareEntity();
 
-        $id = 'new.email@opticsplanet.com';
+        $ids = array('id' => 'new.email@opticsplanet.com');
         $type = 'email';
         $data = array(
             array(
-                'id'   => $id,
+                'id'   => $ids['id'],
                 'type' => $type
             )
         );
 
         $entity->expects($this->never())
-            ->method('setId')
-            ->with($id);
+            ->method('setIds')
+            ->with($ids);
 
         $unitOfWorkMock = $this->prepareUnitOfWork();
 

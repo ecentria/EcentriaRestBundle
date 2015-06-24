@@ -52,7 +52,6 @@ class CrudEntityTest extends TestCase
 
         $this->assertTrue($this->CrudEntity instanceof EmbeddedInterface);
         $this->assertTrue($this->CrudEntity instanceof TransactionalInterface);
-        $this->assertTrue($this->CrudEntity instanceof TimestampableInterface);
 
         // Transactional
         $this->assertTrue(method_exists($this->CrudEntity, 'setTransaction'));
@@ -61,11 +60,5 @@ class CrudEntityTest extends TestCase
         // Embedded
         $this->assertTrue(method_exists($this->CrudEntity, 'setShowAssociations'));
         $this->assertTrue(method_exists($this->CrudEntity, 'showAssociations'));
-
-        // Timestampable
-        $this->assertTrue(method_exists($this->CrudEntity, 'setCreatedAt'));
-        $this->assertTrue(method_exists($this->CrudEntity, 'getCreatedAt'));
-        $this->assertTrue(method_exists($this->CrudEntity, 'setUpdatedAt'));
-        $this->assertTrue(method_exists($this->CrudEntity, 'getUpdatedAt'));
     }
 }

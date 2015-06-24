@@ -42,6 +42,13 @@ class CircularReferenceEntity implements CrudEntityInterface
     private $id;
 
     /**
+     * Identifiers
+     *
+     * @var string
+     */
+    private $ids;
+
+    /**
      * Parent channel
      *
      * @var CircularReferenceEntity
@@ -63,14 +70,19 @@ class CircularReferenceEntity implements CrudEntityInterface
         $this->Children = new ArrayCollection();
     }
 
+    public function getPrimaryKey()
+    {
+        return $this->id;
+    }
+
     /**
      * Id getter
      *
      * @return mixed
      */
-    public function getId()
+    public function getIds()
     {
-        return $this->id;
+        return $this->ids;
     }
 
     /**
@@ -80,9 +92,10 @@ class CircularReferenceEntity implements CrudEntityInterface
      *
      * @return CircularReferenceEntity
      */
-    public function setId($id)
+    public function setIds($ids)
     {
-        $this->id = $id;
+        $this->ids = $ids;
+        $this->id = $ids['id'];
         return $this;
     }
 
