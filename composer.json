@@ -1,10 +1,10 @@
 {
-    "name": "ecentria/core-rest-bundle",
+    "name": "ecentria/ecentria-rest-bundle",
     "type": "symfony-bundle",
     "minimum-stability": "dev",
-    "description": "Core REST bundle that all Ecentria REST services will extend.",
-    "keywords": ["ecentria", "library", "rest", "core"],
-    "homepage": "http://stash.dev.opticplanet.net/projects/LIB/repos/corerestbundle/browse",
+    "description": "Goal of this bundle is to simplify process of creating APIs with Symfony. We use already well-coded libraries, combine them together to simplify process and not to re-invent the wheel. We've chose REST and HATEOS to have unified standards of API requests and responses.",
+    "keywords": ["ecentria", "library", "rest"],
+    "homepage": "https://github.com/ecentria/EcentriaRestBundle",
     "license": "MIT",
     "authors": [
         {
@@ -19,7 +19,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "ssh://git@stash.dev.opticplanet.net/lib/corerestbundle.git"
+            "url": "https://github.com/ecentria/EcentriaRestBundle"
         }
     ],
     "require": {
@@ -33,10 +33,14 @@
         "egulias/email-validator": "~1.1",
         "nelmio/api-doc-bundle": "2.7.0",
         "doctrine/orm": "~2.3",
+        "doctrine/doctrine-bundle": "~1.2",
         "sensio/framework-extra-bundle": "~3.0.1"
     },
+    "require-dev": {
+        "phpunit/phpunit": "4.6.*"
+    },
     "autoload": {
-        "psr-4": { "Ecentria\\Libraries\\CoreRestBundle\\": "" }
+        "psr-4": { "Ecentria\\Libraries\\EcentriaRestBundle\\": "" }
     },
     "branch-alias": {
         "dev-master": "0.0.x-dev"

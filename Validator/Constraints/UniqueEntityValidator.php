@@ -1,13 +1,14 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Validator\Constraints;
+
+namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
@@ -23,6 +24,8 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class UniqueEntityValidator extends BaseUniqueEntityValidator
 {
     /**
+     * Entity Manager
+     *
      * @var EntityManager
      */
     private $entityManager;
@@ -31,6 +34,8 @@ class UniqueEntityValidator extends BaseUniqueEntityValidator
      * Entity manager setter
      *
      * @param EntityManager $entityManager
+     *
+     * @return void
      */
     public function setEntityManager(EntityManager $entityManager)
     {
@@ -43,7 +48,7 @@ class UniqueEntityValidator extends BaseUniqueEntityValidator
     public function validate($entity, Constraint $constraint)
     {
         if (!$constraint instanceof UniqueEntity) {
-            throw new UnexpectedTypeException($constraint, __NAMESPACE__.'\UniqueEntity');
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\UniqueEntity');
         }
 
         $criticalError = false;

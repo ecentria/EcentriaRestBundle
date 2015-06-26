@@ -8,10 +8,10 @@
 * file that was distributed with this source code.
 */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\RequestCreator;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\RequestCreator;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\CoreRestBundle\Services\RequestCreator;
+use Ecentria\Libraries\EcentriaRestBundle\Services\RequestCreator;
 
 /**
  * Creator strategy interface

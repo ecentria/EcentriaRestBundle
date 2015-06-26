@@ -1,14 +1,14 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Model\Timestampable;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable;
 
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
@@ -43,7 +43,11 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::setCreatedAt
+     * @param \DateTime $createdAt
+     *
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\TimestampableInterface::setCreatedAt
+     *
+     * @return TimestampableTrait
      */
     public function setCreatedAt(\DateTime $createdAt)
     {
@@ -54,7 +58,9 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::getCreatedAt
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\TimestampableInterface::getCreatedAt
+     *
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -64,7 +70,11 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::setUpdatedAt
+     * @param \DateTime $updatedAt
+     *
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\TimestampableInterface::setUpdatedAt
+     *
+     * @return TimestampableTrait
      */
     public function setUpdatedAt(\DateTime $updatedAt)
     {
@@ -75,7 +85,9 @@ trait TimestampableTrait
     /**
      * {@inheritdoc}
      *
-     * @see \Ecentria\Libraries\CoreRestBundle\Model\Embedded\TimestampableInterface::getUpdatedAt
+     * @see \Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\TimestampableInterface::getUpdatedAt
+     *
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {

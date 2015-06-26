@@ -1,19 +1,19 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\CoreRestBundle\Tests\Services;
+namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\UnitOfWork;
-use Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudManager;
-use Ecentria\Libraries\CoreRestBundle\Tests\Entity\CircularReferenceEntity;
+use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager;
+use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -268,7 +268,7 @@ class CrudManagerTest extends TestCase
      */
     private function prepareCRUDTransformet()
     {
-        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Services\CRUD\CrudTransformer')
+        return $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer')
             ->disableOriginalConstructor()
             ->setMethods(array('initializeClassMetadata', 'processPropertyValue'))
             ->getMock();
@@ -294,7 +294,7 @@ class CrudManagerTest extends TestCase
      */
     private function prepareEntity()
     {
-        return $this->getMockBuilder('\Ecentria\Libraries\CoreRestBundle\Tests\Entity\CircularReferenceEntity')
+        return $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity')
             ->disableOriginalConstructor()
             ->setMethods(array('getId', 'getType', 'setType'))
             ->getMock();

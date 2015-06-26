@@ -1,199 +1,37 @@
-Ecentria Core REST Bundle v0.1.4
+Ecentria REST Bundle
 =========================
 
-This bundle is the core REST bundle that all REST services built within Ecentria will extend.
-Initially, this bundle contains the following:
-    1) FOSRestBundle & JMSSerializerBundle setup
-    2) Pre-set routes for /ping and /status for monitoring
+Goal of this bundle is to simplify process of creating APIs with Symfony. We use already well-coded libraries, combine
+them together to simplify process and not to re-invent the wheel. We've chose REST and HATEOS to have unified standards
+of API requests and responses.
 
-As more services are created, this bundle will grow to include commonly-needed functionality.
+Documentation
+-------------
+
+Documentation for Ecentria Rest Bundle is in [Resources/doc/index.md](https://github.com/ecentria/EcentriaRestBundle/blob/master/Resources/doc/index.md)
 
 Installation
 ------------
 
-## A) Install Ecentria Generic Service Bundle
+Installation instructions can be found in the [documentation](https://github.com/ecentria/EcentriaRestBundle/blob/master/Resources/doc/setup.md)
 
-Add the repository to your composer.json file 
+License
+-------
 
-    "repositories": [
-        ...
-        { "type": "vcs", "url": "ssh://git@stash.dev.opticplanet.net/lib/corerestbundle.git" }
-    ]
+This bundle is under the MIT license. See the complete license in the bundle:
 
-Add via composer command
-
-    $ php composer.phar require ecentria/core-rest-bundle dev-master
-
-Or Add via composer.json directly
-
-    "ecentria/core-rest-bundle": "dev-master"
-
-## B) Enable the bundle
-
-Enable the bundle, as well as the FOSRestBundle and JMSSerializerBundle in the kernal:
-
-``` php
-<?php
-// app/AppKernel.php
-
-public function registerBundles()
-{
-    $bundles = array(
-        // ...
-         new Ecentria\Libraries\CoreRestBundle\EcentriaLibrariesCoreRestBundle(),
-         new FOS\RestBundle\FOSRestBundle(),
-         new JMS\SerializerBundle\JMSSerializerBundle(),
-         new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
-    );
-}
-```
-
-## C) Update app/config/config.yml
-
-Modify app/config/config.yml and add the following:
-
-``` yaml
-sensio_framework_extra:
-    view:
-        annotations: false
-
-fos_rest:
-    param_fetcher_listener: true
-    body_listener: true
-    format_listener: true
-    routing_loader:
-            default_format: json
-    view:
-        view_response_listener: 'force'
-
-nelmio_api_doc: ~
-```
-
-If you want use native json_encode/decode in your project instead of JMS\Serializer, add one more option
-to the end of fos_rest section:
-
-``` yaml
-
-fos_rest:
-    ...
-    service:
-        serializer: ecentria.fos_rest.native_json_encode_serializer
-
-```
-
-## D) Update app/config/routing.yml
-
-Modify app/config/routing.yml and add the following:
-
-``` yaml
-_ecentria_libnraries_core_rest_bundle:
-    resource: "@EcentriaLibrariesCoreRestBundle/Resources/config/routing.yml"
-
-NelmioApiDocBundle:
-    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
-    prefix:   /api/doc
-```
-
-Converters
------------
------------
-
-Converters helps to get data from request in suitable format.
-
- * ### ArrayCollectionConverter
-
-        /**
-          * @Sensio\ParamConverter(
-          *      "subscriptions",
-          *      class="Ecentria\Bundle\CommunicationApiBundle\Entity\Subscription",
-          *      converter = "ecentria.api.converter.array_collection"
-          * )
-          */ 
-
- * ### EntityConverter
-
-        /**
-          * @Sensio\ParamConverter(
-          *      "subscription",
-          *      class="Ecentria\Bundle\CommunicationApiBundle\Entity\Subscription",
-          *      converter = "ecentria.api.converter.entity"
-          * )
-          */
-
- * ### JsonConverter
-
-        /**
-          * @Sensio\ParamConverter(
-          *      "data",
-          *      converter = "ecentria.api.converter.json"
-          * )
-          */ 
-
- * ### ParameterConverter
-
-        /**
-          * @Sensio\ParamConverter(
-          *      converter = “ecentria.api.converter.parameter”,
-          *      options = {
-          *           "parameters" = {"hash"}
-          *      }
-          * )
-          */
-  
-  
-Annotations
------------
------------
-
-There are several useful annotations.
-
- * ### Transactional
-Used for controller to enable transaction system.
+    Resources/meta/LICENSE
     
-    **model**
+Reporting an issue or a feature request
+---------------------------------------
 
-        Every controller must work with defined resource.
-        Model parameter should be equal to full path to your
-        entity that current controller works with.
+Issues and feature requests are tracked in the [Github issue tracker](https://github.com/ecentria/EcentriaRestBundle/issues).
 
-    **relatedRoute**
+For contributors
+----------------
 
-        Every model should have route leading to get action.
-        Related route parameter must be equal to current route name.
-
-    Example:
-
-        use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
-        
-        /**
-         * @EcentriaAnnotation\Transactional(
-         *   model="Path to you entity",
-         *   relatedRoute="your_get_entity_route"
-         * )
-         */
-        
-        
-* ### AvoidTransaction
-
-    Used for controller action to avoid creating transaction.
-
-        use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
-        
-        /**
-         * @EcentriaAnnotation\AvoidTransaction()
-         */
-        
-        
-* ### PropertyRestriction
-Used for model (entity) property to avoid update or create.
-As parameter it gets array of actions: {“update”, “create"}
-
-        use Ecentria\Libraries\CoreRestBundle\Annotation as EcentriaAnnotation;
-        
-        /**
-         * @EcentriaAnnotation\PropertyRestriction({"update", "create"})
-         */
-         
-
-## That's it!
-Everything is in place to start building out REST services.
+1. Fork repository
+2. Create your feature branch (`git checkout -b new-feature-name`)
+3. Code your improvement or feature
+4. Write tests
+5. Create new Pull Request

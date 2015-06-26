@@ -1,13 +1,13 @@
 <?php
 /*
- * This file is part of the Ecentria software.
+ * This file is part of the ecentria group, inc. software.
  *
- * (c) 2014, OpticsPlanet, Inc
+ * (c) 2015, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Ecentria\Libraries\CoreRestBundle\Validator\Constraints;
+namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
@@ -16,10 +16,9 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 /**
  * Circular reference validator
+ * TODO: make validator to work with different identifiers. getId() - must be reworked.
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
- *
- * TODO: make validator to work with different identifiers. getId() - must be reworked.
  */
 class CircularReferenceValidator extends ConstraintValidator
 {
@@ -38,6 +37,8 @@ class CircularReferenceValidator extends ConstraintValidator
     protected $entity;
 
     /**
+     * Entity Manager
+     *
      * @var EntityManager
      */
     protected $entityManager;
@@ -46,6 +47,8 @@ class CircularReferenceValidator extends ConstraintValidator
      * Entity manager setter
      *
      * @param EntityManager $entityManager
+     *
+     * @return void
      */
     public function setEntityManager(EntityManager $entityManager)
     {
@@ -79,6 +82,8 @@ class CircularReferenceValidator extends ConstraintValidator
      *
      * @param object $entity
      * @param object $parent
+     *
+     * @return void
      */
     private function validateParent($entity, $parent)
     {
@@ -99,6 +104,8 @@ class CircularReferenceValidator extends ConstraintValidator
      * @param mixed $childId
      * @param string|null $name
      * @param string|null $message
+     *
+     * @return void
      */
     private function addViolationAt($parentId, $childId = null, $name = null, $message = null)
     {
@@ -115,9 +122,10 @@ class CircularReferenceValidator extends ConstraintValidator
     /**
      * Returns all parent channels for given channel
      *
-     * @param object $channel
+     * @param mixed   $channel
      * @param array   $parents
-     * @return object[]|array
+     *
+     * @return mixed|array
      */
     private function getParents($channel, array $parents = array())
     {
