@@ -20,7 +20,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
-use Ecentria\Libraries\CoreRestBundle\Services\InfoBuilder;
+use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
