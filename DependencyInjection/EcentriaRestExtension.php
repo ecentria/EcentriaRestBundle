@@ -18,9 +18,9 @@ use Symfony\Component\DependencyInjection\Loader;
 /**
  * This is the class that loads and manages your bundle configuration
  *
- * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
- * 
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
+ *
+ * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
 class EcentriaRestExtension extends Extension
 {
