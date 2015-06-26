@@ -38,6 +38,6 @@ class EcentriaRestExtension extends Extension
      */
     public function getAlias()
     {
-        return 'ecentria_libraries_core_rest';
+        return 'ecentria_rest';
     }
 }

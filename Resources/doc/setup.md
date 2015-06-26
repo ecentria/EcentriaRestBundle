@@ -80,7 +80,7 @@ D: Update app/config/routing.yml
 Modify app/config/routing.yml and add the following:
 
 ``` yaml
-_ecentria_libraries_core_rest_bundle:
+_ecentria_rest_bundle:
     resource: "@EcentriaRestBundle/Resources/config/routing.yml"
 
 NelmioApiDocBundle:
