@@ -97,15 +97,9 @@ class NoticeBuilder
     public function setTransactionNotices(Transaction &$transaction)
     {
         $messages = $transaction->getMessages();
-        if (is_null($messages)) {
-            $messages = new ArrayCollection();
-        }
         if (!$this->isEmpty()) {
             $messages->set('notices', $this->getNotices());
         }
-
-        if ($messages->count()) {
-            $transaction->setMessages($messages);
-        }
+        $transaction->setMessages($messages);
     }
 }
