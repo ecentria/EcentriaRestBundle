@@ -189,14 +189,14 @@ class Transaction
     private $success;
 
     /**
-     * Message
-     * Json encoded message
+     * Messages
+     * Json encoded messages
      *
-     * @var ArrayCollection|null
+     * @var array
      *
-     * @ORM\Column(name="message", type="array")
+     * @ORM\Column(name="message", type="json_array")
      */
-    private $messages;
+    private $messages = [];
 
     /**
      * Id getter
@@ -453,23 +453,23 @@ class Transaction
     /**
      * Messages setter
      *
-     * @param ArrayCollection|null $messages
+     * @param ArrayCollection $messages
      *
      * @return Transaction
      */
-    public function setMessages(ArrayCollection $messages = null)
+    public function setMessages(ArrayCollection $messages)
     {
-        $this->messages = empty($messages) || $messages->isEmpty() ? null : $messages->toArray();
+        $this->messages = $messages->toArray();
         return $this;
     }
 
     /**
      * Messages getter
      *
-     * @return ArrayCollection|null
+     * @return ArrayCollection
      */
     public function getMessages()
     {
-        return empty($this->messages) ? null : new ArrayCollection($this->messages);
+        return new ArrayCollection($this->messages);
     }
 }
