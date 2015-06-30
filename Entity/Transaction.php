@@ -21,7 +21,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAsser
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  *
  * @ORM\Entity()
- * @ORM\Table(name="transaction")
+ * @ORM\Table(name="`transaction`")
  * @EcentriaAssert\TransactionSuccess()
  */
 class Transaction
@@ -459,17 +459,17 @@ class Transaction
      */
     public function setMessages(ArrayCollection $messages = null)
     {
-        $this->messages = $messages->isEmpty() ? null : $messages;
+        $this->messages = empty($messages) || $messages->isEmpty() ? null : $messages->toArray();
         return $this;
     }
 
     /**
      * Messages getter
      *
-     * @return ArrayCollection
+     * @return ArrayCollection|null
      */
     public function getMessages()
     {
-        return $this->messages;
+        return empty($this->messages) ? null : new ArrayCollection($this->messages);
     }
 }
