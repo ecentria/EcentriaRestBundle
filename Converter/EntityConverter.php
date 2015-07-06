@@ -38,6 +38,7 @@ class EntityConverter extends BaseDoctrineParamConverter
     /**
      * Constructor
      *
+     * @param ManagerRegistry $registry        Registry
      * @param CrudTransformer $crudTransformer crudTransformer
      */
     public function __construct(CrudTransformer $crudTransformer, ManagerRegistry $registry = null)
@@ -77,6 +78,57 @@ class EntityConverter extends BaseDoctrineParamConverter
     }
 
     /**
+     * Create New Object
+     *
+     * @param string  $class   Class name
+     * @param Request $request HTTP request
+     * @param bool    $create  Should a missing object be created?
+     * @param array   $options Param converter options
+     * @throws \RuntimeException
+     * @return CrudEntityInterface|mixed
+     */
+    public function createNewObject($class, Request $request, $create, $options)
+    {
+        $ids = [];
+        $data = $create ? json_decode($request->getContent(), true) : [];
+        if (!is_array($data)) {
+            throw new RuntimeException('Invalid JSON request content');
+        }
+        // Convert array into object and test validity
+        $object = $this->crudTransformer->arrayToObject($data, $class);
+        if ($object instanceof ValidatableInterface && $create) {
+            $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
+            $valid = !((bool) $violations->count());
+            $object->setViolations($violations);
+            $object->setValid($valid);
+        }
+        // Get list of ids from request attributes
+        if (!$create && $object instanceof CrudEntityInterface) {
+            foreach ($object->getIds() as $field => $value) {
+                $ids[$field] = $request->attributes->get($field);
+            }
+            $object->setIds($ids);
+        }
+        // Convert external entity references into associated objects
+        if (isset($options['references'])) {
+            $references = !is_array(current($options['references'])) ? array($options['references']) : $options['references'];
+            foreach ($references as $reference) {
+                $entity = $this->findObject(
+                    $reference['class'],
+                    $request,
+                    array_merge($reference, $options),
+                    $reference['name']
+                );
+                $setter = $this->crudTransformer->getPropertySetter($reference['name']);
+                if (method_exists($object, $setter) && is_object($entity)) {
+                    $object->$setter($entity);
+                }
+            }
+        }
+        return $object;
+    }
+
+    /**
      * Find object
      *
      * @param string  $class   Class name
@@ -92,50 +144,6 @@ class EntityConverter extends BaseDoctrineParamConverter
         if (null === $object = $this->find($class, $request, $options, $name)) {
             // find by criteria
             $object = $this->findOneBy($class, $request, $options);
-        }
-        return $object;
-    }
-
-    /**
-     * Create New Object
-     *
-     * @param string  $class   Class name
-     * @param Request $request HTTP request
-     * @param bool    $create  Should a missing object be created?
-     * @param array   $options Param converter options
-     * @return CrudEntityInterface|mixed
-     */
-    private function createNewObject($class, Request $request, $create, $options)
-    {
-        $ids = [];
-        $data = $create ? json_decode($request->getContent(), true) : [];
-        if (!is_array($data)) {
-            throw new RuntimeException('Invalid JSON request content');
-        }
-        $object = $this->crudTransformer->arrayToObject($data, $class);
-        if ($object instanceof ValidatableInterface && $create) {
-            $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
-            $valid = !((bool) $violations->count());
-            $object->setViolations($violations);
-            $object->setValid($valid);
-        }
-        if (!$create && $object instanceof CrudEntityInterface) {
-            foreach ($object->getIds() as $field => $value) {
-                $ids[$field] = $request->attributes->get($field);
-            }
-            $object->setIds($ids);
-        }
-        if (isset($options['references'])) {
-            $references = !is_array(current($options['references'])) ? array($options['references']) : $options['references'];
-            foreach ($references as $reference) {
-                $entity = $this->findObject(
-                    $reference['class'], $request, array_merge($reference, $options), $reference['name']
-                );
-                $setter = $this->crudTransformer->getPropertySetter($reference['name']);
-                if (method_exists($object, $setter) && is_object($entity)) {
-                    $object->$setter($entity);
-                }
-            }
         }
         return $object;
     }

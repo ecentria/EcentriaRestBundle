@@ -182,6 +182,25 @@ class CrudTransformerTest extends TestCase
     }
 
     /**
+     * Test Array To Object Validation
+     *
+     * @return void
+     */
+    public function testArrayToObjectValidation()
+    {
+        $classMetadata = $this->prepareClassMetadata();
+        $this->entityManager->expects($this->once())
+            ->method('getClassMetadata')
+            ->willReturn($classMetadata);
+        $this->crudTransformer->initializeClassMetadata('className');
+
+        $errors = $this->crudTransformer->arrayToObjectPropertyValidation(array('invalid' => 'test'), 'className');
+
+        $this->assertEquals(1, $errors->count());
+        $this->assertEquals('This is not a valid property of className', $errors->get(0)->getMessage());
+    }
+
+    /**
      * Testing transformation of a null value
      *
      * @return void

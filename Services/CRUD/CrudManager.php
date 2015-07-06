@@ -417,8 +417,12 @@ class CrudManager
     {
         if ($entity instanceof ValidatableInterface) {
             $validation = $this->validate($entity);
-            if ($validation instanceof ConstraintViolationListInterface) {
+            if ($validation instanceof ConstraintViolationListInterface &&
+                $entity->getViolations() instanceof ConstraintViolationListInterface
+            ) {
                 $entity->getViolations()->addAll($validation);
+            } else if ($validation instanceof ConstraintViolationListInterface) {
+                $entity->setViolations($validation);
             }
             if ($entity->getViolations()->count()) {
                 throw new ValidationFailedException($entity->getViolations());

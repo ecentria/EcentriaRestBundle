@@ -18,6 +18,8 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableTrait,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait,
     Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAssert;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableTrait;
 
 /**
  * CircularReferenceEntity test
@@ -28,11 +30,12 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
  *      field="Parent"
  * )
  */
-class CircularReferenceEntity implements CrudEntityInterface
+class CircularReferenceEntity implements CrudEntityInterface, ValidatableInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;
     use TimestampableTrait;
+    use ValidatableTrait;
 
     /**
      * Identifier
@@ -70,6 +73,11 @@ class CircularReferenceEntity implements CrudEntityInterface
         $this->Children = new ArrayCollection();
     }
 
+    /**
+     * Get primary key
+     *
+     * @return mixed|string
+     */
     public function getPrimaryKey()
     {
         return $this->id;
@@ -88,7 +96,7 @@ class CircularReferenceEntity implements CrudEntityInterface
     /**
      * Id setter
      *
-     * @param mixed $id id
+     * @param mixed $ids ids
      *
      * @return CircularReferenceEntity
      */

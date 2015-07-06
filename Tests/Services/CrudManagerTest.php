@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
+use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -96,6 +97,38 @@ class CrudManagerTest extends TestCase
             ->with($this->equalTo($entity))
             ->willReturn(new ConstraintViolationList());
         $this->assertEquals(true, $this->crudManager->validate($entity));
+    }
+
+    /**
+     * Test Save
+     *
+     * @return void
+     */
+    public function testSave()
+    {
+        $entity = $this->prepareEntity();
+        $violations = new ConstraintViolationList(
+            array(
+                new ConstraintViolation(
+                    'Test',
+                    'Test',
+                    array(),
+                    null,
+                    null,
+                    null
+                )
+            )
+        );
+        $this->recursiveValidator->expects($this->once())
+            ->method('validate')
+            ->with($this->equalTo($entity))
+            ->willReturn($violations);
+        try {
+            $this->crudManager->save($entity);
+        } catch (ValidationFailedException $e) {
+            $this->assertEquals('Test', $e->getConstraintViolationList()->get(0)->getMessage());
+        }
+
     }
 
     /**
