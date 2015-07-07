@@ -12,8 +12,3 @@ Update the vendors for the project using ```php composer.phar update```
 Retrieve ```phpunit.phar``` from https://phpunit.de and save into the root of the project.
 
 Run ```php phpunit.phar``` in the root of the project to start the tests.
-
-## Conventions
-
-1. Any added public method should contain unit tests.
-2. If current tests are failing... ?
