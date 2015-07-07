@@ -11,6 +11,9 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Entity;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait,
     Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableTrait,
     Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait;
@@ -24,23 +27,30 @@ abstract class AbstractCrudEntity implements CrudEntityInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;
-    use TimestampableTrait;
 
     /**
-     * Id getter
+     * Primary key getter
      *
      * @return mixed
      */
-    abstract public function getId();
+    abstract public function getPrimaryKey();
 
     /**
-     * Id setter
+     * Ids getter
+     * array of 'id' => value - Used to generate routes: i.e /author/{authorId}/book/{bookId}
      *
-     * @param mixed $id id
+     * @return array
+     */
+    abstract public function getIds();
+
+    /**
+     * Ids setter
+     *
+     * @param array $ids array of 'id' => value - should set the property of each 'id' with the value
      *
      * @return CrudEntityInterface
      */
-    abstract public function setId($id);
+    abstract public function setIds($ids);
 
     /**
      * Returns an array that is enough to update entity

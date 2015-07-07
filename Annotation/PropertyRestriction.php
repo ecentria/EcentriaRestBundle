@@ -26,6 +26,10 @@ final class PropertyRestriction extends Annotation
 {
     const NAME = 'Ecentria\\Libraries\\EcentriaRestBundle\\Annotation\\PropertyRestriction';
 
+    const CREATE = 'create';
+    const UPDATE = 'update';
+    const ALL = 'all';
+
     /**
      * Is granted for:
      * - create
@@ -37,7 +41,7 @@ final class PropertyRestriction extends Annotation
      */
     public function isGranted($action)
     {
-        if ($this->value === null || $this->value === 'all') {
+        if ($this->value === null || $this->value === self::ALL) {
             return false;
         }
         if (!is_string($action)) {

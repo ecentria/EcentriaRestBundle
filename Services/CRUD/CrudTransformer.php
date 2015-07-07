@@ -19,6 +19,9 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Serializer;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
+use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
@@ -77,10 +80,60 @@ class CrudTransformer
     }
 
     /**
-     * Array to collection transform
+     * Array to object transformation
      *
-     * @param array  $data  Data
-     * @param string $class Given collection class
+     * @param array  $data  Object fields
+     * @param string $class Class name of object to create
+     * @return mixed
+     * @throws ConstraintViolation
+     */
+    public function arrayToObject(array $data, $class)
+    {
+        $this->initializeClassMetadata($class);
+        $object = new $class();
+        foreach ($data as $property => $value) {
+            $this->processPropertyValue(
+                $object,
+                $property,
+                $value,
+                PropertyRestriction::CREATE
+            );
+        }
+        return $object;
+    }
+
+    /**
+     * Array to object property validation
+     *
+     * @param array  $data  Object fields
+     * @param string $class Class name of object to test
+     * @return ConstraintViolationList
+     */
+    public function arrayToObjectPropertyValidation(array $data, $class)
+    {
+        $badProperties = new ConstraintViolationList();
+        foreach ($data as $property => $value) {
+            if (!$this->isPropertyAccessible($property, PropertyRestriction::CREATE)) {
+                $badProperties->add(
+                    new ConstraintViolation(
+                        "This is not a valid property of $class",
+                        "This is not a valid property of $class",
+                        array(),
+                        null,
+                        $property,
+                        $value
+                    )
+                );
+            }
+        }
+        return $badProperties;
+    }
+
+    /**
+     * Array to object collection transformation
+     *
+     * @param array  $data  Array of individual object field arrays
+     * @param string $class Given collection class name of object to create
      *
      * @return ArrayCollection
      */
@@ -96,7 +149,7 @@ class CrudTransformer
                         $object,
                         $property,
                         $value,
-                        'create',
+                        PropertyRestriction::CREATE,
                         $collection
                     );
                 }

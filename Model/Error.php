@@ -63,4 +63,14 @@ class Error
         $this->context = $context;
         $this->key = $key;
     }
+
+    /**
+     * Returns the error code
+     *
+     * @return int|null
+     */
+    public function getCode()
+    {
+        return $this->code;
+    }
 }
