@@ -17,12 +17,14 @@ use Ecentria\Libraries\EcentriaRestBundle\Event\CrudCollectionEvent;
 use Ecentria\Libraries\EcentriaRestBundle\Event\CrudEvent;
 use Ecentria\Libraries\EcentriaRestBundle\Event\Events;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudUnitOfWork;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Error;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
@@ -413,11 +415,20 @@ class CrudManager
      */
     public function save(CrudEntityInterface $entity)
     {
-        $violations = $this->validate($entity);
-        if ($violations instanceof ConstraintViolationList) {
-            throw new ValidationFailedException($violations);
+        if ($entity instanceof ValidatableInterface) {
+            $validation = $this->validate($entity);
+            if ($validation instanceof ConstraintViolationListInterface &&
+                $entity->getViolations() instanceof ConstraintViolationListInterface
+            ) {
+                $entity->getViolations()->addAll($validation);
+            } else if ($validation instanceof ConstraintViolationListInterface) {
+                $entity->setViolations($validation);
+            }
+            if ($entity->getViolations()->count()) {
+                throw new ValidationFailedException($entity->getViolations());
+            }
         }
-        $this->flush($entity);
+        $this->flush();
     }
 
     /**

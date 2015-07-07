@@ -36,6 +36,7 @@ services:
     ecentria.api.converter.entity:
         class: %ecentria.api.converter.entity.class%
         arguments:
+            - @ecentria.api.crud.transformer
             - @doctrine
         tags:
             - { name: request.param_converter, converter: ecentria.api.converter.entity }

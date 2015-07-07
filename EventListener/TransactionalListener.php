@@ -118,11 +118,17 @@ class TransactionalListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
+        $modelName = $transactional->model;
+        $model = new $modelName();
 
         $this->transactionBuilder->setRequestMethod($request->getRealMethod());
         $this->transactionBuilder->setRequestSource(Transaction::SOURCE_REST);
         $this->transactionBuilder->setRelatedRoute($transactional->relatedRoute);
-        $this->transactionBuilder->setRelatedId($request->get('id'));
+        $ids = [];
+        foreach ($model->getIds() as $field => $value) {
+            $ids[$field] = $request->attributes->get($field);
+        }
+        $this->transactionBuilder->setRelatedIds($ids);
         $this->transactionBuilder->setModel($transactional->model);
 
         $transaction = $this->transactionBuilder->build();
@@ -170,6 +176,7 @@ class TransactionalListener implements EventSubscriberInterface
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');
         if ($transaction) {
+            $this->entityManager->clear();
             $this->entityManager->persist($transaction);
             $this->entityManager->flush();
         }

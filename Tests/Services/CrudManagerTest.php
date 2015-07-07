@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
+use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -74,7 +75,7 @@ class CrudManagerTest extends TestCase
             '\Symfony\Component\EventDispatcher\EventDispatcher',
             array('dispatch')
         );
-        $this->crudTransformer = $this->prepareCRUDTransformet();
+        $this->crudTransformer = $this->prepareCRUDTransformer();
         $this->crudManager = new CrudManager(
             $this->entityManager,
             $this->recursiveValidator,
@@ -99,6 +100,38 @@ class CrudManagerTest extends TestCase
     }
 
     /**
+     * Test Save
+     *
+     * @return void
+     */
+    public function testSave()
+    {
+        $entity = $this->prepareEntity();
+        $violations = new ConstraintViolationList(
+            array(
+                new ConstraintViolation(
+                    'Test',
+                    'Test',
+                    array(),
+                    null,
+                    null,
+                    null
+                )
+            )
+        );
+        $this->recursiveValidator->expects($this->once())
+            ->method('validate')
+            ->with($this->equalTo($entity))
+            ->willReturn($violations);
+        try {
+            $this->crudManager->save($entity);
+        } catch (ValidationFailedException $e) {
+            $this->assertEquals('Test', $e->getConstraintViolationList()->get(0)->getMessage());
+        }
+
+    }
+
+    /**
      * TestValidationCollectionSuccess
      *
      * @return void
@@ -106,9 +139,9 @@ class CrudManagerTest extends TestCase
     public function testValidationCollectionSuccess()
     {
         $entity1 = $this->prepareEntity();
-        $entity1->setId('1');
+        $entity1->setIds(array('id' => 1));
         $entity2 = $this->prepareEntity();
-        $entity2->setId('2');
+        $entity2->setIds(array('id' => 2));
         $entities = new ArrayCollection(array($entity1, $entity2));
         $this->recursiveValidator->expects($this->exactly(2))
             ->method('validate')
@@ -133,9 +166,9 @@ class CrudManagerTest extends TestCase
     public function testCreateEntityPersist()
     {
         $entity1 = $this->prepareEntity();
-        $entity1->setId(1);
+        $entity1->setIds(array('id' => 1));
         $entity2 = $this->prepareEntity();
-        $entity2->setId(2);
+        $entity2->setIds(array('id' => 2));
 
         $entities = new ArrayCollection(
             array($entity1, $entity2)
@@ -173,18 +206,18 @@ class CrudManagerTest extends TestCase
     {
         $entity = $this->prepareEntity();
 
-        $id = 'new.email@opticsplanet.com';
+        $ids = array('id' => 'new.email@opticsplanet.com');
         $type = 'email';
         $data = array(
             array(
-                'id'   => $id,
+                'id'   => $ids['id'],
                 'type' => $type
             )
         );
 
         $entity->expects($this->never())
-            ->method('setId')
-            ->with($id);
+            ->method('setIds')
+            ->with($ids);
 
         $unitOfWorkMock = $this->prepareUnitOfWork();
 
@@ -266,7 +299,7 @@ class CrudManagerTest extends TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function prepareCRUDTransformet()
+    private function prepareCRUDTransformer()
     {
         return $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer')
             ->disableOriginalConstructor()

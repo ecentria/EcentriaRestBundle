@@ -12,6 +12,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Error;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -64,7 +65,7 @@ class ErrorBuilder
      */
     private function processViolation(ConstraintViolation $violation)
     {
-        $id = $violation->getRoot()->getId();
+        $id = $violation->getRoot() instanceof CrudEntityInterface ? $violation->getRoot()->getPrimaryKey() : null;
         $errors = $this->getEntityErrors($id);
         $context = $this->determineContext($violation);
         $error = new Error(

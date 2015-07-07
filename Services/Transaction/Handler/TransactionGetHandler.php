@@ -14,6 +14,7 @@ use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\ORM\EntityManager,
     Doctrine\ORM\UnitOfWork;
 
+use Doctrine\ORM\PersistentCollection;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
@@ -71,6 +72,8 @@ class TransactionGetHandler implements TransactionHandlerInterface
             $data = $this->handleEntity($transaction, $data);
         } elseif ($data instanceof ArrayCollection) {
             $data = $this->handleCollection($transaction, $data);
+        } elseif ($data instanceof PersistentCollection) {
+            $data = $this->handleCollection($transaction, new ArrayCollection($data->toArray()));
         } else {
             throw new FeatureNotImplementedException(
                 get_class($data) . ' class is not supported by transactions (GET). Instance of CrudEntity needed.'
@@ -89,19 +92,25 @@ class TransactionGetHandler implements TransactionHandlerInterface
      */
     private function handleEntity(Transaction $transaction, CrudEntityInterface $entity)
     {
-        $success = $this->isEntityManaged($entity);
-        $status = $success ? Transaction::STATUS_OK : Transaction::STATUS_NOT_FOUND;
-
-        $transaction->setStatus($status);
-        $transaction->setSuccess($success);
-
-        if (!$success) {
+        if (!$this->isEntityManaged($entity)) {
             $this->errorBuilder->addCustomError(
-                $entity->getId(),
+                $entity->getPrimaryKey(),
                 new Error('Entity not found', Transaction::STATUS_NOT_FOUND, null, Error::CONTEXT_GLOBAL)
             );
-            $this->errorBuilder->setTransactionErrors($transaction);
+
         }
+
+        if ($this->errorBuilder->hasErrors()) {
+            $this->errorBuilder->setTransactionErrors($transaction);
+            foreach ($this->errorBuilder->getErrors() as $error) {
+                $errorCode = $error->getCode();
+            }
+        }
+
+        $status = !$this->errorBuilder->hasErrors() ? Transaction::STATUS_OK : $errorCode;
+
+        $transaction->setStatus($status);
+        $transaction->setSuccess(!$this->errorBuilder->hasErrors());
 
         return $entity;
     }
@@ -118,8 +127,17 @@ class TransactionGetHandler implements TransactionHandlerInterface
     {
         $data = new CollectionResponse($data);
 
-        $transaction->setStatus(Transaction::STATUS_OK);
-        $transaction->setSuccess(true);
+        if ($this->errorBuilder->hasErrors()) {
+            $this->errorBuilder->setTransactionErrors($transaction);
+            foreach ($this->errorBuilder->getErrors() as $error) {
+                $errorCode = $error->getCode();
+            }
+        }
+
+        $status = !$this->errorBuilder->hasErrors() ? Transaction::STATUS_OK : $errorCode;
+
+        $transaction->setStatus($status);
+        $transaction->setSuccess(!$this->errorBuilder->hasErrors());
 
         return $data;
     }

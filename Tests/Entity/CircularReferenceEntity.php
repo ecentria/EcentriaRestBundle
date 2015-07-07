@@ -18,6 +18,8 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableTrait,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait,
     Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAssert;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableTrait;
 
 /**
  * CircularReferenceEntity test
@@ -28,11 +30,12 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
  *      field="Parent"
  * )
  */
-class CircularReferenceEntity implements CrudEntityInterface
+class CircularReferenceEntity implements CrudEntityInterface, ValidatableInterface
 {
     use EmbeddedTrait;
     use TransactionalTrait;
     use TimestampableTrait;
+    use ValidatableTrait;
 
     /**
      * Identifier
@@ -40,6 +43,13 @@ class CircularReferenceEntity implements CrudEntityInterface
      * @var string
      */
     private $id;
+
+    /**
+     * Identifiers
+     *
+     * @var string
+     */
+    private $ids;
 
     /**
      * Parent channel
@@ -64,25 +74,36 @@ class CircularReferenceEntity implements CrudEntityInterface
     }
 
     /**
-     * Id getter
+     * Get primary key
      *
-     * @return mixed
+     * @return mixed|string
      */
-    public function getId()
+    public function getPrimaryKey()
     {
         return $this->id;
     }
 
     /**
+     * Id getter
+     *
+     * @return mixed
+     */
+    public function getIds()
+    {
+        return $this->ids;
+    }
+
+    /**
      * Id setter
      *
-     * @param mixed $id id
+     * @param mixed $ids ids
      *
      * @return CircularReferenceEntity
      */
-    public function setId($id)
+    public function setIds($ids)
     {
-        $this->id = $id;
+        $this->ids = $ids;
+        $this->id = $ids['id'];
         return $this;
     }
 
