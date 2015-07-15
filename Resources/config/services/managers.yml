@@ -2,8 +2,9 @@ parameters:
 
     ecentria.api.builder.error.class:              Ecentria\Libraries\EcentriaRestBundle\Services\ErrorBuilder
     ecentria.api.builder.notice.class:             Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder
+    ecentria.api.builder.info.class:               Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder
     ecentria.api.builder.transaction.class:        Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionBuilder
-
+    
     ecentria.api.configuration.manager.class:      Ecentria\Libraries\EcentriaRestBundle\Services\ConfigurationManager
 
     ecentria.api.crud.manager.class:               Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager
@@ -18,8 +19,6 @@ parameters:
 
     ecentria.api.request_creator.class:            Ecentria\Libraries\EcentriaRestBundle\Services\RequestCreator
 
-    ecentria.api.request_creator.class:            Ecentria\Libraries\CoreRestBundle\Services\RequestCreator
-
 services:
 
     # Builders
@@ -28,6 +27,9 @@ services:
 
     ecentria.api.builder.notice:
         class: %ecentria.api.builder.notice.class%
+
+    ecentria.api.builder.info:
+        class: %ecentria.api.builder.info.class%
 
     ecentria.api.builder.transaction:
         class: %ecentria.api.builder.transaction.class%
@@ -84,6 +86,7 @@ services:
             - @doctrine.orm.default_entity_manager
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
+            - @ecentria.api.builder.info
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
@@ -93,6 +96,7 @@ services:
             - @doctrine.orm.default_entity_manager
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
+            - @ecentria.api.builder.info
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
@@ -108,3 +112,4 @@ services:
             - @request_stack
             - @router
             - @kernel
+            - @ecentria.api.builder.info

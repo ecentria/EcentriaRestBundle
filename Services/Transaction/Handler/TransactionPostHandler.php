@@ -20,6 +20,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
+use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -31,20 +32,51 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionPostHandler implements TransactionHandlerInterface
 {
     /**
+     * Entity manager
+     *
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * Info builder
+     *
+     * @var InfoBuilder
+     */
+    private $infoBuilder;
+
+    /**
+     * Error builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
+     * Notice builder
+     *
+     * @var NoticeBuilder
+     */
+    private $noticeBuilder;
+
+    /**
      * Constructor
      *
      * @param EntityManager $entityManager entityManager
      * @param ErrorBuilder  $errorBuilder  errorBuilder
      * @param NoticeBuilder $noticeBuilder noticeBuilder
+     * @param InfoBuilder   $infoBuilder   infoBuilder
      */
     public function __construct(
         EntityManager $entityManager,
         ErrorBuilder $errorBuilder,
-        NoticeBuilder $noticeBuilder
+        NoticeBuilder $noticeBuilder,
+        InfoBuilder $infoBuilder
     ) {
         $this->entityManager = $entityManager;
         $this->errorBuilder = $errorBuilder;
         $this->noticeBuilder = $noticeBuilder;
+        $this->infoBuilder = $infoBuilder;
     }
 
     /**
@@ -141,6 +173,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
         $data = new CollectionResponse($data);
         $data->setShowAssociations(true);
+
+        $this->infoBuilder->setTransactionMessages($baseTransaction);
 
         return $data;
     }
