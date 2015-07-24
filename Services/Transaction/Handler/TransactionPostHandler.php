@@ -21,7 +21,6 @@ use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
-use Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
@@ -129,7 +128,7 @@ class TransactionPostHandler implements TransactionHandlerInterface
 
         if (!$transaction->getSuccess()) {
             if ($data instanceof ArrayCollection) {
-                $data->getItems()->clear();
+                $data->clear();
             } else {
                 $transaction->setRelatedIds(null);
                 $data = new CollectionResponse(new ArrayCollection(array()));
@@ -170,9 +169,9 @@ class TransactionPostHandler implements TransactionHandlerInterface
      * Handle individual entity
      *
      * @param Transaction        $transaction Transaction
-     * @param AbstractCrudEntity $entity      Entity
+     * @param CrudEntityInterface $entity      Entity
      */
-    private function handleEntity($transaction, AbstractCrudEntity $entity)
+    private function handleEntity($transaction, CrudEntityInterface $entity)
     {
         $transaction->setRequestSource(Transaction::SOURCE_SERVICE);
         $transaction->setId(UUID::generate());
