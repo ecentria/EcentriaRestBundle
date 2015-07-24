@@ -38,8 +38,8 @@ class EntityConverter extends BaseDoctrineParamConverter
     /**
      * Constructor
      *
-     * @param ManagerRegistry $registry        Registry
-     * @param CrudTransformer $crudTransformer crudTransformer
+     * @param ManagerRegistry|null $registry        Registry
+     * @param CrudTransformer      $crudTransformer crudTransformer
      */
     public function __construct(CrudTransformer $crudTransformer, ManagerRegistry $registry = null)
     {

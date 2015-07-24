@@ -168,8 +168,10 @@ class TransactionPostHandler implements TransactionHandlerInterface
     /**
      * Handle individual entity
      *
-     * @param Transaction        $transaction Transaction
+     * @param Transaction         $transaction Transaction
      * @param CrudEntityInterface $entity      Entity
+     *
+     * @return void
      */
     private function handleEntity($transaction, CrudEntityInterface $entity)
     {
