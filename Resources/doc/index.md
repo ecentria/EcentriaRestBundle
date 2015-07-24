@@ -15,3 +15,4 @@ Available documentation for EcentriaRestBundle
 Contributing to EcentriaRestBundle
 ------------------------------
 
+* [Unit Tests](unit-tests.md)

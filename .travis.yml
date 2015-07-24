@@ -14,12 +14,12 @@ env:
   - SYMFONY_VERSION=dev-master
 
 before_script:
-  - composer self-update
-  - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update
-  - composer update
+  - composer self-update -v
+  - composer require symfony/framework-bundle:${SYMFONY_VERSION} --no-update -v
+  - composer update -v
 
 script:
-  - phpunit --coverage-clover=coverage.clover
+  - phpunit
 
 notifications:
   email:

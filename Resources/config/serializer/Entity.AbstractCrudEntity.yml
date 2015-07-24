@@ -26,9 +26,8 @@ Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity:
 
         - rel: self
           exclusion:
-              exclude_if: expr(object.getTransaction() === null || !object.getId())
+              exclude_if: expr(object.getTransaction() === null || !object.getIds())
           href:
               route: expr(object.getTransaction().getRelatedRoute())
-              parameters:
-                  id: expr(object.getId())
+              parameters: expr(object.getIds())
               absolute: true

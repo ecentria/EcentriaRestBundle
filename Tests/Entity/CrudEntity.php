@@ -20,7 +20,14 @@ use Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity;
 class CrudEntity extends AbstractCrudEntity
 {
     /**
-     * Identifier
+     * Identifiers
+     *
+     * @var mixed
+     */
+    protected $ids;
+
+    /**
+     * Primary Key
      *
      * @var mixed
      */
@@ -29,7 +36,7 @@ class CrudEntity extends AbstractCrudEntity
     /**
      * {@inheritdoc}
      */
-    public function getId()
+    public function getPrimaryKey()
     {
         return $this->id;
     }
@@ -37,9 +44,17 @@ class CrudEntity extends AbstractCrudEntity
     /**
      * {@inheritdoc}
      */
-    public function setId($id)
+    public function getIds()
     {
-        $this->id = $id;
+        return $this->ids;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setIds($ids)
+    {
+        $this->ids = $ids;
     }
 
     /**

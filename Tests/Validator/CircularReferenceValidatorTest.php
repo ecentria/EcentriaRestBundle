@@ -85,7 +85,7 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel = new CircularReferenceEntity();
-        $channel->setId('test');
+        $channel->setIds(array('id' => 'test'));
         $channel->setParent($channel);
         $this->validator->validate($channel, new CircularReference());
     }
@@ -109,11 +109,11 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setId('test1');
+        $channel1->setIds(array('id' => 'test1'));
         $channel2 = new CircularReferenceEntity();
-        $channel2->setId('test2');
+        $channel2->setIds(array('id' => 'test2'));
         $channel3 = new CircularReferenceEntity();
-        $channel3->setId('test3');
+        $channel3->setIds(array('id' => 'test3'));
 
         $constraint = new CircularReference();
 
@@ -170,11 +170,11 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setId('test1');
+        $channel1->setIds(array('id' => 'test1'));
         $channel2 = new CircularReferenceEntity();
-        $channel2->setId('test2');
+        $channel2->setIds(array('id' => 'test2'));
         $channel3 = new CircularReferenceEntity();
-        $channel3->setId('test3');
+        $channel3->setIds(array('id' => 'test3'));
 
         $constraint = new CircularReference();
 
@@ -213,9 +213,9 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setId('test1');
+        $channel1->setIds(array('id' => 'test1'));
         $channel2 = new CircularReferenceEntity();
-        $channel2->setId('test2');
+        $channel2->setIds(array('id' => 'test2'));
 
         $constraint = new CircularReference();
 
@@ -250,11 +250,11 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setId('test1');
+        $channel1->setIds(array('id' => 'test1'));
         $channel2 = new CircularReferenceEntity();
-        $channel2->setId('test2');
+        $channel2->setIds(array('id' => 'test2'));
         $channel3 = new CircularReferenceEntity();
-        $channel3->setId('test3');
+        $channel3->setIds(array('id' => 'test3'));
 
         $constraint = new CircularReference();
 
