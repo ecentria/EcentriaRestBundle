@@ -160,7 +160,6 @@ class TransactionalListener implements EventSubscriberInterface
             $view->setData(
                 $this->transactionResponseManager->handle($transaction, $data, $violations)
             );
-            $view->setStatusCode($transaction->getStatus());
         }
     }
 
