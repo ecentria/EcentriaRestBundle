@@ -65,23 +65,33 @@ class RequestCreator
     private $lastResponse;
 
     /**
+     * Info builder
+     *
+     * @var InfoBuilder
+     */
+    private $infoBuilder;
+
+    /**
      * Constructor
      *
      * @param CrudManager     $crudManager  CrudManager
      * @param RequestStack    $requestStack Request stack
      * @param Router          $router       Router
      * @param KernelInterface $kernel       Kernel
+     * @param InfoBuilder     $infoBuilder  Info builder
      */
     public function __construct(
         CrudManager $crudManager,
         RequestStack $requestStack,
         Router $router,
-        KernelInterface $kernel
+        KernelInterface $kernel,
+        InfoBuilder $infoBuilder
     ) {
         $this->crudManager = $crudManager;
         $this->requestStack = $requestStack;
         $this->router = $router;
         $this->kernel = $kernel;
+        $this->infoBuilder = $infoBuilder;
     }
 
     /**
@@ -96,6 +106,18 @@ class RequestCreator
     {
         $collection = $this->normalize($data);
         return $strategy->apply($this, $collection);
+    }
+
+    /**
+     * Add info message
+     *
+     * @param string $key     Key
+     * @param string $message Message
+     * @return void
+     */
+    public function addInfoMessage($key, $message)
+    {
+        $this->infoBuilder->addMessage($key, $message);
     }
 
     /**
@@ -212,6 +234,21 @@ class RequestCreator
     public function patch($route, array $data, $id)
     {
         $this->lastResponse = $this->doRequest($route, array($data), 'PATCH', ['id' => $id]);
+        return $this->lastResponse;
+    }
+
+    /**
+     * Put
+     *
+     * @param string $route Route
+     * @param array  $data  Data
+     * @param mixed  $id    Id
+     *
+     * @return Response
+     */
+    public function put($route, array $data, $id)
+    {
+        $this->lastResponse = $this->doRequest($route, array($data), 'PUT', ['id' => $id]);
         return $this->lastResponse;
     }
 

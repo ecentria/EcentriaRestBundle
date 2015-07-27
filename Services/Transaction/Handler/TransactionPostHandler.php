@@ -21,7 +21,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
-use Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -33,20 +33,51 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionPostHandler implements TransactionHandlerInterface
 {
     /**
+     * Entity manager
+     *
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * Info builder
+     *
+     * @var InfoBuilder
+     */
+    private $infoBuilder;
+
+    /**
+     * Error builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
+     * Notice builder
+     *
+     * @var NoticeBuilder
+     */
+    private $noticeBuilder;
+
+    /**
      * Constructor
      *
      * @param EntityManager $entityManager entityManager
      * @param ErrorBuilder  $errorBuilder  errorBuilder
      * @param NoticeBuilder $noticeBuilder noticeBuilder
+     * @param InfoBuilder   $infoBuilder   infoBuilder
      */
     public function __construct(
         EntityManager $entityManager,
         ErrorBuilder $errorBuilder,
-        NoticeBuilder $noticeBuilder
+        NoticeBuilder $noticeBuilder,
+        InfoBuilder $infoBuilder
     ) {
         $this->entityManager = $entityManager;
         $this->errorBuilder = $errorBuilder;
         $this->noticeBuilder = $noticeBuilder;
+        $this->infoBuilder = $infoBuilder;
     }
 
     /**
@@ -97,7 +128,7 @@ class TransactionPostHandler implements TransactionHandlerInterface
 
         if (!$transaction->getSuccess()) {
             if ($data instanceof ArrayCollection) {
-                $data->getItems()->clear();
+                $data->clear();
             } else {
                 $transaction->setRelatedIds(null);
                 $data = new CollectionResponse(new ArrayCollection(array()));
@@ -129,16 +160,20 @@ class TransactionPostHandler implements TransactionHandlerInterface
         $data = new CollectionResponse($data);
         $data->setShowAssociations(true);
 
+        $this->infoBuilder->setTransactionMessages($baseTransaction);
+
         return $data;
     }
 
     /**
      * Handle individual entity
      *
-     * @param Transaction        $transaction Transaction
-     * @param AbstractCrudEntity $entity      Entity
+     * @param Transaction         $transaction Transaction
+     * @param CrudEntityInterface $entity      Entity
+     *
+     * @return void
      */
-    private function handleEntity($transaction, AbstractCrudEntity $entity)
+    private function handleEntity($transaction, CrudEntityInterface $entity)
     {
         $transaction->setRequestSource(Transaction::SOURCE_SERVICE);
         $transaction->setId(UUID::generate());
