@@ -20,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Component\Validator\Exception\RuntimeException;
-use Doctrine\ORM\NoResultException;
 
 /**
  * Modified DoctrineParamConverter.
