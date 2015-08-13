@@ -43,4 +43,9 @@ final class Events
      * This implies that the entity is flushed.
      */
     const POST_UPDATE = 'ecentria.api.event.crud.post_update';
+
+    /**
+     * Event that will be thrown status api call is fired
+     */
+    const STATUS_CHECK = 'ecentria.api.status_check';
 }
