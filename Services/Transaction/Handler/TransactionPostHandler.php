@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\ORM\EntityManager;
 
+use Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
@@ -20,6 +21,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
+use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -31,20 +33,51 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionPostHandler implements TransactionHandlerInterface
 {
     /**
+     * Entity manager
+     *
+     * @var EntityManager
+     */
+    private $entityManager;
+
+    /**
+     * Info builder
+     *
+     * @var InfoBuilder
+     */
+    private $infoBuilder;
+
+    /**
+     * Error builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
+     * Notice builder
+     *
+     * @var NoticeBuilder
+     */
+    private $noticeBuilder;
+
+    /**
      * Constructor
      *
      * @param EntityManager $entityManager entityManager
      * @param ErrorBuilder  $errorBuilder  errorBuilder
      * @param NoticeBuilder $noticeBuilder noticeBuilder
+     * @param InfoBuilder   $infoBuilder   infoBuilder
      */
     public function __construct(
         EntityManager $entityManager,
         ErrorBuilder $errorBuilder,
-        NoticeBuilder $noticeBuilder
+        NoticeBuilder $noticeBuilder,
+        InfoBuilder $infoBuilder
     ) {
         $this->entityManager = $entityManager;
         $this->errorBuilder = $errorBuilder;
         $this->noticeBuilder = $noticeBuilder;
+        $this->infoBuilder = $infoBuilder;
     }
 
     /**
@@ -85,6 +118,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
             } else {
                 $data = $this->handleCollection($transaction, $data);
             }
+        } else if ($data instanceof CrudEntityInterface) {
+            $this->handleEntity($transaction, $data);
         } else {
             throw new FeatureNotImplementedException(
                 get_class($data) . ' class is not supported by transactions (POST). Instance of ArrayCollection needed.'
@@ -92,7 +127,13 @@ class TransactionPostHandler implements TransactionHandlerInterface
         }
 
         if (!$transaction->getSuccess()) {
-            $data->getItems()->clear();
+            if ($data instanceof ArrayCollection) {
+                $data->clear();
+            } else {
+                $transaction->setRelatedIds(null);
+                $data = new CollectionResponse(new ArrayCollection(array()));
+                $data->setShowAssociations(true);
+            }
         }
 
         return $data;
@@ -109,40 +150,56 @@ class TransactionPostHandler implements TransactionHandlerInterface
     private function handleCollection(Transaction $baseTransaction, ArrayCollection $data)
     {
         foreach ($data as $entity) {
-
-            $transaction = clone $baseTransaction;
-
-            $transaction->setRequestSource(Transaction::SOURCE_SERVICE);
-            $transaction->setId(UUID::generate());
-            $transaction->setRequestId(microtime());
-            $transaction->setRelatedId($entity->getId());
-
-            $errors = $this->errorBuilder->getEntityErrors($entity->getId());
-            $messages = new ArrayCollection();
-
-            $success = $errors->isEmpty();
-            $status = $success ? Transaction::STATUS_CREATED : Transaction::STATUS_CONFLICT;
-
-            $transaction->setStatus($status);
-            $transaction->setSuccess($success);
-
-            if ($success) {
-                $this->noticeBuilder->addSuccess();
-            } else {
-                $messages->set('errors', $errors);
-                $this->noticeBuilder->addFail();
+            if ($entity instanceof CrudEntityInterface) {
+                $transaction = clone $baseTransaction;
+                $this->handleEntity($transaction, $entity);
             }
-
-            $transaction->setMessages($messages);
-            $this->entityManager->persist($transaction);
-            $entity->setTransaction($transaction);
         }
 
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
         $data = new CollectionResponse($data);
         $data->setShowAssociations(true);
 
+        $this->infoBuilder->setTransactionMessages($baseTransaction);
+
         return $data;
+    }
+
+    /**
+     * Handle individual entity
+     *
+     * @param Transaction         $transaction Transaction
+     * @param CrudEntityInterface $entity      Entity
+     *
+     * @return void
+     */
+    private function handleEntity($transaction, CrudEntityInterface $entity)
+    {
+        $transaction->setRequestSource(Transaction::SOURCE_SERVICE);
+        $transaction->setId(UUID::generate());
+        $transaction->setRequestId(microtime());
+        $transaction->setRelatedIds($entity->getIds());
+
+
+        $errors = $this->errorBuilder->getEntityErrors($entity->getPrimaryKey());
+        $messages = new ArrayCollection();
+
+        $success = $errors->isEmpty();
+        $status = $success ? Transaction::STATUS_CREATED : Transaction::STATUS_CONFLICT;
+
+        $transaction->setStatus($status);
+        $transaction->setSuccess($success);
+
+        if ($success) {
+            $this->noticeBuilder->addSuccess();
+        } else {
+            $messages->set('errors', $errors);
+            $this->noticeBuilder->addFail();
+        }
+
+        $transaction->setMessages($messages);
+        $this->entityManager->persist($transaction);
+        $entity->setTransaction($transaction);
     }
 
     /**

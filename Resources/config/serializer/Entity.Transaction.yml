@@ -4,11 +4,10 @@ Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction:
 
         - rel: related
           exclusion:
-              exclude_if: expr(object.getRelatedId() === null)
+              exclude_if: expr(object.getRelatedIds() === null)
           href:
               route: expr(object.getRelatedRoute())
-              parameters:
-                  id: expr(object.getRelatedId())
+              parameters: expr(object.getRelatedIds())
               absolute: true
 
         - rel: self

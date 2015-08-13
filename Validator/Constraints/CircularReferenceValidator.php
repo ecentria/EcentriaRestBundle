@@ -68,7 +68,7 @@ class CircularReferenceValidator extends ConstraintValidator
             try {
                 $this->entityManager->initializeObject($parent);
             } catch (EntityNotFoundException $exception) {
-                $this->addViolationAt($parent->getId(), $this->entity->getId(), null, 'Parent #%s of object #%s does not exist');
+                $this->addViolationAt($parent->getPrimaryKey(), $this->entity->getPrimaryKey(), null, 'Parent #%s of object #%s does not exist');
                 $criticalError = true;
             }
             if ($criticalError === false) {
@@ -88,11 +88,11 @@ class CircularReferenceValidator extends ConstraintValidator
     private function validateParent($entity, $parent)
     {
         if ($entity === $parent) {
-            $this->addViolationAt($parent->getId(), $entity->getId());
+            $this->addViolationAt($parent->getPrimaryKey(), $entity->getPrimaryKey());
         }
         foreach ($this->getParents($parent) as $channel) {
             if ($entity === $channel) {
-                $this->addViolationAt($parent->getId(), $entity->getId());
+                $this->addViolationAt($parent->getPrimaryKey(), $entity->getPrimaryKey());
             }
         }
     }
@@ -132,7 +132,7 @@ class CircularReferenceValidator extends ConstraintValidator
         try {
             $parent = $channel->getParent();
         } catch (EntityNotFoundException $exception) {
-            $this->addViolationAt($this->parent->getId(), $this->entity->getId(), null, 'Parent #%s of object #%s does not exist');
+            $this->addViolationAt($this->parent->getPrimaryKey(), $this->entity->getPrimaryKey(), null, 'Parent #%s of object #%s does not exist');
             return $parents;
         }
 

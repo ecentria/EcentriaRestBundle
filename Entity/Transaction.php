@@ -21,7 +21,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAsser
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  *
  * @ORM\Entity()
- * @ORM\Table(name="transaction")
+ * @ORM\Table(name="`transaction`")
  * @EcentriaAssert\TransactionSuccess()
  */
 class Transaction
@@ -67,9 +67,9 @@ class Transaction
      * Related entity
      *
      * @var string
-     * @ORM\Column(name="related_id", type="string", nullable=true)
+     * @ORM\Column(name="related_ids", type="array", nullable=true)
      */
-    private $relatedId;
+    private $relatedIds;
 
     /**
      * Related entity
@@ -189,14 +189,14 @@ class Transaction
     private $success;
 
     /**
-     * Message
-     * Json encoded message
+     * Messages
+     * Json encoded messages
      *
-     * @var ArrayCollection|null
+     * @var array
      *
-     * @ORM\Column(name="message", type="array")
+     * @ORM\Column(name="message", type="json_array")
      */
-    private $messages;
+    private $messages = [];
 
     /**
      * Id getter
@@ -244,26 +244,26 @@ class Transaction
     }
 
     /**
-     * RelatedId setter
+     * RelatedIds setter
      *
-     * @param string $relatedId
+     * @param array $relatedIds
      *
      * @return $this
      */
-    public function setRelatedId($relatedId)
+    public function setRelatedIds($relatedIds)
     {
-        $this->relatedId = $relatedId;
+        $this->relatedIds = $relatedIds;
         return $this;
     }
 
     /**
      * RelatedId getter
      *
-     * @return string
+     * @return array
      */
-    public function getRelatedId()
+    public function getRelatedIds()
     {
-        return $this->relatedId;
+        return $this->relatedIds;
     }
 
     /**
@@ -453,13 +453,13 @@ class Transaction
     /**
      * Messages setter
      *
-     * @param ArrayCollection|null $messages
+     * @param ArrayCollection $messages
      *
      * @return Transaction
      */
-    public function setMessages(ArrayCollection $messages = null)
+    public function setMessages(ArrayCollection $messages)
     {
-        $this->messages = $messages->isEmpty() ? null : $messages;
+        $this->messages = $messages->toArray();
         return $this;
     }
 
@@ -470,6 +470,6 @@ class Transaction
      */
     public function getMessages()
     {
-        return $this->messages;
+        return new ArrayCollection($this->messages);
     }
 }
