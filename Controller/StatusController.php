@@ -43,16 +43,10 @@ class StatusController extends FOSRestController
         $dispatcher = $this->get('event_dispatcher');
         $event = new StatusCheckEvent();
         $dispatcher->dispatch(Events::STATUS_CHECK, $event);
-        if ($event->getStatus() == StatusCheckEvent::STATUS_OK) {
-            return $this->view(
-                [$event->getStatus(), 0, 'All related services are available. All systems normal.'],
-                200
-            );
+        if ($event->getState() == StatusCheckEvent::STATE_OK) {
+            return $this->view([$event->getState(), 0, 'All related services are available. All systems normal.'], 200);
         } else {
-            return $this->view(
-                [$event->getStatus(), $event->getExceptionCodes(), $event->getExceptionMessages()],
-                500
-            );
+            return $this->view([$event->getState(), $event->getExceptionCodes(), $event->getExceptionMessages()], 500);
         }
     }
 }

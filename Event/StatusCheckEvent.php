@@ -21,24 +21,27 @@ use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAsser
  */
 class StatusCheckEvent extends Event
 {
-    CONST STATUS_OK      = 'Ok';
-    CONST STATUS_WARNING = 'Warning';
-    CONST STATUS_FAILURE = 'Failure';
+    CONST STATE_OK      = 'Ok';
+    CONST STATE_WARNING = 'Warning';
+    CONST STATE_FAILURE = 'Failure';
 
     /**
-     * List of available statuses
+     * List of available states
+     * States should be ordered from normal (lower level) to critical (higher level).
+     * As setState method should only allow escalating the state and not downgrading it,
+     * the array's key is used to check if a new state is not downgraded.
      *
      * @var array
      */
-    private static $availableStatuses = [self::STATUS_OK, self::STATUS_WARNING, self::STATUS_FAILURE];
+    private static $availableStates = [self::STATE_OK, self::STATE_WARNING, self::STATE_FAILURE];
 
     /**
-     * Status
+     * state
      * ('Ok', 'Warning', 'Failure')
      *
      * @var string
      */
-    private $status;
+    private $state;
 
     /**
      * List of messages that notify malfunctions of services
@@ -52,7 +55,7 @@ class StatusCheckEvent extends Event
      */
     public function __construct()
     {
-        $this->status     = self::STATUS_OK;
+        $this->state     = self::STATE_OK;
         $this->exceptions = [];
     }
 
@@ -61,26 +64,43 @@ class StatusCheckEvent extends Event
      *
      * @return string
      */
-    public function getStatus()
+    public function getstate()
     {
-        return $this->status;
+        return $this->state;
     }
 
     /**
      * Setter
      *
-     * @param string $status
+     * @param string $state
      * @return StatusCheckEvent
      *
      * @throws \InvalidArgumentException
      */
-    public function setStatus($status)
+    public function setState($state)
     {
-        if (!in_array($status, self::$availableStatuses)) {
-            throw new \InvalidArgumentException("Status $status is not in the list of available statuses");
+        if (!in_array($state, self::$availableStates)) {
+            throw new \InvalidArgumentException("State $state is not in the list of available states");
         }
-        $this->status = $status;
+        // State can be escalated only. State downgrading should be prohibited.
+        if ($this->isStateEscalated($state)) {
+            $this->state = $state;
+        }
         return $this;
+    }
+
+    /**
+     * Checks if new state can be downgraded from 'Error' to 'Warning', from 'Warning' to 'Ok', etc.
+     *
+     * @param string $newState
+     * @return bool
+     */
+    private function isStateEscalated($newState)
+    {
+        if (array_search($newState, self::$availableStates) < array_search($this->state, self::$availableStates)) {
+            return false;
+        }
+        return true;
     }
 
     /**
