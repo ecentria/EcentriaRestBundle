@@ -1,7 +1,7 @@
 parameters:
 
     ecentria.api.listener.exception.class:     Ecentria\Libraries\EcentriaRestBundle\EventListener\ExceptionListener
-    ecentria.api.listener.response.class:      Ecentria\Libraries\EcentriaRestBundle\EventListener\ResponseListener
+    ecentria.api.listener.response.class:      Ecentria\Libraries\EcentriaRestBundle\EventListener\EmbeddedResponseListener
     ecentria.api.listener.transactional.class: Ecentria\Libraries\EcentriaRestBundle\EventListener\TransactionalListener
 
     gedmo.listener.timestampable.class:        Gedmo\Timestampable\TimestampableListener

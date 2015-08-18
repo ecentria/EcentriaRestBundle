@@ -20,6 +20,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager;
 
+use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
 
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent,
@@ -157,9 +158,13 @@ class TransactionalListener implements EventSubscriberInterface
         if ($transaction instanceof Transaction) {
             $data = $view->getData();
             $violations = $request->get('violations');
-            $view->setData(
-                $this->transactionResponseManager->handle($transaction, $data, $violations)
-            );
+            $view->setData($this->transactionResponseManager->handle($transaction, $data, $violations));
+            if (!$transaction->getSuccess()) {
+                $request->attributes->set(
+                    EmbeddedManager::KEY_EMBED,
+                    EmbeddedManager::GROUP_ALL
+                );
+            }
         }
     }
 

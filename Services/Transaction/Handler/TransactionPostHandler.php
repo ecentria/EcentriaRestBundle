@@ -13,7 +13,6 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\ORM\EntityManager;
 
-use Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
@@ -112,13 +111,15 @@ class TransactionPostHandler implements TransactionHandlerInterface
         $transaction->setStatus($status);
         $transaction->setSuccess($success);
 
+        $transaction->setRelatedIds(null);
+
         if ($data instanceof ArrayCollection) {
             if ($data->isEmpty()) {
                 $data = $this->handleEmptyCollection($transaction, $data);
             } else {
                 $data = $this->handleCollection($transaction, $data);
             }
-        } else if ($data instanceof CrudEntityInterface) {
+        } elseif ($data instanceof CrudEntityInterface) {
             $this->handleEntity($transaction, $data);
         } else {
             throw new FeatureNotImplementedException(
@@ -130,9 +131,7 @@ class TransactionPostHandler implements TransactionHandlerInterface
             if ($data instanceof ArrayCollection) {
                 $data->clear();
             } else {
-                $transaction->setRelatedIds(null);
                 $data = new CollectionResponse(new ArrayCollection(array()));
-                $data->setShowAssociations(true);
             }
         }
 
@@ -158,7 +157,6 @@ class TransactionPostHandler implements TransactionHandlerInterface
 
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
         $data = new CollectionResponse($data);
-        $data->setShowAssociations(true);
 
         $this->infoBuilder->setTransactionMessages($baseTransaction);
 
@@ -214,7 +212,6 @@ class TransactionPostHandler implements TransactionHandlerInterface
     {
         $this->noticeBuilder->setTransactionNotices($baseTransaction);
         $data = new CollectionResponse($data);
-        $data->setShowAssociations(true);
 
         $baseTransaction->setSuccess(false);
         $baseTransaction->setStatus(Transaction::STATUS_CONFLICT);

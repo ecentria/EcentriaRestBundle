@@ -10,9 +10,9 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Alias;
-use Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager;
 use FOS\RestBundle\View\View;
 use JMS\Serializer\Exception\ValidationFailedException;
@@ -104,16 +104,20 @@ class ExceptionListener
             $request->getMethod(),
             $view
         );
+
+        if ($view->getData() instanceof ArrayCollection) {
+            $responseEvent->getRequest()->attributes->set(
+                EmbeddedManager::KEY_EMBED,
+                EmbeddedManager::GROUP_VIOLATION_COLLECTION
+            );
+        } else {
+            $responseEvent->getRequest()->attributes->set(
+                EmbeddedManager::KEY_EMBED,
+                EmbeddedManager::GROUP_VIOLATION_ENTITY
+            );
+        }
+
         $eventDispatcher->dispatch('kernel.view', $responseEvent);
-        $responseData = $view->getData();
-
-        if ($responseData instanceof EmbeddedInterface) {
-            $responseData->setShowAssociations(true);
-        }
-
-        if ($responseData instanceof CollectionResponse) {
-            $responseData->setInheritedShowAssociations(false);
-        }
 
         return $responseEvent->getResponse();
     }

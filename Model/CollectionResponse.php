@@ -12,9 +12,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface,
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait;
 
 use JMS\Serializer\Annotation as Serializer;
@@ -24,9 +22,8 @@ use JMS\Serializer\Annotation as Serializer;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CollectionResponse implements EmbeddedInterface, TransactionalInterface
+class CollectionResponse implements TransactionalInterface
 {
-    use EmbeddedTrait;
     use TransactionalTrait;
 
     /**
@@ -66,21 +63,5 @@ class CollectionResponse implements EmbeddedInterface, TransactionalInterface
     public function getItems()
     {
         return $this->items;
-    }
-
-    /**
-     * Setting association to show
-     *
-     * @param mixed $value
-     *
-     * @return void
-     */
-    public function setInheritedShowAssociations($value)
-    {
-        foreach ($this->getItems() as $item) {
-            if ($item instanceof EmbeddedInterface) {
-                $item->setShowAssociations((bool) $value);
-            }
-        }
     }
 }

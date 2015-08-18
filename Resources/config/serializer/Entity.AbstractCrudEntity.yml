@@ -4,10 +4,6 @@ Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity:
 
         transaction:
             exclude: true
-        embedded:
-            exclude: true
-        showAssociations:
-            exclude: true
 
     relations:
 
@@ -22,7 +18,9 @@ Ecentria\Libraries\EcentriaRestBundle\Entity\AbstractCrudEntity:
           embedded:
              content: expr(object.getTransaction())
              exclusion:
-                exclude_if: expr(object.showAssociations() === false)
+                groups:
+                    - embedded.all
+                    - embedded.violation.entity
 
         - rel: self
           exclusion:

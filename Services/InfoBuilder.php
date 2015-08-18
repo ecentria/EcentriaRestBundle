@@ -57,7 +57,9 @@ class InfoBuilder
      */
     public function setTransactionMessages(Transaction $transaction)
     {
-        $transaction->getMessages()->set('info', $this->messages);
+        $messages = $transaction->getMessages();
+        $messages->set('info', $this->messages);
+        $transaction->setMessages($messages);
         return $this;
     }
 }

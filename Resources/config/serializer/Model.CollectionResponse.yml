@@ -1,8 +1,6 @@
 Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse:
 
     properties:
-        showAssociations:
-            exclude: true
         transaction:
             exclude: true
 
@@ -10,7 +8,7 @@ Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse:
 
         - rel: service-transaction
           exclusion:
-              exclude_if: expr(object.getTransaction() === null || !object.showAssociations())
+              exclude_if: expr(object.getTransaction() === null)
           href:
               route: get_transaction
               parameters:
