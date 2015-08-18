@@ -245,6 +245,10 @@ class CrudTransformer
         if ($this->transformationNeeded($property, $value)) {
             $targetClass = $this->getClassMetadata()->getAssociationTargetClass(ucfirst($property));
 
+            if ($value instanceof $targetClass) {
+                return $value;
+            }
+
             if (is_null($collection)) {
                 $value = $this->processValue($value, $targetClass);
             } else {
@@ -342,7 +346,21 @@ class CrudTransformer
         if (!$this->isPropertyAccessible($property, $action)) {
             return;
         }
-        $value = $this->transformPropertyValue($property, $value, $collection);
+
+        $property = Inflector::camelize($property);
+        if ($this->getClassMetadata()->hasAssociation(ucfirst($property))) {
+            $property = ucfirst($property);
+        }
+        if ($this->getClassMetadata()->isCollectionValuedAssociation($property)) {
+            $result = new ArrayCollection();
+            foreach ($value as $valueItem) {
+                $result->add($this->transformPropertyValue($property, $valueItem, $collection));
+            }
+            $value = $result;
+        } else {
+            $value = $this->transformPropertyValue($property, $value, $collection);
+        }
+
         $method = $this->getPropertySetter($property);
         if (method_exists($object, $method)) {
             $object->$method($value);
