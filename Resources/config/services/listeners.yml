@@ -18,6 +18,8 @@ services:
 
     ecentria.api.listener.response:
         class: %ecentria.api.listener.response.class%
+        arguments:
+            - @ecentria.utils.embedded_manager
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }
 

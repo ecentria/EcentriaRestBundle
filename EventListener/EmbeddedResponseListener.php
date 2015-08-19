@@ -22,6 +22,23 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 class EmbeddedResponseListener
 {
     /**
+     * Embedded manager
+     *
+     * @var EmbeddedManager
+     */
+    protected $embeddedManager;
+
+    /**
+     * Constructor
+     *
+     * @param EmbeddedManager $embeddedManager
+     */
+    public function __construct(EmbeddedManager $embeddedManager)
+    {
+        $this->embeddedManager = $embeddedManager;
+    }
+
+    /**
      * Setting embedded serialization groups for current response
      *
      * @param GetResponseForControllerResultEvent $event
@@ -35,7 +52,7 @@ class EmbeddedResponseListener
             return;
         }
 
-        $groups = EmbeddedManager::generateGroups($event->getRequest());
+        $groups = $this->embeddedManager->generateGroups($event->getRequest());
         $view->getSerializationContext()->setGroups($groups);
     }
 }

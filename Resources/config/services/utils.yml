@@ -1,8 +1,12 @@
 parameters:
 
     ecentria.fos_rest.native_json_encode_serializer.class: Ecentria\Libraries\EcentriaRestBundle\Services\NativeJsonEncodeSerializer
+    ecentria.utils.embedded_manager.class: Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager
 
 services:
+
+    ecentria.utils.embedded_manager:
+        class: %ecentria.utils.embedded_manager.class%
 
     ecentria.fos_rest.native_json_encode_serializer:
         class: %ecentria.fos_rest.native_json_encode_serializer.class%

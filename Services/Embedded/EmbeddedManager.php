@@ -39,7 +39,7 @@ class EmbeddedManager
      *
      * @return array
      */
-    public static function generateGroups(Request $request)
+    public function generateGroups(Request $request)
     {
         $embed = $request->get(self::KEY_EMBED);
 
@@ -50,7 +50,7 @@ class EmbeddedManager
             array_walk(
                 $embedAsArray,
                 function (&$value) {
-                    $value = self::generateGroupName($value);
+                    $value = $this->generateGroupName($value);
                 }
             );
             $embedResult = array_merge($embedResult, $embedAsArray);
@@ -62,7 +62,7 @@ class EmbeddedManager
         );
 
         if ($embedded) {
-            $embedResult[] = self::generateGroupName(self::GROUP_ALL);
+            $embedResult[] = $this->generateGroupName(self::GROUP_ALL);
         }
 
         return $embedResult;
@@ -75,7 +75,7 @@ class EmbeddedManager
      *
      * @return string
      */
-    public static function generateGroupName($value)
+    private function generateGroupName($value)
     {
         return self::PREFIX . self::PROPERTY_COMBINER . $value;
     }

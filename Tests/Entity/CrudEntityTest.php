@@ -49,16 +49,10 @@ class CrudEntityTest extends TestCase
     public function testExtendedFunctionality()
     {
         $this->assertTrue($this->CrudEntity instanceof CrudEntityInterface);
-
-        $this->assertTrue($this->CrudEntity instanceof EmbeddedInterface);
         $this->assertTrue($this->CrudEntity instanceof TransactionalInterface);
 
         // Transactional
         $this->assertTrue(method_exists($this->CrudEntity, 'setTransaction'));
         $this->assertTrue(method_exists($this->CrudEntity, 'getTransaction'));
-
-        // Embedded
-        $this->assertTrue(method_exists($this->CrudEntity, 'setShowAssociations'));
-        $this->assertTrue(method_exists($this->CrudEntity, 'showAssociations'));
     }
 }
