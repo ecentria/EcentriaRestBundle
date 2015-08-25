@@ -11,8 +11,6 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Entity;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableInterface,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;

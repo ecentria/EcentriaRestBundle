@@ -1,7 +1,7 @@
 Embedded data
 ==========
 
-Embedded data allows you to get additional information about associated entities, object and etc.
+Embedded data allows you to get additional information about associated entities, objects, fields, links or any data that you want to embed.
 
 How to describe serialization for entity
 ------------------------
@@ -62,10 +62,10 @@ And response will turn into:
 Usage variants:
 --------------
 
-1. ?_embed=address
-2. ?_embed=address.country
-3. ?_embed=address,orders
-4. ?_embed=address.country,orders,credits
+```?_embed=address``` first level
+```?_embed=address.country``` second level
+```?_embed=address,orders``` two or more object can be embedded
+```?_embed=address.country,orders,credits```
 
 
 Predefined values:
@@ -79,4 +79,4 @@ Predefined values:
 Backward compatibility:
 -----------------------
 
-```?_embedded=true``` - the same as ```?_embed=all```
+```?_embedded=true``` is the same as ```?_embed=all```
