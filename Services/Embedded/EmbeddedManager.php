@@ -47,13 +47,9 @@ class EmbeddedManager
 
         if (!is_null($embed)) {
             $embedAsArray = explode(self::PROPERTY_DIVIDER, $embed);
-            array_walk(
-                $embedAsArray,
-                function (&$value) {
-                    $value = $this->generateGroupName($value);
-                }
-            );
-            $embedResult = array_merge($embedResult, $embedAsArray);
+            foreach ($embedAsArray as $value) {
+                $embedResult[] = $this->generateGroupName($value);
+            }
         }
 
         $embedded = filter_var(
