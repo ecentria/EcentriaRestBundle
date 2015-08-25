@@ -11,6 +11,7 @@ Available documentation for EcentriaRestBundle
 * [Annotations](annotations.md)
 * [Transactions](transactions.md)
 * [CRUD](crud.md)
+* [Embeddable](embedded.md)
 
 Contributing to EcentriaRestBundle
 ------------------------------
