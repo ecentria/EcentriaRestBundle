@@ -24,7 +24,6 @@ use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 
 /**
@@ -308,8 +307,8 @@ class CrudManager
         foreach ($collection as $collectionItem) {
             $count = 0;
             foreach ($collection as $collectionItemToCompare) {
-                if ($collectionItemToCompare->getId()) {
-                    if ($collectionItemToCompare->getId() == $collectionItem->getId()) {
+                if ($collectionItemToCompare->getPrimaryKey()) {
+                    if ($collectionItemToCompare->getPrimaryKey() == $collectionItem->getPrimaryKey()) {
                         $count++;
                     }
                 } else {
@@ -415,20 +414,16 @@ class CrudManager
      */
     public function save(CrudEntityInterface $entity)
     {
-        if ($entity instanceof ValidatableInterface) {
-            $validation = $this->validate($entity);
-            if ($validation instanceof ConstraintViolationListInterface &&
-                $entity->getViolations() instanceof ConstraintViolationListInterface
-            ) {
-                $entity->getViolations()->addAll($validation);
-            } else if ($validation instanceof ConstraintViolationListInterface) {
-                $entity->setViolations($validation);
+        $violations = $this->validate($entity);
+        if ($violations instanceof ConstraintViolationList) {
+            if ($entity instanceof ValidatableInterface) {
+                $entity->setViolations($violations);
+                $entity->setValid(false);
             }
-            if ($entity->getViolations()->count()) {
-                throw new ValidationFailedException($entity->getViolations());
-            }
+            throw new ValidationFailedException($violations);
         }
-        $this->flush();
+
+        $this->flush($entity);
     }
 
     /**
@@ -451,7 +446,7 @@ class CrudManager
                 ),
                 $entity,
                 'id',
-                $entity->getId(),
+                $entity->getPrimaryKey(),
                 null,
                 404
             );
@@ -472,8 +467,8 @@ class CrudManager
     {
         $unitOfWork = new CrudUnitOfWork();
         foreach ($collection as $entity) {
-            if ($entity->getId()) {
-                $crudEntity = $this->find(get_class($entity), $entity->getId());
+            if ($entity->getPrimaryKey()) {
+                $crudEntity = $this->find(get_class($entity), $entity->getPrimaryKey());
             } else {
                 $this->crudTransformer->initializeClassMetadata(get_class($entity));
                 $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);

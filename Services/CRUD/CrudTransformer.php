@@ -296,11 +296,11 @@ class CrudTransformer
             'json'
         );
 
-        if ($deserializedValue->getId()) {
-            $value = $this->entityManager->find($targetClass, $deserializedValue->getId());
+        if ($deserializedValue->getPrimaryKey()) {
+            $value = $this->entityManager->find($targetClass, $deserializedValue->getPrimaryKey());
         }
 
-        if (!$value || !$deserializedValue->getId()) {
+        if (!$value || !$deserializedValue->getPrimaryKey()) {
             $value = $deserializedValue;
         }
         return $value;
