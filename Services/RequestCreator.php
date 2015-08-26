@@ -199,10 +199,10 @@ class RequestCreator
     {
         if ($data instanceof ArrayCollection) {
             foreach ($data as $item) {
-                $this->crudManager->refresh($item, $item->getId());
+                $this->crudManager->refresh($item, $item->getPrimaryKey());
             }
         } else {
-            $this->crudManager->refresh($data, $data->getId());
+            $this->crudManager->refresh($data, $data->getPrimaryKey());
         }
     }
 
