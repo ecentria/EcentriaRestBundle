@@ -56,6 +56,34 @@ Also includes a mode for creation of entities with potential one to one and one 
  */
 ```
 
+You can also send the id of an entity in the request body itself.
+
+```
+/**
+ * @Sensio\ParamConverter(
+ *      "credit",
+ *      class="Ecentria\CustomerApiBundle\Entity\Credit",
+ *      converter = "ecentria.api.converter.entity",
+ *      options = {
+ *          "mode" = "create",
+ *          "references" = {
+ *              "property" = "account_id",
+ *              "class" = "Ecentria\CustomerApiBundle\Entity\Account",
+ *              "name" = "account"
+ *          }
+ *      }
+ * )
+ *
+ */
+
+ POST BODY
+ {
+    'account_id': 123,
+    'field': '...'
+ }
+```
+
+
 JsonConverter
 -------------
 

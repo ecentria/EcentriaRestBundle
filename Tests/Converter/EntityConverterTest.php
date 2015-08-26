@@ -144,6 +144,69 @@ class EntityConverterTest extends TestCase
     }
 
     /**
+     * Test new object validation
+     *
+     * @return void
+     */
+    public function testValidateNewObject()
+    {
+        $reflectionClass = new \ReflectionClass('\Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter');
+        $reflectionMethod = $reflectionClass->getMethod('validateNewObject');
+        $reflectionMethod->setAccessible(true);
+        $badProperties = new ConstraintViolationList();
+
+        //removing reference properties
+        $this->crudTransformer->expects($this->any())
+            ->method('arrayToObjectPropertyValidation')
+            ->with($this->equalTo(['do_not_remove' => 'value']), $this->equalTo('Object'))
+            ->willReturn($badProperties);
+        $object = new EntityConverterEntity();
+        $options = ['references' => [['property' => 'remove_me']]];
+        $data = ['do_not_remove' => 'value', 'remove_me' => 'value'];
+
+        $reflectionMethod->invoke($this->entityConverter, $object, 'Object', $data, $options);
+
+        //returning mocked violations, setting, and setting valid state is tested in above method
+    }
+
+    /**
+     * Test id getter
+     *
+     * @return void
+     */
+    public function testGetIdentifier()
+    {
+        $reflectionClass = new \ReflectionClass('\Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter');
+        $reflectionMethod = $reflectionClass->getMethod('getIdentifier');
+        $reflectionMethod->setAccessible(true);
+
+        //Test options[id] set
+        //test not array options[id]
+        $attributes = ['testName' => '123', 'testName2' => '345'];
+        $request = new Request([], [], $attributes);
+        $name = 'name';
+        $options = ['id' => 'testName'];
+        $out = $reflectionMethod->invoke($this->entityConverter, $request, $options, $name);
+        $this->assertEquals('123', $out);
+
+        //test array options[id]
+        $options = ['id' => ['testName', 'testName2']];
+        $out = $reflectionMethod->invoke($this->entityConverter, $request, $options, $name);
+        $this->assertEquals($attributes, $out);
+
+        //test $options['property']
+        $options = ['property' => 'test_property', 'data' => ['test_property' => 'value']];
+        $out = $reflectionMethod->invoke($this->entityConverter, $request, $options, $name);
+        $this->assertEquals('value', $out);
+
+        //test no id in options but in attributes
+        $options = [];
+        $request = new Request([], [], ['id' => 'here']);
+        $out = $reflectionMethod->invoke($this->entityConverter, $request, $options, $name);
+        $this->assertEquals('here', $out);
+    }
+
+    /**
      * Prepare Entity Converter
      *
      * @return \PHPUnit_Framework_MockObject_MockObject|EntityConverter

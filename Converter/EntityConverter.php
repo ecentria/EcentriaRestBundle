@@ -97,10 +97,7 @@ class EntityConverter extends BaseDoctrineParamConverter
         // Convert array into object and test validity
         $object = $this->crudTransformer->arrayToObject($data, $class);
         if ($object instanceof ValidatableInterface && $create) {
-            $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
-            $valid = !((bool) $violations->count());
-            $object->setViolations($violations);
-            $object->setValid($valid);
+            $this->validateNewObject($object, $class, $data, $options);
         }
         // Get list of ids from request attributes
         if (!$create && $object instanceof CrudEntityInterface) {
@@ -116,7 +113,7 @@ class EntityConverter extends BaseDoctrineParamConverter
                 $entity = $this->findObject(
                     $reference['class'],
                     $request,
-                    array_merge($reference, $options),
+                    array_merge($reference, $options, ['data' => $data]),
                     $reference['name']
                 );
                 $setter = $this->crudTransformer->getPropertySetter($reference['name']);
@@ -126,6 +123,35 @@ class EntityConverter extends BaseDoctrineParamConverter
             }
         }
         return $object;
+    }
+
+    /**
+     * Validate new object
+     *
+     * @param ValidatableInterface $object  Object
+     * @param string               $class   Object class name
+     * @param array                $data    Object generation data
+     * @param array                $options Object generation options
+     * @return void
+     */
+    private function validateNewObject($object, $class, $data, $options)
+    {
+        $referenceProperties = [];
+        // Remove any properties are are used for setting reference objects
+        if (isset($options['references'])) {
+            foreach ($options['references'] as $reference) {
+                if (isset($reference['property'])) {
+                    $referenceProperties[] = $reference['property'];
+                }
+            }
+        }
+        $violations = $this->crudTransformer->arrayToObjectPropertyValidation(
+            array_diff_key($data, array_flip($referenceProperties)),
+            $class
+        );
+        $valid = !((bool) $violations->count());
+        $object->setViolations($violations);
+        $object->setValid($valid);
     }
 
     /**
@@ -146,5 +172,43 @@ class EntityConverter extends BaseDoctrineParamConverter
             $object = $this->findOneBy($class, $request, $options);
         }
         return $object;
+    }
+
+    /**
+     * Get ID for new object
+     *
+     * @param Request $request
+     * @param array   $options
+     * @param string  $name
+     * @return array|bool|mixed
+     */
+    protected function getIdentifier(Request $request, $options, $name)
+    {
+        if (isset($options['id'])) {
+            if (!is_array($options['id'])) {
+                $name = $options['id'];
+            } elseif (is_array($options['id'])) {
+                $id = array();
+                foreach ($options['id'] as $field) {
+                    $id[$field] = $request->attributes->get($field);
+                }
+
+                return $id;
+            }
+        }
+
+        if (isset($options['property']) && isset($options['data']) && isset($options['data'][$options['property']])) {
+            return $options['data'][$options['property']];
+        }
+
+        if ($request->attributes->has($name)) {
+            return $request->attributes->get($name);
+        }
+
+        if ($request->attributes->has('id') && !isset($options['id'])) {
+            return $request->attributes->get('id');
+        }
+
+        return false;
     }
 }
