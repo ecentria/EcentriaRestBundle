@@ -14,7 +14,6 @@ use Doctrine\ORM\Mapping as ORM,
     Doctrine\Common\Collections\ArrayCollection;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait,
     Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableTrait,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait,
     Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAssert;
@@ -32,7 +31,6 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableTrait;
  */
 class CircularReferenceEntity implements CrudEntityInterface, ValidatableInterface
 {
-    use EmbeddedTrait;
     use TransactionalTrait;
     use TimestampableTrait;
     use ValidatableTrait;

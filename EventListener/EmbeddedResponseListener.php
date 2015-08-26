@@ -10,8 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
-use Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse;
-use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
@@ -20,33 +19,40 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class ResponseListener
+class EmbeddedResponseListener
 {
     /**
-     * Let's embed our response
+     * Embedded manager
      *
-     * @param GetResponseForControllerResultEvent $event Event
+     * @var EmbeddedManager
+     */
+    protected $embeddedManager;
+
+    /**
+     * Constructor
+     *
+     * @param EmbeddedManager $embeddedManager
+     */
+    public function __construct(EmbeddedManager $embeddedManager)
+    {
+        $this->embeddedManager = $embeddedManager;
+    }
+
+    /**
+     * Setting embedded serialization groups for current response
+     *
+     * @param GetResponseForControllerResultEvent $event
      *
      * @return void
      */
     public function onKernelView(GetResponseForControllerResultEvent $event)
     {
-        $request = $event->getRequest();
         $view = $event->getControllerResult();
-
         if (!$view instanceof View) {
             return;
         }
 
-        $embedded = filter_var($request->get('_embedded'), FILTER_VALIDATE_BOOLEAN);
-        $data = $view->getData();
-
-        if ($data instanceof EmbeddedInterface && $data->showAssociations() === null) {
-            $data->setShowAssociations($embedded);
-        }
-
-        if ($data instanceof CollectionResponse) {
-            $data->setInheritedShowAssociations($embedded);
-        }
+        $groups = $this->embeddedManager->generateGroups($event->getRequest());
+        $view->getSerializationContext()->setGroups($groups);
     }
 }

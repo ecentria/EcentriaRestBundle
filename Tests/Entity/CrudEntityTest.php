@@ -11,8 +11,6 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Entity;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableInterface,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
@@ -49,16 +47,10 @@ class CrudEntityTest extends TestCase
     public function testExtendedFunctionality()
     {
         $this->assertTrue($this->CrudEntity instanceof CrudEntityInterface);
-
-        $this->assertTrue($this->CrudEntity instanceof EmbeddedInterface);
         $this->assertTrue($this->CrudEntity instanceof TransactionalInterface);
 
         // Transactional
         $this->assertTrue(method_exists($this->CrudEntity, 'setTransaction'));
         $this->assertTrue(method_exists($this->CrudEntity, 'getTransaction'));
-
-        // Embedded
-        $this->assertTrue(method_exists($this->CrudEntity, 'setShowAssociations'));
-        $this->assertTrue(method_exists($this->CrudEntity, 'showAssociations'));
     }
 }

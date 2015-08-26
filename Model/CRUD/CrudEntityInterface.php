@@ -10,16 +10,14 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Model\CRUD;
 
-use Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface;
 
 /**
  * CRUD entity interface
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-interface CrudEntityInterface extends EmbeddedInterface, TransactionalInterface
+interface CrudEntityInterface extends TransactionalInterface
 {
     /**
      * Primary key getter

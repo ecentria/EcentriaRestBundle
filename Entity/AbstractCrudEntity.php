@@ -11,12 +11,7 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Entity;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalInterface,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Timestampable\TimestampableTrait,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Embedded\EmbeddedTrait;
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transactional\TransactionalTrait;
 
 /**
  * Abstract CRUD entity class
@@ -25,7 +20,6 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
  */
 abstract class AbstractCrudEntity implements CrudEntityInterface
 {
-    use EmbeddedTrait;
     use TransactionalTrait;
 
     /**

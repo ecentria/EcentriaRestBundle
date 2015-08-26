@@ -81,10 +81,6 @@ class TransactionResponseManager
 
         $data->setTransaction($transaction);
 
-        if (!$transaction->getSuccess()) {
-            $data->setShowAssociations(true);
-        }
-
         return $data;
     }
 }
