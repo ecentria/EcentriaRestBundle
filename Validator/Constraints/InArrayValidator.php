@@ -28,7 +28,7 @@ class InArrayValidator extends ConstraintValidator
         if (!$constraint instanceof InArray) {
             throw new \Exception('This constraint must be instance of EcentriaRestBundle:InArray');
         }
-        if (!in_array($value, $constraint->values)) {
+        if (!in_array($value, $constraint->values, true)) {
             $this->context->addViolation(
                 sprintf(
                     "Value '%s' is not supported. Possible values: \"'%s'\"",
