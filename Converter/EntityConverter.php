@@ -62,7 +62,7 @@ class EntityConverter extends BaseDoctrineParamConverter
         }
 
         $object = $create ? null : $this->findObject($class, $request, $options, $name);
-        if (is_null($object)) {
+        if (empty($object)) {
             $object = $this->createNewObject($class, $request, $create, $options);
         }
 
