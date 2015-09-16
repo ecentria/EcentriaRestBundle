@@ -87,10 +87,9 @@ class CrudTransformer
      * @return mixed
      * @throws ConstraintViolation
      */
-    public function arrayToObject(array $data, $class)
+    public function arrayToObject(array $data, $class, $object)
     {
         $this->initializeClassMetadata($class);
-        $object = new $class();
         foreach ($data as $property => $value) {
             $this->processPropertyValue(
                 $object,

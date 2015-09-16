@@ -51,6 +51,13 @@ class Transactional extends ConfigurationAnnotation
     public $relatedRoute;
 
     /**
+     * Should status codes be copied from the transaction to the view
+     *
+     * @var bool
+     */
+    public $writeStatusCodes = false;
+
+    /**
      * {@inheritDoc}
      */
     final public function __construct (array $data)
@@ -60,6 +67,9 @@ class Transactional extends ConfigurationAnnotation
         }
         $this->model = $data['model'];
         $this->relatedRoute = $data['relatedRoute'];
+        if (isset($data['writeStatusCodes'])) {
+            $this->writeStatusCodes = $data['writeStatusCodes'];
+        }
     }
 
     /**
