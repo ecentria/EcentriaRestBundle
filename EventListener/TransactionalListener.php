@@ -11,9 +11,9 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
 use Doctrine\Common\Annotations\Reader,
-    Doctrine\ORM\EntityManager,
     Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
     Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
@@ -52,11 +52,11 @@ class TransactionalListener implements EventSubscriberInterface
     private $transactionBuilder;
 
     /**
-     * Entity manager
+     * Registry
      *
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    private $entityManager;
+    private $registry;
 
     /**
      * Transaction response manager
@@ -66,29 +66,22 @@ class TransactionalListener implements EventSubscriberInterface
     private $transactionResponseManager;
 
     /**
-     * Transactional annotation object
-     *
-     * @var Transactional|null
-     */
-    private $transactional;
-
-    /**
      * Constructor.
      *
      * @param Reader $reader An Reader instance
      * @param TransactionBuilder $transactionBuilder
-     * @param EntityManager $entityManager
+     * @param ManagerRegistry $registry
      * @param TransactionResponseManager $transactionResponseManager
      */
     public function __construct(
         Reader $reader,
         TransactionBuilder $transactionBuilder,
-        EntityManager $entityManager,
+        ManagerRegistry $registry,
         TransactionResponseManager $transactionResponseManager
     ) {
         $this->reader = $reader;
         $this->transactionBuilder = $transactionBuilder;
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
         $this->transactionResponseManager = $transactionResponseManager;
     }
 
@@ -110,9 +103,9 @@ class TransactionalListener implements EventSubscriberInterface
         $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($controller[0]) : get_class($controller[0]);
         $object = new \ReflectionClass($className);
 
-        $this->transactional = $this->reader->getClassAnnotation($object, Transactional::NAME);
+        $transactional = $this->reader->getClassAnnotation($object, Transactional::NAME);
 
-        if (!$this->transactional instanceof Transactional) {
+        if (!$transactional instanceof Transactional) {
             return;
         }
 
@@ -126,18 +119,18 @@ class TransactionalListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        $modelName = $this->transactional->model;
+        $modelName = $transactional->model;
         $model = new $modelName();
 
         $this->transactionBuilder->setRequestMethod($request->getRealMethod());
         $this->transactionBuilder->setRequestSource(Transaction::SOURCE_REST);
-        $this->transactionBuilder->setRelatedRoute($this->transactional->relatedRoute);
+        $this->transactionBuilder->setRelatedRoute($transactional->relatedRoute);
         $ids = [];
         foreach ($model->getIds() as $field => $value) {
             $ids[$field] = $request->attributes->get($field);
         }
         $this->transactionBuilder->setRelatedIds($ids);
-        $this->transactionBuilder->setModel($this->transactional->model);
+        $this->transactionBuilder->setModel($transactional->model);
 
         $transaction = $this->transactionBuilder->build();
 
@@ -166,16 +159,12 @@ class TransactionalListener implements EventSubscriberInterface
             $data = $view->getData();
             $violations = $request->get('violations');
             $view->setData($this->transactionResponseManager->handle($transaction, $data, $violations));
-            if ($this->transactional instanceof Transactional && $this->transactional->writeStatusCodes) {
-                $view->setStatusCode($transaction->getStatus());
-            }
             if (!$transaction->getSuccess()) {
                 $request->attributes->set(
                     EmbeddedManager::KEY_EMBED,
                     EmbeddedManager::GROUP_ALL
                 );
             }
-
         }
     }
 
@@ -191,9 +180,12 @@ class TransactionalListener implements EventSubscriberInterface
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');
         if ($transaction) {
-            $this->entityManager->clear();
-            $this->entityManager->persist($transaction);
-            $this->entityManager->flush();
+            $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($transaction) : get_class($transaction);
+            $entityManager = $this->registry->getManagerForClass($className);
+
+            $entityManager->clear();
+            $entityManager->persist($transaction);
+            $entityManager->flush();
         }
     }
 

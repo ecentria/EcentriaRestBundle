@@ -44,7 +44,7 @@ services:
     ecentria.api.crud.manager:
         class: %ecentria.api.crud.manager.class%
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @ecentria.api.validator
             - @event_dispatcher
             - @ecentria.api.crud.transformer
@@ -52,7 +52,7 @@ services:
     ecentria.api.crud.transformer:
         class: %ecentria.api.crud.transformer.class%
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @annotations.reader
             - @jms_serializer
             - @ecentria.api.validator

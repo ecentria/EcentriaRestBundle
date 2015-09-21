@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\CRUD;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Inflector\Inflector;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
@@ -36,7 +37,14 @@ class CrudTransformer
      *
      * @var EntityManager
      */
-    private $entityManager;
+    private $em;
+
+    /**
+     * Manager Registry
+     *
+     * @var ManagerRegistry
+     */
+    private $registry;
 
     /**
      * Annotation reader
@@ -62,18 +70,18 @@ class CrudTransformer
     /**
      * Constructor
      *
-     * @param EntityManager      $entityManager     entityManager
+     * @param ManagerRegistry    $registry          Manager Registry
      * @param AnnotationReader   $annotationsReader annotationsReader
      * @param Serializer         $serializer        serializer
      * @param RecursiveValidator $validator         validator
      */
     public function __construct(
-        EntityManager $entityManager,
+        ManagerRegistry $registry,
         AnnotationReader $annotationsReader,
         Serializer $serializer,
         RecursiveValidator $validator
     ) {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
         $this->annotationsReader = $annotationsReader;
         $this->serializer = $serializer;
         $this->validator = $validator;
@@ -167,7 +175,7 @@ class CrudTransformer
      */
     public function initializeClassMetadata($className)
     {
-        $this->classMetadata = $this->entityManager->getClassMetadata($className);
+        $this->classMetadata = $this->getEntityManager($className)->getClassMetadata($className);
     }
 
     /**
@@ -274,7 +282,7 @@ class CrudTransformer
         if (is_array($value)) {
             $value = $this->processArrayValue($value, $targetClass);
         } else {
-            $value = $this->entityManager->getReference($targetClass, $value);
+            $value = $this->getEntityManager($targetClass)->getReference($targetClass, $value);
         }
         return $value;
     }
@@ -296,7 +304,7 @@ class CrudTransformer
         );
 
         if ($deserializedValue->getPrimaryKey()) {
-            $value = $this->entityManager->find($targetClass, $deserializedValue->getPrimaryKey());
+            $value = $this->getEntityManager($targetClass)->find($targetClass, $deserializedValue->getPrimaryKey());
         }
 
         if (!$value || !$deserializedValue->getPrimaryKey()) {
@@ -412,5 +420,14 @@ class CrudTransformer
             throw new \Exception('You forgot to call initializeClassMetadata method.');
         }
         return $this->classMetadata;
+    }
+
+    private function getEntityManager($entity)
+    {
+        if (!is_null($entity)) {
+            $className = is_string($entity) ? $entity : get_class($entity);
+            $this->em = $this->registry->getManagerForClass($className);
+        }
+        return $this->em;
     }
 }

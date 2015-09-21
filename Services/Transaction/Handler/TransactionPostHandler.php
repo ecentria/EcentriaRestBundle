@@ -10,8 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 
-use Doctrine\Common\Collections\ArrayCollection,
-    Doctrine\ORM\EntityManager;
+use Doctrine\Common\Collections\ArrayCollection;
 
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
@@ -32,13 +31,6 @@ use Symfony\Component\Validator\ConstraintViolationList;
  */
 class TransactionPostHandler implements TransactionHandlerInterface
 {
-    /**
-     * Entity manager
-     *
-     * @var EntityManager
-     */
-    private $entityManager;
-
     /**
      * Info builder
      *

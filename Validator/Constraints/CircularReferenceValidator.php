@@ -9,7 +9,7 @@
  */
 namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -37,22 +37,22 @@ class CircularReferenceValidator extends ConstraintValidator
     protected $entity;
 
     /**
-     * Entity Manager
+     * Manager Registry
      *
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * Entity manager setter
      *
-     * @param EntityManager $entityManager
+     * @param ManagerRegistry $registry
      *
      * @return void
      */
-    public function setEntityManager(EntityManager $entityManager)
+    public function setRegistry(ManagerRegistry $registry)
     {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
     }
 
     /**
@@ -66,7 +66,7 @@ class CircularReferenceValidator extends ConstraintValidator
         if ($parent) {
             $criticalError = false;
             try {
-                $this->entityManager->initializeObject($parent);
+                $this->registry->getManagerForClass(get_class($entity))->initializeObject($parent);
             } catch (EntityNotFoundException $exception) {
                 $this->addViolationAt($parent->getPrimaryKey(), $this->entity->getPrimaryKey(), null, 'Parent #%s of object #%s does not exist');
                 $criticalError = true;

@@ -11,7 +11,6 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection,
-    Doctrine\ORM\EntityManager,
     Doctrine\ORM\UnitOfWork;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -33,10 +32,24 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionGetHandler implements TransactionHandlerInterface
 {
     /**
+     * Registry
+     *
+     * @var ManagerRegistry
+     */
+    private $registry;
+
+    /**
+     * Error Builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
      * Constructor
      *
-     * @param ManagerRegistry $registry      Manager Registry
-     * @param ErrorBuilder    $errorBuilder  errorBuilder
+     * @param ManagerRegistry $registry     Manager Registry
+     * @param ErrorBuilder    $errorBuilder errorBuilder
      */
     public function __construct(
         ManagerRegistry $registry,
