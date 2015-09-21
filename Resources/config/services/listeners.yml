@@ -30,7 +30,7 @@ services:
         arguments:
             - @annotation_reader
             - @ecentria.api.builder.transaction
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @ecentria.api.transaction.manager
 
     ecentria.api.listener.requester:

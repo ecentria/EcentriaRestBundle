@@ -15,7 +15,7 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: circular_reference }
         calls:
-            - [ setEntityManager, [ @doctrine.orm.default_entity_manager ] ]
+            - [ setRegistry, [ @doctrine ] ]
 
     ecentria.api.constraint.email:
         class: %ecentria.api.constraint.email.class%
@@ -34,7 +34,7 @@ services:
         tags:
             - { name: validator.constraint_validator, alias: unique_entity }
         calls:
-            - [ setEntityManager, [ @doctrine.orm.default_entity_manager ] ]
+            - [ setRegistry, [ @doctrine ] ]
 
     # Validators
     ecentria.api.validator:
