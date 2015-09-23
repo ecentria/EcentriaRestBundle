@@ -51,9 +51,16 @@ class CircularReferenceValidatorTest extends TestCase
     protected function setUp()
     {
         $this->entityManager = $this->getMock('\Doctrine\ORM\EntityManager', array(), array(), '', false);
+        $registry = $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getEntityManager', 'getManagerForClass'))
+            ->getMock();
+        $registry->expects($this->any())
+            ->method('getManagerForClass')
+            ->will($this->returnValue($this->entityManager));
         $this->context = $this->getMock('\Symfony\Component\Validator\ExecutionContext', array(), array(), '', false);
         $this->validator = new CircularReferenceValidator(false);
-        $this->validator->setEntityManager($this->entityManager);
+        $this->validator->setRegistry($registry);
         $this->validator->initialize($this->context);
     }
 

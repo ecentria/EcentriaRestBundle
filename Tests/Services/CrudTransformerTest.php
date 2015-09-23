@@ -69,11 +69,18 @@ class CrudTransformerTest extends TestCase
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
+        $registry = $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getEntityManager', 'getManagerForClass'))
+            ->getMock();
+        $registry->expects($this->any())
+            ->method('getManagerForClass')
+            ->will($this->returnValue($this->entityManager));
         $this->annotationsReader = $this->prepareAnnotationReader();
         $this->serializer = $this->prepareSerializer();
         $this->validator = $this->prepareValidator();
         $this->crudTransformer = new CrudTransformer(
-            $this->entityManager,
+            $registry,
             $this->annotationsReader,
             $this->serializer,
             $this->validator
