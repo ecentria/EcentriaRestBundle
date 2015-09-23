@@ -84,11 +84,11 @@ class EntityConverter extends BaseDoctrineParamConverter
     /**
      * Create New Object
      *
-     * @param string  $class   Class name
-     * @param Request $request HTTP request
-     * @param string  $mode    Create, Retrieve, Update
-     * @param array   $options Param converter options
-     * @param object  $object  Object
+     * @param string         $class   Class name
+     * @param Request        $request HTTP request
+     * @param string         $mode    Create, Retrieve, Update
+     * @param array          $options Param converter options
+     * @param object|boolean $object  Object
      * @throws \RuntimeException
      * @return CrudEntityInterface|mixed
      */
