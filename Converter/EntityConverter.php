@@ -28,6 +28,10 @@ use Symfony\Component\Validator\Exception\RuntimeException;
  */
 class EntityConverter extends BaseDoctrineParamConverter
 {
+    const MODE_CREATE = 'create';
+    const MODE_RETRIEVE = 'retrieve';
+    const MODE_UPDATE = 'update';
+
     /**
      * CRUD Transformer
      *
@@ -55,15 +59,15 @@ class EntityConverter extends BaseDoctrineParamConverter
         $name    = $configuration->getName();
         $class   = $configuration->getClass();
         $options = $this->getOptions($configuration);
-        $create  = !empty($options['mode']) && $options['mode'] == 'create';
+        $mode  = empty($options['mode']) ? self::MODE_RETRIEVE : $options['mode'];
 
         if (null === $request->attributes->get($name, false)) {
             $configuration->setIsOptional(true);
         }
 
-        $object = $create ? null : $this->findObject($class, $request, $options, $name);
-        if (is_null($object)) {
-            $object = $this->createNewObject($class, $request, $create, $options);
+        $object = $mode == self::MODE_CREATE ? null : $this->findObject($class, $request, $options, $name);
+        if (empty($object) || $mode == self::MODE_UPDATE) {
+            $object = $this->createOrUpdateNewObject($class, $request, $mode, $options, $object);
         }
 
         $request->attributes->set($name, $object);
@@ -80,30 +84,36 @@ class EntityConverter extends BaseDoctrineParamConverter
     /**
      * Create New Object
      *
-     * @param string  $class   Class name
-     * @param Request $request HTTP request
-     * @param bool    $create  Should a missing object be created?
-     * @param array   $options Param converter options
+     * @param string         $class   Class name
+     * @param Request        $request HTTP request
+     * @param string         $mode    Create, Retrieve, Update
+     * @param array          $options Param converter options
+     * @param object|boolean $object  Object
      * @throws \RuntimeException
      * @return CrudEntityInterface|mixed
      */
-    public function createNewObject($class, Request $request, $create, $options)
+    public function createOrUpdateNewObject($class, Request $request, $mode, $options, $object)
     {
         $ids = [];
-        $data = $create ? json_decode($request->getContent(), true) : [];
+        $data = $mode == self::MODE_RETRIEVE ? [] : json_decode($request->getContent(), true);
         if (!is_array($data)) {
             throw new RuntimeException('Invalid JSON request content');
         }
         // Convert array into object and test validity
-        $object = $this->crudTransformer->arrayToObject($data, $class);
-        if ($object instanceof ValidatableInterface && $create) {
+        if ($mode != self::MODE_UPDATE || $object == false) {
+            $object = new $class();
+        }
+        $object = $this->crudTransformer->arrayToObject($data, $class, $object);
+        if ($object instanceof ValidatableInterface && $mode != self::MODE_RETRIEVE) {
             $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
             $valid = !((bool) $violations->count());
             $object->setViolations($violations);
             $object->setValid($valid);
         }
         // Get list of ids from request attributes
-        if (!$create && $object instanceof CrudEntityInterface) {
+        if (($mode == self::MODE_RETRIEVE || (isset($options['generated_id']) && !$options['generated_id'])) &&
+            $object instanceof CrudEntityInterface
+        ) {
             foreach ($object->getIds() as $field => $value) {
                 $ids[$field] = $request->attributes->get($field);
             }

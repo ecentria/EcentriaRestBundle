@@ -102,16 +102,17 @@ class EntityConverterTest extends TestCase
 
 
         /** @var EntityConverterEntity $newObject */
-        $newObject = $this->entityConverter->createNewObject(
-            'EntityConverterEntity',
+        $newObject = $this->entityConverter->createOrUpdateNewObject(
+            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
             new Request(array(), array(), array(), array(), array(), array(), json_encode($objectContent)),
-            true,
+            EntityConverter::MODE_CREATE,
             array(
                 'references' => array(
                     'class' => 'CircularReferenceEntity',
                     'name'  => 'CircularReferenceEntity'
                 )
-            )
+            ),
+            false
         );
 
         //test validation and references conversion
@@ -124,8 +125,8 @@ class EntityConverterTest extends TestCase
             'second_id' => 'test TWO'
         );
         /** @var EntityConverterEntity $secondObject */
-        $secondObject = $this->entityConverter->createNewObject(
-            'EntityConverterEntity',
+        $secondObject = $this->entityConverter->createOrUpdateNewObject(
+            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
             new Request(
                 array(),
                 array(),
@@ -135,8 +136,29 @@ class EntityConverterTest extends TestCase
                 array(),
                 json_encode($objectContent)
             ),
-            false,
-            array()
+            EntityConverter::MODE_RETRIEVE,
+            array(),
+            false
+        );
+
+        //test set ids
+        $this->assertEquals($secondIds, $secondObject->getIds());
+
+        // Testing set Ids for update mode
+        $secondObject = $this->entityConverter->createOrUpdateNewObject(
+            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+            new Request(
+                array(),
+                array(),
+                $secondIds,
+                array(),
+                array(),
+                array(),
+                json_encode($objectContent)
+            ),
+            EntityConverter::MODE_UPDATE,
+            array(),
+            false
         );
 
         //test set ids

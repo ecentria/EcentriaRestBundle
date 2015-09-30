@@ -82,15 +82,15 @@ class CrudTransformer
     /**
      * Array to object transformation
      *
-     * @param array  $data  Object fields
-     * @param string $class Class name of object to create
+     * @param array  $data   Object fields
+     * @param string $class  Class name of object to create
+     * @param mixed  $object Object
      * @return mixed
      * @throws ConstraintViolation
      */
-    public function arrayToObject(array $data, $class)
+    public function arrayToObject(array $data, $class, $object)
     {
         $this->initializeClassMetadata($class);
-        $object = new $class();
         foreach ($data as $property => $value) {
             $this->processPropertyValue(
                 $object,
