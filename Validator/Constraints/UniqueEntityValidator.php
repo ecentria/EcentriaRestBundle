@@ -10,7 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator as BaseUniqueEntityValidator;
 use Symfony\Component\Validator\Constraint;
@@ -24,22 +24,22 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class UniqueEntityValidator extends BaseUniqueEntityValidator
 {
     /**
-     * Entity Manager
+     * Manager Registry
      *
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    private $entityManager;
+    protected $registry;
 
     /**
      * Entity manager setter
      *
-     * @param EntityManager $entityManager
+     * @param ManagerRegistry $registry
      *
      * @return void
      */
-    public function setEntityManager(EntityManager $entityManager)
+    public function setRegistry(ManagerRegistry $registry)
     {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
     }
 
     /**
@@ -52,11 +52,12 @@ class UniqueEntityValidator extends BaseUniqueEntityValidator
         }
 
         $criticalError = false;
-        $class = $this->entityManager->getClassMetadata(get_class($entity));
+        $entityClass = get_class($entity);
+        $class = $this->registry->getManagerForClass($entityClass)->getClassMetadata($entityClass);
         foreach ($constraint->fields as $fieldName) {
             $object = $class->reflFields[$fieldName]->getValue($entity);
             try {
-                $this->entityManager->initializeObject($object);
+                $this->registry->getManagerForClass($entityClass)->initializeObject($object);
             } catch (EntityNotFoundException $exception) {
                 $this->context->addViolationAt($fieldName, $fieldName . ' does not exist');
                 $criticalError = true;

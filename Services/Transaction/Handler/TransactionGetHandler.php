@@ -11,9 +11,9 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection,
-    Doctrine\ORM\EntityManager,
     Doctrine\ORM\UnitOfWork;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\PersistentCollection;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
@@ -32,16 +32,30 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionGetHandler implements TransactionHandlerInterface
 {
     /**
+     * Registry
+     *
+     * @var ManagerRegistry
+     */
+    private $registry;
+
+    /**
+     * Error Builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
      * Constructor
      *
-     * @param EntityManager $entityManager entityManager
-     * @param ErrorBuilder  $errorBuilder  errorBuilder
+     * @param ManagerRegistry $registry     Manager Registry
+     * @param ErrorBuilder    $errorBuilder errorBuilder
      */
     public function __construct(
-        EntityManager $entityManager,
+        ManagerRegistry $registry,
         ErrorBuilder $errorBuilder
     ) {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
         $this->errorBuilder = $errorBuilder;
     }
 
@@ -151,6 +165,7 @@ class TransactionGetHandler implements TransactionHandlerInterface
      */
     private function isEntityManaged(CrudEntityInterface $entity)
     {
-        return UnitOfWork::STATE_MANAGED === $this->entityManager->getUnitOfWork()->getEntityState($entity);
+        $em = $this->registry->getManagerForClass(get_class($entity));
+        return UnitOfWork::STATE_MANAGED === $em->getUnitOfWork()->getEntityState($entity);
     }
 }

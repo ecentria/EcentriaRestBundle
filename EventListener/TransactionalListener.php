@@ -11,9 +11,9 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 
 use Doctrine\Common\Annotations\Reader,
-    Doctrine\ORM\EntityManager,
     Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
     Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
@@ -52,11 +52,11 @@ class TransactionalListener implements EventSubscriberInterface
     private $transactionBuilder;
 
     /**
-     * Entity manager
+     * Registry
      *
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    private $entityManager;
+    private $registry;
 
     /**
      * Transaction response manager
@@ -70,18 +70,18 @@ class TransactionalListener implements EventSubscriberInterface
      *
      * @param Reader $reader An Reader instance
      * @param TransactionBuilder $transactionBuilder
-     * @param EntityManager $entityManager
+     * @param ManagerRegistry $registry
      * @param TransactionResponseManager $transactionResponseManager
      */
     public function __construct(
         Reader $reader,
         TransactionBuilder $transactionBuilder,
-        EntityManager $entityManager,
+        ManagerRegistry $registry,
         TransactionResponseManager $transactionResponseManager
     ) {
         $this->reader = $reader;
         $this->transactionBuilder = $transactionBuilder;
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
         $this->transactionResponseManager = $transactionResponseManager;
     }
 
@@ -180,9 +180,12 @@ class TransactionalListener implements EventSubscriberInterface
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');
         if ($transaction) {
-            $this->entityManager->clear();
-            $this->entityManager->persist($transaction);
-            $this->entityManager->flush();
+            $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($transaction) : get_class($transaction);
+            $entityManager = $this->registry->getManagerForClass($className);
+
+            $entityManager->clear();
+            $entityManager->persist($transaction);
+            $entityManager->flush();
         }
     }
 
