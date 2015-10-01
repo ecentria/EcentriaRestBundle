@@ -70,6 +70,14 @@ class CrudManagerTest extends TestCase
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
+        $registry = $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getEntityManager', 'getManagerForClass'))
+            ->getMock();
+        $registry->expects($this->any())
+            ->method('getManagerForClass')
+            ->will($this->returnValue($this->entityManager));
+
         $this->recursiveValidator = $this->prepareRecursiveValidator();
         $this->dispatcher = $this->getMock(
             '\Symfony\Component\EventDispatcher\EventDispatcher',
@@ -77,7 +85,7 @@ class CrudManagerTest extends TestCase
         );
         $this->crudTransformer = $this->prepareCRUDTransformer();
         $this->crudManager = new CrudManager(
-            $this->entityManager,
+            $registry,
             $this->recursiveValidator,
             $this->dispatcher,
             $this->crudTransformer

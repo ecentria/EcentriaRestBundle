@@ -84,11 +84,11 @@ class EntityConverter extends BaseDoctrineParamConverter
     /**
      * Create New Object
      *
-     * @param string  $class   Class name
-     * @param Request $request HTTP request
-     * @param string  $mode    Create, Retrieve, Update
-     * @param array   $options Param converter options
-     * @param object  $object  Object
+     * @param string         $class   Class name
+     * @param Request        $request HTTP request
+     * @param string         $mode    Create, Retrieve, Update
+     * @param array          $options Param converter options
+     * @param object|boolean $object  Object
      * @throws \RuntimeException
      * @return CrudEntityInterface|mixed
      */
@@ -100,7 +100,7 @@ class EntityConverter extends BaseDoctrineParamConverter
             throw new RuntimeException('Invalid JSON request content');
         }
         // Convert array into object and test validity
-        if ($mode != self::MODE_UPDATE) {
+        if ($mode != self::MODE_UPDATE || $object == false) {
             $object = new $class();
         }
         $object = $this->crudTransformer->arrayToObject($data, $class, $object);
@@ -111,7 +111,9 @@ class EntityConverter extends BaseDoctrineParamConverter
             $object->setValid($valid);
         }
         // Get list of ids from request attributes
-        if ($mode == self::MODE_RETRIEVE && $object instanceof CrudEntityInterface) {
+        if (($mode == self::MODE_RETRIEVE || (isset($options['generated_id']) && !$options['generated_id'])) &&
+            $object instanceof CrudEntityInterface
+        ) {
             foreach ($object->getIds() as $field => $value) {
                 $ids[$field] = $request->attributes->get($field);
             }
