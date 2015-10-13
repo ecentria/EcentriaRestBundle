@@ -56,6 +56,29 @@ Also includes a mode for creation of entities with potential one to one and one 
  */
 ```
 
+As well as updating of entities.
+
+```
+/**
+ * @Sensio\ParamConverter(
+ *      "credit",
+ *      class="Ecentria\CustomerApiBundle\Entity\Credit",
+ *      converter = "ecentria.api.converter.entity",
+ *      options = {
+ *          "mode" = "update",
+ *          "references" = {
+ *              "id" = "accountId",
+ *              "class" = "Ecentria\CustomerApiBundle\Entity\Account",
+ *              "name" = "account"
+ *          }
+ *      }
+ * )
+ *
+ * @Route("/account/{accountId}/credit", ...
+ *
+ */
+```
+
 JsonConverter
 -------------
 
