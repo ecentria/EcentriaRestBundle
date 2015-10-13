@@ -65,10 +65,13 @@ class CircularReferenceValidator extends ConstraintValidator
         $this->parent = $parent;
         if ($parent) {
             $criticalError = false;
+            $objectManager = $this->registry->getManagerForClass(get_class($entity));
             try {
-                $this->registry->getManagerForClass(get_class($entity))->initializeObject($parent);
+                $objectManager->initializeObject($parent);
             } catch (EntityNotFoundException $exception) {
-                $this->addViolationAt($parent->getPrimaryKey(), $this->entity->getPrimaryKey(), null, 'Parent #%s of object #%s does not exist');
+                $parentMetadata = $objectManager->getClassMetadata(get_class($parent));
+                $parentIdValues = $parentMetadata->getIdentifierValues($parent);
+                $this->addViolationAt(current($parentIdValues), $this->entity->getPrimaryKey(), null, 'Parent #%s of object #%s does not exist');
                 $criticalError = true;
             }
             if ($criticalError === false) {
