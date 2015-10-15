@@ -6,7 +6,6 @@ Available documentation for EcentriaRestBundle
 
 * [Setup](setup.md)
 * [Usage](usage.md)
-* [Features](features.md)
 * [Pre-defined Controllers](pre-defined-controllers.md)
 * [Converters](converters.md)
 * [Annotations](annotations.md)
