@@ -32,7 +32,7 @@ class BookController extends FOSRestController
 {
 ```
 
-Transactional class annotation has *writeStatusCodes* config option to copying status codes the transaction to the view (false by default).
+Transactional class annotation has a *writeStatusCodes* config option for copying status codes from the transaction to the view (false by default).
 
 ```
 /**
