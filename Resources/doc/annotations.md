@@ -17,6 +17,11 @@ Used for controller to enable transaction system.
     Every model should have route leading to get action.
     Related route parameter must be equal to current route name.
 
+**writeStatusCodes**
+
+    Model may have this config option for copying status codes
+    from the transaction to the view (false by default).
+
 Example:
 
 ```php
@@ -25,7 +30,8 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
 /**
  * @EcentriaAnnotation\Transactional(
  *   model="Path to you entity",
- *   relatedRoute="your_get_entity_route"
+ *   relatedRoute="your_get_entity_route",
+ *   writeStatusCodes=true
  * )
  */
 ```      
