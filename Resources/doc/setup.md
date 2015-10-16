@@ -94,7 +94,7 @@ E: (Optional) Setup multiple entity managers
 It's a specific way of setting up the EM (entity manager) so that the EcentriaRestBundle can intelligently handle them.
 EM would be automatically determined from an entity. The *prefix* and *dir* config options below are very important in determining the EM associated with the entity.
 
-Modify app/config/config.yml and add the following:
+Update your app/config/config.yml with something similar to the example below:
 
 
 ```
