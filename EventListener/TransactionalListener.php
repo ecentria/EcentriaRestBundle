@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 use Doctrine\Common\Annotations\Reader,
     Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
@@ -182,6 +183,21 @@ class TransactionalListener implements EventSubscriberInterface
         if ($transaction) {
             $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($transaction) : get_class($transaction);
             $entityManager = $this->registry->getManagerForClass($className);
+
+            // Hot fix, should be addressed another way
+            $messages = $transaction->getMessages();
+            foreach ($messages as $messageKey => $message) {
+                if ($message instanceof ArrayCollection) {
+                    foreach ($message as $itemKey => $item) {
+                        if (method_exists($item, 'toArray')) {
+                            $message[$itemKey] = $item->toArray();
+                        }
+                    }
+                    $messages->set($messageKey, $message->toArray());
+                }
+
+            }
+            $transaction->setMessages($messages);
 
             $entityManager->clear();
             $entityManager->persist($transaction);
