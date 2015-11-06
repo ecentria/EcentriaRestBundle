@@ -183,6 +183,21 @@ class TransactionalListener implements EventSubscriberInterface
             $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($transaction) : get_class($transaction);
             $entityManager = $this->registry->getManagerForClass($className);
 
+            // Hot fix, should be addressed another way
+            $messages = $transaction->getMessages();
+            foreach ($messages as $messageKey => $message) {
+                if ($message instanceof ArrayCollection) {
+                    foreach ($message as $itemKey => $item) {
+                        if (method_exists($item, 'toArray')) {
+                            $message[$itemKey] = $item->toArray();
+                        }
+                    }
+                    $messages->set($messageKey, $message->toArray());
+                }
+
+            }
+            $transaction->setMessages($messages);
+
             $entityManager->clear();
             $entityManager->persist($transaction);
             $entityManager->flush();
