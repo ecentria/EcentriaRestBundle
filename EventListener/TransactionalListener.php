@@ -13,6 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\EventListener;
 use Doctrine\Common\Annotations\Reader,
     Doctrine\Common\Util\ClassUtils;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
