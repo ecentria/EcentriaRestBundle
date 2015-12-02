@@ -31,6 +31,26 @@ following example for a hypothetical library bundle.
 class BookController extends FOSRestController
 {
 ```
+
+Transactional class annotation has a *writeStatusCodes* config option for copying status codes from the transaction to the view (false by default).
+
+```
+/**
+ * Book REST Controller
+ *
+ * @author Ryan Wood <ryan.wood@opticsplanet.com>
+ *
+ * @EcentriaAnnotation\Transactional(
+ *      model="LibraryBundle\Entity\Book",
+ *      relatedRoute="get_book",
+ *      writeStatusCodes=true
+ * )
+ *
+ */
+class BookController extends FOSRestController
+{
+```
+
 You can also add an annotation to an action in your controller if you would like to disable transaction support for
 that action.
 

@@ -11,7 +11,11 @@ transaction-service:
 status:
     type:     rest
     resource: Ecentria\Libraries\EcentriaRestBundle\Controller\StatusController
+    options:
+        expose: true
 
 ping:
     type:     rest
     resource: Ecentria\Libraries\EcentriaRestBundle\Controller\PingController
+    options:
+        expose: true

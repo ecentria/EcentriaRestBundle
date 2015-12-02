@@ -9,7 +9,7 @@
  */
 namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -37,22 +37,22 @@ class CircularReferenceValidator extends ConstraintValidator
     protected $entity;
 
     /**
-     * Entity Manager
+     * Manager Registry
      *
-     * @var EntityManager
+     * @var ManagerRegistry
      */
-    protected $entityManager;
+    protected $registry;
 
     /**
      * Entity manager setter
      *
-     * @param EntityManager $entityManager
+     * @param ManagerRegistry $registry
      *
      * @return void
      */
-    public function setEntityManager(EntityManager $entityManager)
+    public function setRegistry(ManagerRegistry $registry)
     {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
     }
 
     /**
@@ -65,10 +65,13 @@ class CircularReferenceValidator extends ConstraintValidator
         $this->parent = $parent;
         if ($parent) {
             $criticalError = false;
+            $objectManager = $this->registry->getManagerForClass(get_class($entity));
             try {
-                $this->entityManager->initializeObject($parent);
+                $objectManager->initializeObject($parent);
             } catch (EntityNotFoundException $exception) {
-                $this->addViolationAt($parent->getPrimaryKey(), $this->entity->getPrimaryKey(), null, 'Parent #%s of object #%s does not exist');
+                $parentMetadata = $objectManager->getClassMetadata(get_class($parent));
+                $parentIdValues = $parentMetadata->getIdentifierValues($parent);
+                $this->addViolationAt(current($parentIdValues), $this->entity->getPrimaryKey(), null, 'Parent #%s of object #%s does not exist');
                 $criticalError = true;
             }
             if ($criticalError === false) {

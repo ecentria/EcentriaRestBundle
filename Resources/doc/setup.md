@@ -87,3 +87,33 @@ NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /api/doc
 ```
+
+E: (Optional) Setup multiple entity managers
+--------------------------------
+
+It's a specific way of setting up the EM (entity manager) so that the EcentriaRestBundle can intelligently handle them. The entity manager is automatically determined based upon the location of an entity. The *prefix* and *dir* config options below are very important in determining the EM associated with the entity.
+
+Update your app/config/config.yml with something similar to the example below:
+
+
+```
+entity_managers:
+    default:
+        connection: default
+        mappings:
+            BookSellingBundle:
+                type: annotation
+                prefix: BookSellingBundle\Entity\Library
+                dir:  Entity/Library
+            EcentriaRestBundle: # we want to use this EM for transactions
+                type: annotation
+                dir:  Entity/
+
+    other:
+        connection: other
+        mappings:
+            BookSellingBundle:
+                type: annotation
+                prefix: BookSellingBundle\Entity\Customer
+                dir:  Entity/Customer
+```

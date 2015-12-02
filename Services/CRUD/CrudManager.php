@@ -11,6 +11,7 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\CRUD;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\EcentriaRestBundle\Event\CrudCollectionEvent;
@@ -38,11 +39,18 @@ class CrudManager
     const MODE_DRY_RUN = 'dry_run';
 
     /**
-     * Entity manager
+     * Manager registry
+     *
+     * @var ManagerRegistry
+     */
+    private $registry;
+
+    /**
+     * Entity Manager
      *
      * @var EntityManager
      */
-    private $entityManager;
+    private $em;
 
     /**
      * Validator
@@ -75,18 +83,18 @@ class CrudManager
     /**
      * Constructor
      *
-     * @param EntityManager            $entityManager   Entity manager
+     * @param ManagerRegistry          $registry        Manager Registry
      * @param RecursiveValidator       $validator       Validator
      * @param EventDispatcherInterface $eventDispatcher Event dispatcher
      * @param CrudTransformer          $crudTransformer Crud transformer
      */
     public function __construct(
-        EntityManager $entityManager,
+        ManagerRegistry $registry,
         RecursiveValidator $validator,
         EventDispatcherInterface $eventDispatcher,
         CrudTransformer $crudTransformer
     ) {
-        $this->entityManager = $entityManager;
+        $this->registry = $registry;
         $this->validator = $validator;
         $this->eventDispatcher = $eventDispatcher;
         $this->crudTransformer = $crudTransformer;
@@ -103,13 +111,14 @@ class CrudManager
     public function refresh(CrudEntityInterface &$entity, $id = null)
     {
         $result = null;
+        $entityClass = get_class($entity);
         if ($id) {
-            $result = $this->entityManager->find(get_class($entity), $id);
+            $result = $this->getEntityManager($entity)->find($entityClass, $id);
         } else {
-            $this->crudTransformer->initializeClassMetadata(get_class($entity));
+            $this->crudTransformer->initializeClassMetadata($entityClass);
             $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
             if (!empty($conditions)) {
-                $result = $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
+                $result = $this->getEntityManager($entity)->getRepository($entityClass)->findOneBy($conditions);
             }
         }
 
@@ -168,7 +177,7 @@ class CrudManager
      */
     public function find($class, $id)
     {
-        return $this->entityManager->find($class, $id);
+        return $this->getEntityManager($class)->find($class, $id);
     }
 
     /**
@@ -186,10 +195,10 @@ class CrudManager
             new CrudEvent($entity)
         );
 
-        $this->entityManager->persist($entity);
+        $this->getEntityManager($entity)->persist($entity);
 
         if ($flush) {
-            $this->flush($entity);
+            $this->flush();
         }
 
         $this->eventDispatcher->dispatch(
@@ -208,9 +217,10 @@ class CrudManager
      */
     public function flush(CrudEntityInterface $entity = null)
     {
-        if ($this->getMode() !== self::MODE_DRY_RUN) {
-            $this->entityManager->flush($entity);
+        if ($this->getMode() == self::MODE_DRY_RUN) {
+            return;
         }
+        $this->getEntityManager($entity)->flush();
     }
 
     /**
@@ -222,7 +232,7 @@ class CrudManager
      */
     public function persist(CrudEntityInterface $entity)
     {
-        $this->entityManager->persist($entity);
+        $this->getEntityManager($entity)->persist($entity);
     }
 
     /**
@@ -383,7 +393,7 @@ class CrudManager
      */
     public function clearEntityManager($entityName = null)
     {
-        $this->entityManager->clear($entityName);
+        $this->getEntityManager($entityName)->clear($entityName);
     }
 
     /**
@@ -436,7 +446,7 @@ class CrudManager
      */
     public function validateExistence(CrudEntityInterface $entity)
     {
-        if (UnitOfWork::STATE_MANAGED !== $this->entityManager->getUnitOfWork()->getEntityState($entity)) {
+        if (UnitOfWork::STATE_MANAGED !== $this->getEntityManager($entity)->getUnitOfWork()->getEntityState($entity)) {
             // TODO: move this to different class
             $violation = new ConstraintViolation(
                 'Entity not found',
@@ -467,12 +477,13 @@ class CrudManager
     {
         $unitOfWork = new CrudUnitOfWork();
         foreach ($collection as $entity) {
+            $entityClass = get_class($entity);
             if ($entity->getPrimaryKey()) {
-                $crudEntity = $this->find(get_class($entity), $entity->getPrimaryKey());
+                $crudEntity = $this->find($entityClass, $entity->getPrimaryKey());
             } else {
-                $this->crudTransformer->initializeClassMetadata(get_class($entity));
+                $this->crudTransformer->initializeClassMetadata($entityClass);
                 $conditions = $this->crudTransformer->getUniqueSearchConditions($entity);
-                $crudEntity = $this->entityManager->getRepository(get_class($entity))->findOneBy($conditions);
+                $crudEntity = $this->getEntityManager($entityClass)->getRepository($entityClass)->findOneBy($conditions);
             }
 
             if ($crudEntity instanceof CrudEntityInterface) {
@@ -505,5 +516,14 @@ class CrudManager
         if ($unitOfWork->getUpdates()->count()) {
             $this->updateCollection($unitOfWork->getUpdates(), true);
         }
+    }
+
+    private function getEntityManager($entity)
+    {
+        if (!is_null($entity)) {
+            $className = is_string($entity) ? $entity : get_class($entity);
+            $this->em = $this->registry->getManagerForClass($className);
+        }
+        return $this->em;
     }
 }

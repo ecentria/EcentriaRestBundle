@@ -44,7 +44,7 @@ services:
     ecentria.api.crud.manager:
         class: %ecentria.api.crud.manager.class%
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @ecentria.api.validator
             - @event_dispatcher
             - @ecentria.api.crud.transformer
@@ -52,7 +52,7 @@ services:
     ecentria.api.crud.transformer:
         class: %ecentria.api.crud.transformer.class%
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @annotations.reader
             - @jms_serializer
             - @ecentria.api.validator
@@ -61,7 +61,7 @@ services:
     ecentria.api.transaction.handler.get:
         class: %ecentria.api.transaction.handler.get.class%
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @ecentria.api.builder.error
         tags:
             - { name: ecentria.api.tag.transaction_handler }
@@ -84,7 +84,7 @@ services:
     ecentria.api.transaction.handler.post:
         class: %ecentria.api.transaction.handler.post.class%
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
             - @ecentria.api.builder.info
@@ -94,7 +94,7 @@ services:
     ecentria.api.transaction.handler.put:
         class: %ecentria.api.transaction.handler.put.class%
         arguments:
-            - @doctrine.orm.default_entity_manager
+            - @doctrine
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
             - @ecentria.api.builder.info
