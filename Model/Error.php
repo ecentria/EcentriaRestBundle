@@ -73,4 +73,19 @@ class Error
     {
         return $this->code;
     }
+
+    /**
+     * __toArray
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return [
+            'message' => $this->message,
+            'code'    => $this->code,
+            'context' => $this->context,
+            'key'     => $this->key,
+        ];
+    }
 }
