@@ -67,102 +67,35 @@ class EntityConverterTest extends TestCase
     }
 
     /**
-     * Test creation of new object
+     * Test conversion of external references
      *
      * @return void
      */
-    public function testCreateNewObject()
+    public function testConvertExternalReferences()
     {
         $objectContent = ['id' => 'one', 'second_id' => 'two'];
         $object = new EntityConverterEntity();
         $object->setIds($objectContent);
-        $badProperties = new ConstraintViolationList();
-        $badProperties->add(
-            new ConstraintViolation(
-                'This is not a valid property of CLASS',
-                'This is not a valid property of CLASS',
-                array(),
-                null,
-                null,
-                null
-            )
-        );
-
-        $this->crudTransformer->expects($this->any())
-            ->method('arrayToObject')
-            ->willReturn($object);
-        $this->crudTransformer->expects($this->any())
-            ->method('arrayToObjectPropertyValidation')
-            ->willReturn($badProperties);
 
         $referenceObject = new CircularReferenceEntity();
         $this->entityConverter->expects($this->any())
             ->method('find')
             ->willReturn($referenceObject);
 
-
-        /** @var EntityConverterEntity $newObject */
-        $newObject = $this->entityConverter->createOrUpdateNewObject(
-            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+        $this->entityConverter->convertExternalReferences(
             new Request(array(), array(), array(), array(), array(), array(), json_encode($objectContent)),
-            EntityConverter::MODE_CREATE,
+            $object,
             array(
                 'references' => array(
                     'class' => 'CircularReferenceEntity',
                     'name'  => 'CircularReferenceEntity'
                 )
-            ),
-            false
+            )
         );
 
         //test validation and references conversion
-        $this->assertEquals($referenceObject, $newObject->getCircularReferenceEntity());
-        $this->assertEquals($badProperties, $newObject->getViolations());
-        $this->assertFalse($newObject->isValid());
+        $this->assertEquals($referenceObject, $object->getCircularReferenceEntity());
 
-        $secondIds = array(
-            'id'        => 'test ONE',
-            'second_id' => 'test TWO'
-        );
-        /** @var EntityConverterEntity $secondObject */
-        $secondObject = $this->entityConverter->createOrUpdateNewObject(
-            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
-            new Request(
-                array(),
-                array(),
-                $secondIds,
-                array(),
-                array(),
-                array(),
-                json_encode($objectContent)
-            ),
-            EntityConverter::MODE_RETRIEVE,
-            array(),
-            false
-        );
-
-        //test set ids
-        $this->assertEquals($secondIds, $secondObject->getIds());
-
-        // Testing set Ids for update mode
-        $secondObject = $this->entityConverter->createOrUpdateNewObject(
-            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
-            new Request(
-                array(),
-                array(),
-                $secondIds,
-                array(),
-                array(),
-                array(),
-                json_encode($objectContent)
-            ),
-            EntityConverter::MODE_UPDATE,
-            array(),
-            false
-        );
-
-        //test set ids
-        $this->assertEquals($secondIds, $secondObject->getIds());
     }
 
     /**

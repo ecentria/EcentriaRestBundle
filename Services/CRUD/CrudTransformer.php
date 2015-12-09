@@ -344,7 +344,7 @@ class CrudTransformer
      * @param bool                $generatedId
      * @return void
      */
-    public function setIdsFromRequest($entity, $request, $mode = self::MODE_CREATE, $generatedId = true)
+    public function setIdsFromRequest($entity, $request, $mode = self::MODE_CREATE, $generatedId = false)
     {
         // Get list of ids from request attributes
         if ($mode != self::MODE_RETRIEVE && $generatedId || !$entity instanceof CrudEntityInterface) {
