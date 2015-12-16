@@ -28,10 +28,6 @@ use Symfony\Component\Validator\Exception\RuntimeException;
  */
 class EntityConverter extends BaseDoctrineParamConverter
 {
-    const MODE_CREATE = 'create';
-    const MODE_RETRIEVE = 'retrieve';
-    const MODE_UPDATE = 'update';
-
     /**
      * CRUD Transformer
      *
@@ -59,15 +55,20 @@ class EntityConverter extends BaseDoctrineParamConverter
         $name    = $configuration->getName();
         $class   = $configuration->getClass();
         $options = $this->getOptions($configuration);
-        $mode  = empty($options['mode']) ? self::MODE_RETRIEVE : $options['mode'];
+        $mode  = empty($options['mode']) ? CrudTransformer::MODE_RETRIEVE : $options['mode'];
 
         if (null === $request->attributes->get($name, false)) {
             $configuration->setIsOptional(true);
         }
 
-        $object = $mode == self::MODE_CREATE ? null : $this->findObject($class, $request, $options, $name);
-        if (empty($object) || $mode == self::MODE_UPDATE) {
-            $object = $this->createOrUpdateNewObject($class, $request, $mode, $options, $object);
+        $object = $mode == CrudTransformer::MODE_CREATE ? null : $this->findObject($class, $request, $options, $name);
+        if (empty($object) || $mode == CrudTransformer::MODE_UPDATE) {
+            $data = $this->crudTransformer->getRequestData($request, $mode);
+            $this->crudTransformer->convertArrayToEntityAndValidate($data, $class, $mode, $object);
+            $this->crudTransformer->setIdsFromRequest($object, $request, $mode, !empty($options['generated_id']));
+            if (isset($options['references'])) {
+                $this->convertExternalReferences($request, $object, $options);
+            }
         }
 
         $request->attributes->set($name, $object);
@@ -82,60 +83,29 @@ class EntityConverter extends BaseDoctrineParamConverter
     }
 
     /**
-     * Create New Object
+     * Convert external relationships from the request to associations on the object
      *
-     * @param string         $class   Class name
-     * @param Request        $request HTTP request
-     * @param string         $mode    Create, Retrieve, Update
-     * @param array          $options Param converter options
-     * @param object|boolean $object  Object
-     * @throws \RuntimeException
-     * @return CrudEntityInterface|mixed
+     * @param Request             $request Request
+     * @param CrudEntityInterface $object  Object
+     * @param array               $options Options
+     * @return void
      */
-    public function createOrUpdateNewObject($class, Request $request, $mode, $options, $object)
+    public function convertExternalReferences(Request $request, $object, $options)
     {
-        $ids = [];
-        $data = $mode == self::MODE_RETRIEVE ? [] : json_decode($request->getContent(), true);
-        if (!is_array($data)) {
-            throw new RuntimeException('Invalid JSON request content');
-        }
-        // Convert array into object and test validity
-        if ($mode != self::MODE_UPDATE || $object == false) {
-            $object = new $class();
-        }
-        $object = $this->crudTransformer->arrayToObject($data, $class, $object);
-        if ($object instanceof ValidatableInterface && $mode != self::MODE_RETRIEVE) {
-            $violations = $this->crudTransformer->arrayToObjectPropertyValidation($data, $class);
-            $valid = !((bool) $violations->count());
-            $object->setViolations($violations);
-            $object->setValid($valid);
-        }
-        // Get list of ids from request attributes
-        if (($mode == self::MODE_RETRIEVE || (isset($options['generated_id']) && !$options['generated_id'])) &&
-            $object instanceof CrudEntityInterface
-        ) {
-            foreach ($object->getIds() as $field => $value) {
-                $ids[$field] = $request->attributes->get($field);
-            }
-            $object->setIds($ids);
-        }
         // Convert external entity references into associated objects
-        if (isset($options['references'])) {
-            $references = !is_array(current($options['references'])) ? array($options['references']) : $options['references'];
-            foreach ($references as $reference) {
-                $entity = $this->findObject(
-                    $reference['class'],
-                    $request,
-                    array_merge($reference, $options),
-                    $reference['name']
-                );
-                $setter = $this->crudTransformer->getPropertySetter($reference['name']);
-                if (method_exists($object, $setter) && is_object($entity)) {
-                    $object->$setter($entity);
-                }
+        $references = !is_array(current($options['references'])) ? array($options['references']) : $options['references'];
+        foreach ($references as $reference) {
+            $entity = $this->findObject(
+                $reference['class'],
+                $request,
+                array_merge($reference, $options),
+                $reference['name']
+            );
+            $setter = $this->crudTransformer->getPropertySetter($reference['name']);
+            if (method_exists($object, $setter) && is_object($entity)) {
+                $object->$setter($entity);
             }
         }
-        return $object;
     }
 
     /**
