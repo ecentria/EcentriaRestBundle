@@ -21,7 +21,16 @@ use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAsser
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  *
  * @ORM\Entity()
- * @ORM\Table(name="`transaction`")
+ * @ORM\Table(
+ *      name="`transaction`",
+ *      indexes={
+ *          @ORM\Index(columns={"method"}),
+ *          @ORM\Index(columns={"status"}),
+ *          @ORM\Index(columns={"success"}),
+ *          @ORM\Index(columns={"created_at"}),
+ *          @ORM\Index(columns={"updated_at"})
+ *      }
+ * )
  * @EcentriaAssert\TransactionSuccess()
  */
 class Transaction
