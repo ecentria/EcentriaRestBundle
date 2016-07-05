@@ -10,7 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction;
 
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 use Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
 
 /**

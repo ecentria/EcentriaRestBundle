@@ -10,7 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\EcentriaRestBundle\Services\ErrorBuilder;
 

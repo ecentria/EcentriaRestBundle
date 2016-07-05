@@ -15,7 +15,7 @@ use Doctrine\Common\Collections\ArrayCollection,
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\PersistentCollection;
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\EcentriaRestBundle\Model\Error,
