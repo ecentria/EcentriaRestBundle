@@ -12,7 +12,11 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 
-
+/**
+ * Transaction Storage Interface
+ *
+ * @author Artem Petrov <artem.petrov@opticsplanet.com>
+ */
 interface TransactionStorageInterface {
 
     /**
