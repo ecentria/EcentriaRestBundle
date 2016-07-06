@@ -59,7 +59,6 @@ class TransactionController extends FOSRestController implements ClassResourceIn
     {
         /** @var Doctrine $doctrineStorage */
         $doctrineStorage = $this->get('ecentria.api.transaction.storage.doctrine');
-        $doctrineStorage->setRequest($request);
         $transaction = $doctrineStorage->read($id);
 
         return $this->view($transaction);

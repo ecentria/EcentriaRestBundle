@@ -6,7 +6,6 @@ services:
 
     # Ecentria
     ecentria.api.transaction.storage.doctrine:
-        class: %ecentria.api.transaction.storage.doctrine.class%
         arguments:
             - @doctrine
-            - @ecentria.api.converter.entity
+        class: %ecentria.api.transaction.storage.doctrine.class%

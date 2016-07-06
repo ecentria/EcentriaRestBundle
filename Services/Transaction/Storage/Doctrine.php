@@ -11,8 +11,7 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage;
 
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction as TransactionEntity,
-    Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel,
-    Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter;
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
 
 use Doctrine\Common\Collections\ArrayCollection,
     Doctrine\Common\Persistence\ManagerRegistry,
@@ -20,14 +19,14 @@ use Doctrine\Common\Collections\ArrayCollection,
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
-use Symfony\Component\HttpFoundation\Request;
-
 /**
  * Doctrine Transaction Storage
  *
  * @author Artem Petrov <artem.petrov@opticsplanet.com>
  */
 class Doctrine implements TransactionStorageInterface {
+
+    const ENTITY_CLASS_NAME = 'Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction';
 
     /**
      * Registry
@@ -37,28 +36,12 @@ class Doctrine implements TransactionStorageInterface {
     private $registry;
 
     /**
-     * Request
-     *
-     * @var Request
-     */
-    private $request;
-
-    /**
-     * Entity Converter
-     *
-     * @var EntityConverter
-     */
-    private $entityConverter;
-
-    /**
      * Constructor.
      *
      * @param ManagerRegistry $registry
-     * @param EntityConverter $entityConverter
      */
-    public function __construct(ManagerRegistry $registry, EntityConverter $entityConverter) {
+    public function __construct(ManagerRegistry $registry) {
         $this->registry = $registry;
-        $this->entityConverter = $entityConverter;
     }
 
     /**
@@ -66,8 +49,7 @@ class Doctrine implements TransactionStorageInterface {
      */
     public function write(TransactionModel $transaction) {
         $entity = $this->buildEntity($transaction);
-        $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($entity) : get_class($entity);
-        $entityManager = $this->registry->getManagerForClass($className);
+        $entityManager = $this->registry->getManagerForClass(self::ENTITY_CLASS_NAME);
 
         $entityManager->clear();
         $entityManager->persist($entity);
@@ -78,27 +60,10 @@ class Doctrine implements TransactionStorageInterface {
      * {@inheritDoc}
      */
     public function read($id) {
-        $values = [
-            'class'     => 'Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction',
-            'converter' => 'ecentria.api.converter.entity',
-            'name'      => 'transactionEntity'
-        ];
-
-        $configuration = new ParamConverter($values);
-        $this->entityConverter->apply($this->request, $configuration);
-        $transactionEntity = $this->request->attributes->get('transactionEntity');
+        $entityManager = $this->registry->getManagerForClass(self::ENTITY_CLASS_NAME);
+        $transactionEntity = $entityManager->find(self::ENTITY_CLASS_NAME, $id);
 
         return $this->buildModel($transactionEntity);
-    }
-
-    /**
-     * Set request
-     *
-     * @param Request $request Request
-     */
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
     }
 
     /**
