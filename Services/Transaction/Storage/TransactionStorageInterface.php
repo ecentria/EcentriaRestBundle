@@ -34,4 +34,4 @@ interface TransactionStorageInterface {
      * @return void
      */
     public function write(Transaction $transaction);
-} 
+}

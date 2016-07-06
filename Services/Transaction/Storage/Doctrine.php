@@ -104,24 +104,24 @@ class Doctrine implements TransactionStorageInterface {
     /**
      * Build Transaction Entity from Transaction Model
      *
-     * @param TransactionModel $transaction Transaction Model
+     * @param TransactionModel $transactionModel Transaction Model
      * @return TransactionEntity
      */
-    private function buildEntity(TransactionModel $transaction)
+    private function buildEntity(TransactionModel $transactionModel)
     {
         $transactionEntity = new TransactionEntity();
-        $transactionEntity->setId($transaction->getId())
-            ->setModel($transaction->getModel())
-            ->setRelatedIds($transaction->getRelatedIds())
-            ->setRelatedRoute($transaction->getRelatedRoute())
-            ->setMethod($transaction->getMethod())
-            ->setRequestSource($transaction->getRequestSource())
-            ->setRequestId($transaction->getRequestId())
-            ->setCreatedAt($transaction->getCreatedAt())
-            ->setUpdatedAt($transaction->getUpdatedAt())
-            ->setStatus($transaction->getStatus())
-            ->setSuccess($transaction->getSuccess())
-            ->setMessages(new ArrayCollection($transaction->getMessages()));
+        $transactionEntity->setId($transactionModel->getId())
+            ->setModel($transactionModel->getModel())
+            ->setRelatedIds($transactionModel->getRelatedIds())
+            ->setRelatedRoute($transactionModel->getRelatedRoute())
+            ->setMethod($transactionModel->getMethod())
+            ->setRequestSource($transactionModel->getRequestSource())
+            ->setRequestId($transactionModel->getRequestId())
+            ->setCreatedAt($transactionModel->getCreatedAt())
+            ->setUpdatedAt($transactionModel->getUpdatedAt())
+            ->setStatus($transactionModel->getStatus())
+            ->setSuccess($transactionModel->getSuccess())
+            ->setMessages(new ArrayCollection($transactionModel->getMessages()));
 
         return $transactionEntity;
     }
@@ -129,25 +129,25 @@ class Doctrine implements TransactionStorageInterface {
     /**
      * Build Transaction Model from Transaction Entity
      *
-     * @param TransactionEntity $transaction
+     * @param TransactionEntity $transactionEntity
      * @return TransactionModel
      */
-    private function buildModel(TransactionEntity $transaction)
+    private function buildModel(TransactionEntity $transactionEntity)
     {
-        $model = new TransactionModel();
-        $model->setId($transaction->getId())
-            ->setModel($transaction->getModel())
-            ->setRelatedIds($transaction->getRelatedIds())
-            ->setRelatedRoute($transaction->getRelatedRoute())
-            ->setMethod($transaction->getMethod())
-            ->setRequestSource($transaction->getRequestSource())
-            ->setRequestId($transaction->getRequestId())
-            ->setCreatedAt($transaction->getCreatedAt())
-            ->setUpdatedAt($transaction->getUpdatedAt())
-            ->setStatus($transaction->getStatus())
-            ->setSuccess($transaction->getSuccess())
-            ->setMessages($transaction->getMessages()->toArray());
+        $transactionModel = new TransactionModel();
+        $transactionModel->setId($transactionEntity->getId())
+            ->setModel($transactionEntity->getModel())
+            ->setRelatedIds($transactionEntity->getRelatedIds())
+            ->setRelatedRoute($transactionEntity->getRelatedRoute())
+            ->setMethod($transactionEntity->getMethod())
+            ->setRequestSource($transactionEntity->getRequestSource())
+            ->setRequestId($transactionEntity->getRequestId())
+            ->setCreatedAt($transactionEntity->getCreatedAt())
+            ->setUpdatedAt($transactionEntity->getUpdatedAt())
+            ->setStatus($transactionEntity->getStatus())
+            ->setSuccess($transactionEntity->getSuccess())
+            ->setMessages($transactionEntity->getMessages()->toArray());
 
-        return $model;
+        return $transactionModel;
     }
 }
