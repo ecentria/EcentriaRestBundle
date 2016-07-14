@@ -63,7 +63,11 @@ class Doctrine implements TransactionStorageInterface {
         $entityManager = $this->registry->getManagerForClass(self::ENTITY_CLASS_NAME);
         $transactionEntity = $entityManager->find(self::ENTITY_CLASS_NAME, $id);
 
-        return $this->buildModel($transactionEntity);
+        if ($transactionEntity instanceof TransactionEntity) {
+            return $this->buildModel($transactionEntity);
+        }
+
+        return new TransactionModel();
     }
 
     /**
