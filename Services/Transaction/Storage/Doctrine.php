@@ -13,9 +13,7 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction as TransactionEntity,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
 
-use Doctrine\Common\Collections\ArrayCollection,
-    Doctrine\Common\Persistence\ManagerRegistry,
-    Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
@@ -90,7 +88,7 @@ class Doctrine implements TransactionStorageInterface {
             ->setUpdatedAt($transactionModel->getUpdatedAt())
             ->setStatus($transactionModel->getStatus())
             ->setSuccess($transactionModel->getSuccess())
-            ->setMessages(new ArrayCollection($transactionModel->getMessages()));
+            ->setMessages($transactionModel->getMessages());
 
         return $transactionEntity;
     }
@@ -115,7 +113,7 @@ class Doctrine implements TransactionStorageInterface {
             ->setUpdatedAt($transactionEntity->getUpdatedAt())
             ->setStatus($transactionEntity->getStatus())
             ->setSuccess($transactionEntity->getSuccess())
-            ->setMessages($transactionEntity->getMessages()->toArray());
+            ->setMessages($transactionEntity->getMessages());
 
         return $transactionModel;
     }

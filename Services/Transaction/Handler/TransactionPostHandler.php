@@ -18,7 +18,6 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\ErrorBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
-use Doctrine\Common\Persistence\ManagerRegistry;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
@@ -55,18 +54,15 @@ class TransactionPostHandler implements TransactionHandlerInterface
     /**
      * Constructor
      *
-     * @param ManagerRegistry $registry      Manager Registry
-     * @param ErrorBuilder    $errorBuilder  errorBuilder
-     * @param NoticeBuilder   $noticeBuilder noticeBuilder
-     * @param InfoBuilder     $infoBuilder   infoBuilder
+     * @param ErrorBuilder  $errorBuilder  errorBuilder
+     * @param NoticeBuilder $noticeBuilder noticeBuilder
+     * @param InfoBuilder   $infoBuilder   infoBuilder
      */
     public function __construct(
-        ManagerRegistry $registry,
         ErrorBuilder $errorBuilder,
         NoticeBuilder $noticeBuilder,
         InfoBuilder $infoBuilder
     ) {
-        $this->registry = $registry;
         $this->errorBuilder = $errorBuilder;
         $this->noticeBuilder = $noticeBuilder;
         $this->infoBuilder = $infoBuilder;
@@ -189,8 +185,6 @@ class TransactionPostHandler implements TransactionHandlerInterface
         }
 
         $transaction->setMessages($messages);
-        $em = $this->registry->getManagerForClass(get_class($transaction));
-        $em->persist($transaction);
         $entity->setTransaction($transaction);
     }
 

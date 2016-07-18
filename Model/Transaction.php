@@ -10,6 +10,8 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Model;
 
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Transaction Model
  *
@@ -377,23 +379,23 @@ class Transaction
     /**
      * Messages setter
      *
-     * @param array $messages
+     * @param ArrayCollection $messages
      *
      * @return Transaction
      */
-    public function setMessages(array $messages)
+    public function setMessages(ArrayCollection $messages)
     {
-        $this->messages = $messages;
+        $this->messages = $messages->toArray();
         return $this;
     }
 
     /**
      * Messages getter
      *
-     * @return array
+     * @return ArrayCollection
      */
     public function getMessages()
     {
-        return $this->messages;
+        return new ArrayCollection($this->messages);
     }
 }
