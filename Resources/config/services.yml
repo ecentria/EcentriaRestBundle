@@ -4,3 +4,4 @@ imports:
     - { resource: services/converters.yml }
     - { resource: services/listeners.yml }
     - { resource: services/utils.yml }
+    - { resource: services/storages.yml }

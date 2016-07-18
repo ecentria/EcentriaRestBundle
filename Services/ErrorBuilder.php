@@ -11,7 +11,7 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Services;
 
 use Doctrine\Common\Collections\ArrayCollection;
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Error;
 use Symfony\Component\Validator\ConstraintViolation;

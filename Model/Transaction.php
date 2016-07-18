@@ -2,48 +2,41 @@
 /*
  * This file is part of the ecentria group, inc. software.
  *
- * (c) 2015, ecentria group, inc.
+ * (c) 2016, ecentria group, inc.
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
 
-namespace Ecentria\Libraries\EcentriaRestBundle\Entity;
-
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
-use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints as EcentriaAssert;
-use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
+namespace Ecentria\Libraries\EcentriaRestBundle\Model;
 
 /**
- * Transaction entity
+ * Transaction Model
  *
- * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
- *
- * @ORM\Entity()
- * @ORM\Table(
- *      name="`transaction`",
- *      indexes={
- *          @ORM\Index(columns={"method"}),
- *          @ORM\Index(columns={"status"}),
- *          @ORM\Index(columns={"success"}),
- *          @ORM\Index(columns={"created_at"}),
- *          @ORM\Index(columns={"updated_at"})
- *      }
- * )
- * @EcentriaAssert\TransactionSuccess()
+ * @author Artem Petrov <artem.petrov@opticsplanet.com>
  */
 class Transaction
 {
+    const METHOD_POST = 'POST';
+    const METHOD_PUT = 'PUT';
+    const METHOD_PATCH = 'PATCH';
+    const METHOD_DELETE = 'DELETE';
+    const METHOD_GET = 'GET';
+
+    const SOURCE_REST = 'REST';
+    const SOURCE_CLI = 'CLI';
+    const SOURCE_SERVICE = 'SERVICE';
+
+    const STATUS_OK = 200;
+    const STATUS_CREATED = 201;
+    const STATUS_BAD_REQUEST = 400;
+    const STATUS_NOT_FOUND = 404;
+    const STATUS_CONFLICT = 409;
 
     /**
      * Identifier
      *
      * @var int
-     *
-     * @ORM\Id
-     * @ORM\Column(name="transaction_id", type="string")
      */
     private $id;
 
@@ -51,10 +44,6 @@ class Transaction
      * Name of api endpoint
      *
      * @var string
-     *
-     * @ORM\Column(name="model", type="string", nullable=false)
-     *
-     * @Assert\NotNull()
      */
     private $model;
 
@@ -62,7 +51,6 @@ class Transaction
      * Related entity
      *
      * @var string
-     * @ORM\Column(name="related_ids", type="array", nullable=true)
      */
     private $relatedIds;
 
@@ -70,7 +58,6 @@ class Transaction
      * Related entity
      *
      * @var string
-     * @ORM\Column(name="related_route", type="string", nullable=false)
      */
     private $relatedRoute;
 
@@ -79,20 +66,6 @@ class Transaction
      * (post, put, patch, delete, get)
      *
      * @var string
-     *
-     * @ORM\Column(name="method", type="string", length=7, nullable=false)
-     *
-     * @Assert\NotNull()
-     *
-     * @EcentriaAssert\InArray(
-     *      values={
-     *          TransactionModel::METHOD_POST,
-     *          TransactionModel::METHOD_PUT,
-     *          TransactionModel::METHOD_PATCH,
-     *          TransactionModel::METHOD_DELETE,
-     *          TransactionModel::METHOD_GET
-     *      }
-     * )
      */
     private $method;
 
@@ -101,18 +74,6 @@ class Transaction
      * (rest, cli, service)
      *
      * @var string
-     *
-     * @ORM\Column(name="request_source", type="string", nullable=false)
-     *
-     * @Assert\NotNull()
-     *
-     * @EcentriaAssert\InArray(
-     *      values={
-     *          TransactionModel::SOURCE_REST,
-     *          TransactionModel::SOURCE_CLI,
-     *          TransactionModel::SOURCE_SERVICE
-     *      }
-     * )
      */
     private $requestSource;
 
@@ -120,10 +81,6 @@ class Transaction
      * Request id
      *
      * @var string
-     *
-     * @ORM\Column(name="request_id", type="string", nullable=false)
-     *
-     * @Assert\NotNull()
      */
     private $requestId;
 
@@ -131,10 +88,6 @@ class Transaction
      * Created at given datetime
      *
      * @var \DateTime
-     *
-     * @ORM\Column(name="created_at", type="datetime", nullable=false)
-     *
-     * @Assert\NotNull()
      */
     private $createdAt;
 
@@ -142,10 +95,6 @@ class Transaction
      * Updated at given datetime
      *
      * @var \DateTime
-     *
-     * @ORM\Column(name="updated_at", type="datetime", nullable=false)
-     *
-     * @Assert\NotNull()
      */
     private $updatedAt;
 
@@ -154,20 +103,6 @@ class Transaction
      * (201, 200, 400, 409)
      *
      * @var int
-     *
-     * @ORM\Column(name="status", type="smallint", length=4, nullable=false)
-     *
-     * @Assert\NotNull()
-     *
-     * @EcentriaAssert\InArray(
-     *      values={
-     *          TransactionModel::STATUS_OK,
-     *          TransactionModel::STATUS_CREATED,
-     *          TransactionModel::STATUS_BAD_REQUEST,
-     *          TransactionModel::STATUS_NOT_FOUND,
-     *          TransactionModel::STATUS_CONFLICT
-     *      }
-     * )
      */
     private $status;
 
@@ -176,10 +111,6 @@ class Transaction
      * true < 400 >= false
      *
      * @var bool
-     *
-     * @ORM\Column(name="success", type="boolean")
-     *
-     * @Assert\NotNull()
      */
     private $success;
 
@@ -188,8 +119,6 @@ class Transaction
      * Json encoded messages
      *
      * @var array
-     *
-     * @ORM\Column(name="message", type="json_array")
      */
     private $messages = [];
 
@@ -448,23 +377,23 @@ class Transaction
     /**
      * Messages setter
      *
-     * @param ArrayCollection $messages
+     * @param array $messages
      *
      * @return Transaction
      */
-    public function setMessages(ArrayCollection $messages)
+    public function setMessages(array $messages)
     {
-        $this->messages = $messages->toArray();
+        $this->messages = $messages;
         return $this;
     }
 
     /**
      * Messages getter
      *
-     * @return ArrayCollection
+     * @return array
      */
     public function getMessages()
     {
-        return new ArrayCollection($this->messages);
+        return $this->messages;
     }
 }

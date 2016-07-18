@@ -17,9 +17,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
-    Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionBuilder,
-    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager;
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager,
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\TransactionStorageInterface;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
@@ -53,13 +54,6 @@ class TransactionalListener implements EventSubscriberInterface
     private $transactionBuilder;
 
     /**
-     * Registry
-     *
-     * @var ManagerRegistry
-     */
-    private $registry;
-
-    /**
      * Transaction response manager
      *
      * @var TransactionResponseManager
@@ -74,22 +68,29 @@ class TransactionalListener implements EventSubscriberInterface
     private $transactional;
 
     /**
+     * Transaction Storage
+     *
+     * @var TransactionStorageInterface
+     */
+    private $transactionStorage;
+
+    /**
      * Constructor.
      *
      * @param Reader $reader An Reader instance
      * @param TransactionBuilder $transactionBuilder
-     * @param ManagerRegistry $registry
+     * @param TransactionStorageInterface $transactionStorage
      * @param TransactionResponseManager $transactionResponseManager
      */
     public function __construct(
         Reader $reader,
         TransactionBuilder $transactionBuilder,
-        ManagerRegistry $registry,
+        TransactionStorageInterface $transactionStorage,
         TransactionResponseManager $transactionResponseManager
     ) {
         $this->reader = $reader;
         $this->transactionBuilder = $transactionBuilder;
-        $this->registry = $registry;
+        $this->transactionStorage = $transactionStorage;
         $this->transactionResponseManager = $transactionResponseManager;
     }
 
@@ -192,8 +193,6 @@ class TransactionalListener implements EventSubscriberInterface
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');
         if ($transaction) {
-            $className = class_exists('Doctrine\Common\Util\ClassUtils') ? ClassUtils::getClass($transaction) : get_class($transaction);
-            $entityManager = $this->registry->getManagerForClass($className);
 
             // Hot fix, should be addressed another way
             $messages = $transaction->getMessages();
@@ -210,9 +209,7 @@ class TransactionalListener implements EventSubscriberInterface
             }
             $transaction->setMessages($messages);
 
-            $entityManager->clear();
-            $entityManager->persist($transaction);
-            $entityManager->flush();
+            $this->transactionStorage->write($transaction);
         }
     }
 

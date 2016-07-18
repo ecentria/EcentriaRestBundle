@@ -1,0 +1,11 @@
+parameters:
+
+    ecentria.api.transaction.storage.doctrine.class: Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\Doctrine
+
+services:
+
+    # Ecentria
+    ecentria.api.transaction.storage.doctrine:
+        arguments:
+            - @doctrine
+        class: %ecentria.api.transaction.storage.doctrine.class%

@@ -10,15 +10,18 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
-
 use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\FOSRestController,
     FOS\RestBundle\Routing\ClassResourceInterface,
     FOS\RestBundle\View\View;
 
 use Nelmio\ApiDocBundle\Annotation as Nelmio;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration as Sensio;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration as Sensio,
+    Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+
+use Symfony\Component\HttpFoundation\Request;
+
+use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\Doctrine;
 
 /**
  * Contact Controller
@@ -30,19 +33,14 @@ class TransactionController extends FOSRestController implements ClassResourceIn
     /**
      * Get transaction
      *
-     * @param Transaction $transactionEntity Transaction entity
+     * @param Request $request Request instance
+     * @param string  $id      Transaction Id
      *
      * @FOS\Route(
      *      pattern="transaction-service/{id}",
      *      requirements = {
      *          "id" = ".+?"
      *      }
-     * )
-     *
-     * @Sensio\ParamConverter(
-     *      "transactionEntity",
-     *      class="Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction",
-     *      converter = "ecentria.api.converter.entity"
      * )
      *
      * @Nelmio\ApiDoc(
@@ -57,8 +55,12 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      *
      * @return View
      */
-    public function getAction(Transaction $transactionEntity)
+    public function getAction(Request $request, $id)
     {
-        return $this->view($transactionEntity);
+        /** @var Doctrine $doctrineStorage */
+        $doctrineStorage = $this->get('ecentria.api.transaction.storage.doctrine');
+        $transaction = $doctrineStorage->read($id);
+
+        return $this->view($transaction);
     }
 }
