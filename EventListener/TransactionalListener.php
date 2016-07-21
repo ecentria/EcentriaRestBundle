@@ -209,7 +209,8 @@ class TransactionalListener implements EventSubscriberInterface
             }
             $transaction->setMessages($messages);
 
-            $this->transactionStorage->write($transaction);
+            $this->transactionStorage->persist($transaction);
+            $this->transactionStorage->write();
         }
     }
 

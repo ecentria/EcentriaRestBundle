@@ -17,7 +17,8 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\EcentriaRestBundle\Services\ErrorBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
-    Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
+    Ecentria\Libraries\EcentriaRestBundle\Services\UUID,
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\TransactionStorageInterface;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
@@ -35,34 +36,44 @@ class TransactionPostHandler implements TransactionHandlerInterface
      *
      * @var InfoBuilder
      */
-    private $infoBuilder;
+    protected $infoBuilder;
 
     /**
      * Error builder
      *
      * @var ErrorBuilder
      */
-    private $errorBuilder;
+    protected $errorBuilder;
 
     /**
      * Notice builder
      *
      * @var NoticeBuilder
      */
-    private $noticeBuilder;
+    protected $noticeBuilder;
+
+    /**
+     * Transaction Storage
+     *
+     * @var TransactionStorageInterface
+     */
+    protected $transactionStorage;
 
     /**
      * Constructor
      *
-     * @param ErrorBuilder  $errorBuilder  errorBuilder
-     * @param NoticeBuilder $noticeBuilder noticeBuilder
-     * @param InfoBuilder   $infoBuilder   infoBuilder
+     * @param TransactionStorageInterface $transactionStorage Transaction Storage
+     * @param ErrorBuilder                $errorBuilder       errorBuilder
+     * @param NoticeBuilder               $noticeBuilder      noticeBuilder
+     * @param InfoBuilder                 $infoBuilder        infoBuilder
      */
     public function __construct(
+        TransactionStorageInterface $transactionStorage,
         ErrorBuilder $errorBuilder,
         NoticeBuilder $noticeBuilder,
         InfoBuilder $infoBuilder
     ) {
+        $this->transactionStorage = $transactionStorage;
         $this->errorBuilder = $errorBuilder;
         $this->noticeBuilder = $noticeBuilder;
         $this->infoBuilder = $infoBuilder;
@@ -186,6 +197,8 @@ class TransactionPostHandler implements TransactionHandlerInterface
 
         $transaction->setMessages($messages);
         $entity->setTransaction($transaction);
+
+        $this->transactionStorage->persist($transaction);
     }
 
     /**
