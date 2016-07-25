@@ -13,9 +13,8 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage;
 use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction as TransactionEntity,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
 
-use Doctrine\Common\Collections\ArrayCollection,
-    Doctrine\Common\Persistence\ManagerRegistry,
-    Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Persistence\ManagerRegistry,
+    Doctrine\Common\Collections\ArrayCollection;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
@@ -36,24 +35,20 @@ class Doctrine implements TransactionStorageInterface {
     private $registry;
 
     /**
+     * Persistent transactions
+     *
+     * @var ArrayCollection
+     */
+    private $persistentTransactions;
+
+    /**
      * Constructor.
      *
      * @param ManagerRegistry $registry
      */
     public function __construct(ManagerRegistry $registry) {
         $this->registry = $registry;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function write(TransactionModel $transaction) {
-        $entity = $this->buildEntity($transaction);
-        $entityManager = $this->registry->getManagerForClass(self::ENTITY_CLASS_NAME);
-
-        $entityManager->clear();
-        $entityManager->persist($entity);
-        $entityManager->flush();
+        $this->persistentTransactions = new ArrayCollection();
     }
 
     /**
@@ -68,6 +63,30 @@ class Doctrine implements TransactionStorageInterface {
         }
 
         return new TransactionModel();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function persist(TransactionModel $transaction) {
+        if (!$this->persistentTransactions->contains($transaction)) {
+            $this->persistentTransactions->add($transaction);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function write() {
+        $entityManager = $this->registry->getManagerForClass(self::ENTITY_CLASS_NAME);
+
+        $entityManager->clear();
+        foreach ($this->persistentTransactions as $transactionModel) {
+            $transactionEntity = $this->buildEntity($transactionModel);
+            $entityManager->persist($transactionEntity);
+        }
+
+        $entityManager->flush();
     }
 
     /**
@@ -90,7 +109,7 @@ class Doctrine implements TransactionStorageInterface {
             ->setUpdatedAt($transactionModel->getUpdatedAt())
             ->setStatus($transactionModel->getStatus())
             ->setSuccess($transactionModel->getSuccess())
-            ->setMessages(new ArrayCollection($transactionModel->getMessages()));
+            ->setMessages($transactionModel->getMessages());
 
         return $transactionEntity;
     }
@@ -115,7 +134,7 @@ class Doctrine implements TransactionStorageInterface {
             ->setUpdatedAt($transactionEntity->getUpdatedAt())
             ->setStatus($transactionEntity->getStatus())
             ->setSuccess($transactionEntity->getSuccess())
-            ->setMessages($transactionEntity->getMessages()->toArray());
+            ->setMessages($transactionEntity->getMessages());
 
         return $transactionModel;
     }

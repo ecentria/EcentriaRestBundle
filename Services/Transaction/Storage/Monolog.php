@@ -30,7 +30,15 @@ class Monolog implements TransactionStorageInterface {
     /**
      * {@inheritDoc}
      */
-    public function write(Transaction $transaction)
+    public function persist(Transaction $transaction)
+    {
+        // a stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function write()
     {
         // a stub
     }

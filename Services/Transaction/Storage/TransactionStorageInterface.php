@@ -28,10 +28,18 @@ interface TransactionStorageInterface {
     public function read($id);
 
     /**
-     * Write Transaction Model to Transaction Storage
+     * Tells the Transaction Storage to make an model persistent
+     * The model will be entered into the storage as a result of the write operation.
      *
      * @param Transaction $transaction
      * @return void
      */
-    public function write(Transaction $transaction);
+    public function persist(Transaction $transaction);
+
+    /**
+     * Writes all models that have been queued up to now to the storage
+     *
+     * @return void
+     */
+    public function write();
 }
