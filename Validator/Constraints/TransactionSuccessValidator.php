@@ -10,7 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints;
 
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 

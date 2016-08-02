@@ -54,8 +54,7 @@ class ArrayCollectionConverter implements ParamConverterInterface
         $name = $configuration->getName();
         $class = $configuration->getClass();
 
-        $data = json_decode($request->getContent(), true);
-
+        $data = $this->crudTransformer->getRequestData($request);
         $collection = $this->crudTransformer->arrayToCollection($data, $class);
 
         /**

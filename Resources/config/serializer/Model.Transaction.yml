@@ -1,0 +1,20 @@
+Ecentria\Libraries\EcentriaRestBundle\Model\Transaction:
+
+    relations:
+
+        - rel: related
+          exclusion:
+              exclude_if: expr(object.getRelatedIds() === null)
+          href:
+              route: expr(object.getRelatedRoute())
+              parameters: expr(object.getRelatedIds())
+              absolute: true
+
+        - rel: self
+          exclusion:
+              exclude_if: expr(object.getId() === null)
+          href:
+              route: get_transaction
+              parameters:
+                  id: expr(object.getId())
+              absolute: true

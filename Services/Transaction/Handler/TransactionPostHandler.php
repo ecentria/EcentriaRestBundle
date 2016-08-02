@@ -12,13 +12,13 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CollectionResponse,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
     Ecentria\Libraries\EcentriaRestBundle\Services\ErrorBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\NoticeBuilder,
-    Ecentria\Libraries\EcentriaRestBundle\Services\UUID;
-use Doctrine\Common\Persistence\ManagerRegistry;
+    Ecentria\Libraries\EcentriaRestBundle\Services\UUID,
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\TransactionStorageInterface;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\InfoBuilder;
 use Gedmo\Exception\FeatureNotImplementedException;
@@ -36,37 +36,44 @@ class TransactionPostHandler implements TransactionHandlerInterface
      *
      * @var InfoBuilder
      */
-    private $infoBuilder;
+    protected $infoBuilder;
 
     /**
      * Error builder
      *
      * @var ErrorBuilder
      */
-    private $errorBuilder;
+    protected $errorBuilder;
 
     /**
      * Notice builder
      *
      * @var NoticeBuilder
      */
-    private $noticeBuilder;
+    protected $noticeBuilder;
+
+    /**
+     * Transaction Storage
+     *
+     * @var TransactionStorageInterface
+     */
+    protected $transactionStorage;
 
     /**
      * Constructor
      *
-     * @param ManagerRegistry $registry      Manager Registry
-     * @param ErrorBuilder    $errorBuilder  errorBuilder
-     * @param NoticeBuilder   $noticeBuilder noticeBuilder
-     * @param InfoBuilder     $infoBuilder   infoBuilder
+     * @param TransactionStorageInterface $transactionStorage Transaction Storage
+     * @param ErrorBuilder                $errorBuilder       errorBuilder
+     * @param NoticeBuilder               $noticeBuilder      noticeBuilder
+     * @param InfoBuilder                 $infoBuilder        infoBuilder
      */
     public function __construct(
-        ManagerRegistry $registry,
+        TransactionStorageInterface $transactionStorage,
         ErrorBuilder $errorBuilder,
         NoticeBuilder $noticeBuilder,
         InfoBuilder $infoBuilder
     ) {
-        $this->registry = $registry;
+        $this->transactionStorage = $transactionStorage;
         $this->errorBuilder = $errorBuilder;
         $this->noticeBuilder = $noticeBuilder;
         $this->infoBuilder = $infoBuilder;
@@ -189,9 +196,9 @@ class TransactionPostHandler implements TransactionHandlerInterface
         }
 
         $transaction->setMessages($messages);
-        $em = $this->registry->getManagerForClass(get_class($transaction));
-        $em->persist($transaction);
         $entity->setTransaction($transaction);
+
+        $this->transactionStorage->persist($transaction);
     }
 
     /**

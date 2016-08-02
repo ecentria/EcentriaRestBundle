@@ -18,12 +18,15 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\UniqueEntity;
 use JMS\Serializer\Serializer;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 use JMS\Serializer\Exception\ValidationFailedException;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Exception\RuntimeException;
 
 /**
  * CRUD Transformer
@@ -32,6 +35,10 @@ use Symfony\Component\Validator\Validator\RecursiveValidator;
  */
 class CrudTransformer
 {
+    const MODE_CREATE = 'create';
+    const MODE_RETRIEVE = 'retrieve';
+    const MODE_UPDATE = 'update';
+
     /**
      * Entity manager
      *
@@ -138,6 +145,23 @@ class CrudTransformer
             }
         }
         return $badProperties;
+    }
+
+    /**
+     * Validate Accessible Properties of an object
+     *
+     * @param ValidatableInterface $object
+     * @param array                $data
+     * @return void
+     */
+    public function validateAccessibleProperties($object, $data)
+    {
+        if ($object instanceof ValidatableInterface) {
+            $violations = $this->arrayToObjectPropertyValidation($data, get_class($object));
+            $valid = !((bool) $violations->count());
+            $object->setViolations($violations);
+            $object->setValid($valid);
+        }
     }
 
     /**
@@ -271,6 +295,66 @@ class CrudTransformer
             }
         }
         return $value;
+    }
+
+    /**
+     * Get request data from content body
+     *
+     * @param Request $request
+     * @param string  $mode
+     * @return array|mixed
+     * @throws RuntimeException
+     */
+    public function getRequestData(Request $request, $mode = self::MODE_CREATE)
+    {
+        $data = $mode == self::MODE_RETRIEVE ? [] : json_decode($request->getContent(), true);
+        if (!is_array($data)) {
+            throw new RuntimeException('Invalid JSON request content');
+        }
+        return $data;
+    }
+
+    /**
+     * Convert array to object and validate
+     *
+     * @param array       $data
+     * @param string      $class
+     * @param string      $mode
+     * @param bool|object &$entity
+     * @return object
+     */
+    public function convertArrayToEntityAndValidate($data, $class, $mode = self::MODE_CREATE, &$entity = null)
+    {
+        if ($mode != self::MODE_UPDATE || empty($entity)) {
+            $entity = new $class();
+        }
+        $entity = $this->arrayToObject($data, $class, $entity);
+        if ($mode != self::MODE_RETRIEVE) {
+            $this->validateAccessibleProperties($entity, $data);
+        }
+        return $entity;
+    }
+
+    /**
+     * Set IDs on entity from HTTP Request
+     *
+     * @param CrudEntityInterface $entity
+     * @param Request             $request
+     * @param string              $mode
+     * @param bool                $generatedId
+     * @return void
+     */
+    public function setIdsFromRequest($entity, $request, $mode = self::MODE_CREATE, $generatedId = false)
+    {
+        // Get list of ids from request attributes
+        if ($mode != self::MODE_RETRIEVE && $generatedId || !$entity instanceof CrudEntityInterface) {
+            return;
+        }
+        $ids = [];
+        foreach ($entity->getIds() as $field => $value) {
+            $ids[$field] = $request->attributes->get($field);
+        }
+        $entity->setIds($ids);
     }
 
     /**

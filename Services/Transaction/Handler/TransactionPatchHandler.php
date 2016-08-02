@@ -10,8 +10,11 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler;
 
-use Ecentria\Libraries\EcentriaRestBundle\Entity\Transaction,
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\UnitOfWork;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface,
+    Ecentria\Libraries\EcentriaRestBundle\Model\Error,
     Ecentria\Libraries\EcentriaRestBundle\Services\ErrorBuilder;
 
 use Gedmo\Exception\FeatureNotImplementedException;
@@ -25,12 +28,28 @@ use Symfony\Component\Validator\ConstraintViolationList;
 class TransactionPatchHandler implements TransactionHandlerInterface
 {
     /**
+     * Registry
+     *
+     * @var ManagerRegistry
+     */
+    private $registry;
+
+    /**
+     * Error Builder
+     *
+     * @var ErrorBuilder
+     */
+    private $errorBuilder;
+
+    /**
      * Constructor
      *
-     * @param ErrorBuilder $errorBuilder $errorBuilder
+     * @param ManagerRegistry $registry     Manager Registry
+     * @param ErrorBuilder    $errorBuilder $errorBuilder
      */
-    public function __construct(ErrorBuilder $errorBuilder)
+    public function __construct(ManagerRegistry $registry, ErrorBuilder $errorBuilder)
     {
+        $this->registry = $registry;
         $this->errorBuilder = $errorBuilder;
     }
 
@@ -63,15 +82,37 @@ class TransactionPatchHandler implements TransactionHandlerInterface
             );
         }
 
+        if (!$this->isEntityManaged($data)) {
+            $this->errorBuilder->addCustomError(
+                $data->getPrimaryKey(),
+                new Error('Entity not found', Transaction::STATUS_NOT_FOUND, null, Error::CONTEXT_GLOBAL)
+            );
+        }
+
+        $errorCode = Transaction::STATUS_OK;
         $this->errorBuilder->processViolations($violations);
-        $this->errorBuilder->setTransactionErrors($transaction);
-
-        $success = !$this->errorBuilder->hasErrors();
-        $status = $success ? Transaction::STATUS_OK : Transaction::STATUS_CONFLICT;
-
-        $transaction->setStatus($status);
-        $transaction->setSuccess($success);
+        if ($this->errorBuilder->hasErrors()) {
+            $this->errorBuilder->setTransactionErrors($transaction);
+            foreach ($this->errorBuilder->getErrors() as $error) {
+                $errorCode = $error->getCode();
+            }
+        }
+        $transaction->setStatus($errorCode);
+        $transaction->setSuccess(!$this->errorBuilder->hasErrors());
 
         return $data;
+    }
+
+    /**
+     * Is entity managed
+     *
+     * @param CrudEntityInterface $entity entity
+     *
+     * @return bool
+     */
+    private function isEntityManaged(CrudEntityInterface $entity)
+    {
+        $em = $this->registry->getManagerForClass(get_class($entity));
+        return UnitOfWork::STATE_MANAGED === $em->getUnitOfWork()->getEntityState($entity);
     }
 }

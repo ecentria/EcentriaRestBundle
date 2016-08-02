@@ -17,6 +17,11 @@ use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Serializer;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\ConstraintViolation;
+use Symfony\Component\Validator\ConstraintViolationList;
+use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
+use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity;
 
 /**
  * CRUD manager test
@@ -99,6 +104,121 @@ class CrudTransformerTest extends TestCase
             ->method('getClassMetadata')
             ->willReturn($classMetadata);
         $this->crudTransformer->initializeClassMetadata('className');
+    }
+
+    /**
+     * Test get request data
+     *
+     * @return void
+     */
+    public function testGetRequestData()
+    {
+        $origData = ['testKey' => 'testValue'];
+        $request = new Request([], [], [], [], [], [], json_encode($origData));
+        $data = $this->crudTransformer->getRequestData($request);
+        $this->assertEquals($origData, $data);
+
+        $origData2 = 'nonArrayValue';
+        $request = new Request([], [], [], [], [], [], json_encode($origData2));
+        $this->setExpectedException('RuntimeException', 'Invalid JSON request content');
+        $this->crudTransformer->getRequestData($request);
+
+        $request = new Request([], [], [], [], [], [], json_encode($origData));
+        $data = $this->crudTransformer->getRequestData($request, CrudTransformer::MODE_RETRIEVE);
+        $this->assertEquals([], $data);
+    }
+
+    /**
+     * Test convert array to entity and validate
+     *
+     * @return void
+     */
+    public function testConvertArrayToEntityAndValidate()
+    {
+        /** @var CrudTransformer $mockTransformer */
+        $mockTransformer = $this->getMockBuilder('\Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer')
+             ->disableOriginalConstructor()
+             ->setMethods(array('arrayToObject', 'arrayToObjectPropertyValidation'))
+             ->getMock();
+
+        $objectContent = ['id' => 'one', 'second_id' => 'two'];
+        $object = new EntityConverterEntity();
+        $objectUpdate = new EntityConverterEntity();
+        $objectUpdate->setSecondId('123123123123');
+        $object->setIds($objectContent);
+        $badProperties = new ConstraintViolationList();
+        $badProperties->add(
+            new ConstraintViolation(
+                'This is not a valid property of CLASS',
+                'This is not a valid property of CLASS',
+                array(),
+                null,
+                null,
+                null
+            )
+        );
+
+        $mockTransformer->expects($this->any())
+            ->method('arrayToObject')
+            ->willReturn($object);
+        $mockTransformer->expects($this->any())
+            ->method('arrayToObjectPropertyValidation')
+            ->willReturn($badProperties);
+
+        /** @var $returnedObject EntityConverterEntity */
+        $returnedObject = $mockTransformer->convertArrayToEntityAndValidate(
+            $objectContent,
+            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+            CrudTransformer::MODE_RETRIEVE
+        );
+        $this->assertEquals($object, $returnedObject);
+        $this->assertEquals(null, $returnedObject->getViolations());
+
+        $returnedObject = $mockTransformer->convertArrayToEntityAndValidate(
+            $objectContent,
+            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+            CrudTransformer::MODE_CREATE
+        );
+        $this->assertEquals($badProperties, $returnedObject->getViolations());
+
+        $classMetadata = $this->prepareClassMetadata();
+        $this->entityManager->expects($this->any())
+                            ->method('getClassMetadata')
+                            ->willReturn($classMetadata);
+        $this->crudTransformer->initializeClassMetadata('className');
+
+        $returnedObject = $this->crudTransformer->convertArrayToEntityAndValidate(
+            $objectContent,
+            '\Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity',
+            CrudTransformer::MODE_UPDATE,
+            $objectUpdate
+        );
+        $this->assertEquals($returnedObject, $objectUpdate);
+    }
+
+    /**
+     * Test setting IDs from request
+     *
+     * @return void
+     */
+    public function testSetIdsFromRequest()
+    {
+        $ids = ['id' => 'testValue', 'second_id' => 'testValue2'];
+        $object = new EntityConverterEntity();
+        $request = new Request([], [], $ids);
+        $this->crudTransformer->setIdsFromRequest($object, $request, CrudTransformer::MODE_CREATE, false);
+        $this->assertEquals($ids['id'], $object->getPrimaryKey());
+        $this->assertEquals($ids['second_id'], $object->getSecondId());
+
+        $object2 = new EntityConverterEntity();
+        $this->crudTransformer->setIdsFromRequest($object2, $request, CrudTransformer::MODE_CREATE, true);
+        $this->assertEquals(null, $object2->getPrimaryKey());
+        $this->assertEquals(null, $object2->getSecondId());
+
+        $object3 = new EntityConverterEntity();
+        $this->crudTransformer->setIdsFromRequest($object3, $request, CrudTransformer::MODE_RETRIEVE, true);
+        $this->assertEquals($ids['id'], $object3->getPrimaryKey());
+        $this->assertEquals($ids['second_id'], $object3->getSecondId());
     }
 
     /**
