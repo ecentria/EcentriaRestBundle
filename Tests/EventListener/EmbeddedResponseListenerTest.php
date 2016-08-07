@@ -75,6 +75,6 @@ class EmbeddedResponseListenerTest extends TestCase
             ->method('generateGroups')
             ->willReturn($groups);
         $this->listener->onKernelView($this->event);
-        $this->assertSame([$groups], $view->getSerializationContext()->attributes->values());
+        $this->assertSame([$groups], $view->getContext()->getAttributes());
     }
 }
