@@ -30,7 +30,7 @@
         "willdurand/rest-extra-bundle": "~1.0",
         "willdurand/hateoas-bundle": "~1.2.0",
         "gedmo/doctrine-extensions": "~2.4.20",
-        "egulias/email-validator": "~2.0",
+        "egulias/email-validator": "1.2",
         "nelmio/api-doc-bundle": "~2.13.0",
         "doctrine/doctrine-bundle": "~1.5",
         "sensio/framework-extra-bundle": "~3.0.16",
