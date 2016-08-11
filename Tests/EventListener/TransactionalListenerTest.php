@@ -68,7 +68,7 @@ class TransactionalListenerTest extends TestCase
         $this->transactionStorage = $this->getMockBuilder($erbNamespace . '\Services\Transaction\Storage\Doctrine')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->$transactionResponseManger = $this->getMockBuilder(
+        $this->transactionResponseManger = $this->getMockBuilder(
             $erbNamespace . '\Services\Transaction\TransactionResponseManager'
         )
         ->disableOriginalConstructor()
@@ -78,7 +78,7 @@ class TransactionalListenerTest extends TestCase
             $this->reader,
             $this->transactionBuilder,
             $this->transactionStorage,
-            $this->$transactionResponseManger
+            $this->transactionResponseManger
         );
     }
 
