@@ -50,6 +50,13 @@ class TransactionalListenerTest extends TestCase
     protected $transactionResponseManger;
 
     /**
+     * Transactional listener
+     *
+     * @var TransactionalListener
+     */
+    protected $listener;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp()
@@ -61,7 +68,7 @@ class TransactionalListenerTest extends TestCase
         $this->transactionStorage = $this->getMockBuilder($erbNamespace . '\Services\Transaction\Storage\Doctrine')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->transactionResponseManager = $this->getMockBuilder(
+        $this->$transactionResponseManger = $this->getMockBuilder(
             $erbNamespace . '\Services\Transaction\TransactionResponseManager'
         )
         ->disableOriginalConstructor()
@@ -71,7 +78,7 @@ class TransactionalListenerTest extends TestCase
             $this->reader,
             $this->transactionBuilder,
             $this->transactionStorage,
-            $this->transactionResponseManager
+            $this->$transactionResponseManger
         );
     }
 
