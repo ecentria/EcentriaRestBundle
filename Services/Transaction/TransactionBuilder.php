@@ -147,7 +147,8 @@ class TransactionBuilder
             ->setRequestSource($this->requestSource)
             ->setModel($this->model)
             ->setCreatedAt($datetime)
-            ->setUpdatedAt($datetime);
+            ->setUpdatedAt($datetime)
+            ->setResponseTime(0);
         return $transaction;
     }
 }

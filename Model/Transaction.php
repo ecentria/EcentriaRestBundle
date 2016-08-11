@@ -125,6 +125,13 @@ class Transaction
     private $messages = [];
 
     /**
+     * Response time in milliseconds
+     *
+     * @var int
+     */
+    private $responseTime;
+
+    /**
      * Id getter
      *
      * @return int
@@ -397,5 +404,42 @@ class Transaction
     public function getMessages()
     {
         return new ArrayCollection($this->messages);
+    }
+
+    /**
+     * ResponseTime setter
+     *
+     * @param int $milliseconds
+     *
+     * @return Transaction
+     */
+    public function setResponseTime($milliseconds)
+    {
+        $this->responseTime = $milliseconds;
+        return $this;
+    }
+
+    /**
+     * ResponseTime getter
+     *
+     * @return int
+     */
+    public function getResponseTime()
+    {
+        return $this->responseTime;
+    }
+
+    /**
+     * Calculate response time in milliseconds based on current and start of request timestamps
+     *
+     * @param float $currentTimestamp
+     *
+     * @return int
+     */
+    public function calculateResponseTime($currentTimestamp)
+    {
+        $responseTime = round(($currentTimestamp - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
+        $this->setResponseTime($responseTime);
+        return $responseTime;
     }
 }

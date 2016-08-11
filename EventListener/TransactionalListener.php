@@ -193,6 +193,7 @@ class TransactionalListener implements EventSubscriberInterface
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');
         if ($transaction) {
+            $transaction->calculateResponseTime(microtime(true));
 
             // Hot fix, should be addressed another way
             $messages = $transaction->getMessages();
