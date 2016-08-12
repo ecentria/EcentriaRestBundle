@@ -23,10 +23,13 @@ class TransactionTest extends TestCase
     public function testCalculateResponseTime()
     {
         $transaction = new Transaction();
-        $transaction->calculateResponseTime(microtime(true));
-        $responseTimeCheck = round((microtime(true) - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
+        $this->assertEquals(0, $transaction->getResponseTime());
+
+        $microtime = microtime(true);
+        $transaction->calculateResponseTime($microtime);
+        $responseTimeCheck = round(($microtime - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
 
         $this->assertGreaterThan(0, $transaction->getResponseTime());
-        $this->assertTrue(abs($responseTimeCheck - $transaction->getResponseTime()) < 10); // Allow some leeway
+        $this->assertEquals($responseTimeCheck, $transaction->getResponseTime());
     }
 }
