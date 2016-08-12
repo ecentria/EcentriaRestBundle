@@ -16,6 +16,7 @@ parameters:
     ecentria.api.transaction.handler.post.class:   Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler\TransactionPostHandler
     ecentria.api.transaction.handler.put.class:    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Handler\TransactionPutHandler
     ecentria.api.transaction.manager.class:        Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager
+    ecentria.api.transaction.updater.class:        Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionUpdater
 
     ecentria.api.request_creator.class:            Ecentria\Libraries\EcentriaRestBundle\Services\RequestCreator
 
@@ -104,6 +105,9 @@ services:
     ecentria.api.transaction.manager:
             class: %ecentria.api.transaction.manager.class%
             arguments: [~]
+
+    ecentria.api.transaction.updater:
+            class: %ecentria.api.transaction.updater.class%
 
     # Creator
     ecentria.api.request_creator:

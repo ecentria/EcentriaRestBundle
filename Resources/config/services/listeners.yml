@@ -33,6 +33,7 @@ services:
             - @ecentria.api.builder.transaction
             - @ecentria.api.transaction.storage.doctrine
             - @ecentria.api.transaction.manager
+            - @ecentria.api.transaction.updater
 
     ecentria.api.listener.requester:
         class: %ecentria.api.listener.requester.class%

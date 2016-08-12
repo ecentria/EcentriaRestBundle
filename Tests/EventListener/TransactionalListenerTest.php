@@ -11,7 +11,9 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\EventListener;
 
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
+use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionUpdater;
 use Ecentria\Libraries\EcentriaRestBundle\EventListener\TransactionalListener;
 
 /**
@@ -47,7 +49,14 @@ class TransactionalListenerTest extends TestCase
      *
      * @var PHPUnit_Framework_MockObject_MockObject
      */
-    protected $transactionResponseManger;
+    protected $transactionResponseManager;
+
+    /**
+     * Transaction updater
+     *
+     * @var TransactionaUpdater
+     */
+    protected $transactionUpdater;
 
     /**
      * Transactional listener
@@ -68,17 +77,19 @@ class TransactionalListenerTest extends TestCase
         $this->transactionStorage = $this->getMockBuilder($erbNamespace . '\Services\Transaction\Storage\Doctrine')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->transactionResponseManger = $this->getMockBuilder(
+        $this->transactionResponseManager = $this->getMockBuilder(
             $erbNamespace . '\Services\Transaction\TransactionResponseManager'
         )
         ->disableOriginalConstructor()
         ->getMock();
+        $this->transactionUpdater = new TransactionUpdater();
 
         $this->listener = new TransactionalListener(
             $this->reader,
             $this->transactionBuilder,
             $this->transactionStorage,
-            $this->transactionResponseManger
+            $this->transactionResponseManager,
+            $this->transactionUpdater
         );
     }
 
@@ -110,6 +121,7 @@ class TransactionalListenerTest extends TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $request->attributes = $attributes;
+        $request->server = new ParameterBag(array('REQUEST_TIME_FLOAT' => microtime(true) - 0.5));
 
         $postResponseEvent = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\PostResponseEvent')
             ->disableOriginalConstructor()

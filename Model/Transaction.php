@@ -428,18 +428,4 @@ class Transaction
     {
         return $this->responseTime;
     }
-
-    /**
-     * Calculate response time in milliseconds based on current and start of request timestamps
-     *
-     * @param float $currentTimestamp
-     *
-     * @return int
-     */
-    public function calculateResponseTime($currentTimestamp)
-    {
-        $responseTime = round(($currentTimestamp - $_SERVER['REQUEST_TIME_FLOAT']) * 1000);
-        $this->setResponseTime($responseTime);
-        return $responseTime;
-    }
 }
