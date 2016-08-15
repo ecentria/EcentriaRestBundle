@@ -17,6 +17,7 @@ env:
   - SYMFONY_VERSION=dev-master
 
 before_script:
+  - echo "memory_limit=2048M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - phpenv config-rm xdebug.ini
   - composer self-update -v
   - composer require symfony/symfony:${SYMFONY_VERSION} --no-update -v
