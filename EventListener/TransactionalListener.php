@@ -28,6 +28,7 @@ use FOS\RestBundle\View\View;
 
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent,
     Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
+    Symfony\Component\HttpKernel\Event\FilterResponseEvent,
     Symfony\Component\HttpKernel\Event\PostResponseEvent,
     Symfony\Component\HttpKernel\KernelEvents,
     Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -188,7 +189,23 @@ class TransactionalListener implements EventSubscriberInterface
                     EmbeddedManager::GROUP_ALL
                 );
             }
+        }
+    }
 
+    /**
+     * On kernel response
+     *
+     * @param FilterResponseEvent $event
+     *
+     * @return void
+     */
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        $request = $event->getRequest();
+        $transaction = $request->attributes->get('transaction');
+        if ($transaction) {
+            $this->transactionUpdater->updateResponseTime($transaction, $request, microtime(true));
+            $this->updateResponseTimeInContent($request->getRequestFormat(), $event, $transaction);
         }
     }
 
@@ -204,8 +221,6 @@ class TransactionalListener implements EventSubscriberInterface
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');
         if ($transaction) {
-            $transaction = $this->transactionUpdater->updateResponseTime($transaction, $request, microtime(true));
-
             // Hot fix, should be addressed another way
             $messages = $transaction->getMessages();
             foreach ($messages as $messageKey => $message) {
@@ -236,7 +251,32 @@ class TransactionalListener implements EventSubscriberInterface
         return array(
             KernelEvents::CONTROLLER => 'onKernelController',
             KernelEvents::VIEW       => array('onKernelView', 300),
+            KernelEvents::RESPONSE   => 'onKernelResponse',
             KernelEvents::TERMINATE  => 'onKernelTerminate'
         );
+    }
+
+    /**
+     * Update response time in content of requests with the embedded parameter
+     *
+     * @param string $format
+     * @param FilterResponseEvent $event
+     * @param Transaction $transaction
+     */
+    private function updateResponseTimeInContent($format, $event, $transaction)
+    {
+        if ($format !== 'json') {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $content = $response->getContent();
+        $decodedContent = json_decode($content, true);
+
+        if (isset($decodedContent['_embedded']['service-transaction']['response_time'])) {
+            $decodedContent['_embedded']['service-transaction']['response_time'] = $transaction->getResponseTime();
+        }
+
+        $event->setResponse($response->setContent(json_encode($decodedContent)));
     }
 }

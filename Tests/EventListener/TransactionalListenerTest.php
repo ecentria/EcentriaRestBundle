@@ -94,22 +94,22 @@ class TransactionalListenerTest extends TestCase
     }
 
     /**
-     * Test transaction response time is calculated when kernel terminates
+     * Test transaction response time is calculated when kernel response event is fired
      */
-    public function testKernelTerminateCalculatesResponseTime()
+    public function testKernelResponseCalculatesResponseTime()
     {
         $transaction = new Transaction();
-        $this->listener->onKernelTerminate($this->preparePostResponseEvent($transaction));
+        $this->listener->onKernelResponse($this->prepareFilterResponseEvent($transaction));
         $this->assertGreaterThan(0, $transaction->getResponseTime());
     }
 
     /**
-     * Prepare PostResponseEvent
+     * Prepare FilterResponseEvent
      *
      * @param Transaction $transaction
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function preparePostResponseEvent(Transaction $transaction)
+    private function prepareFilterResponseEvent(Transaction $transaction)
     {
         $attributes = $this->getMockBuilder('\Symfony\Component\HttpFoundation\ParameterBag')
             ->getMock();
@@ -123,14 +123,14 @@ class TransactionalListenerTest extends TestCase
         $request->attributes = $attributes;
         $request->server = new ParameterBag(array('REQUEST_TIME_FLOAT' => microtime(true) - 0.5));
 
-        $postResponseEvent = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\PostResponseEvent')
+        $filterResponseEvent = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\FilterResponseEvent')
             ->disableOriginalConstructor()
             ->getMock();
-        $postResponseEvent->expects($this->once())
+        $filterResponseEvent->expects($this->once())
             ->method('getRequest')
             ->willReturn($request);
 
-        return $postResponseEvent;
+        return $filterResponseEvent;
     }
 
 }
