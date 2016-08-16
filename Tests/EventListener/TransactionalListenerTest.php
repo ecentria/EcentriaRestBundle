@@ -15,6 +15,7 @@ use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionUpdater;
 use Ecentria\Libraries\EcentriaRestBundle\EventListener\TransactionalListener;
+use FOS\RestBundle\View\View;
 
 /**
  * Transactional listener test
@@ -96,41 +97,46 @@ class TransactionalListenerTest extends TestCase
     /**
      * Test transaction response time is calculated when kernel response event is fired
      */
-    public function testKernelResponseCalculatesResponseTime()
+    public function testKernelViewCalculatesResponseTime()
     {
         $transaction = new Transaction();
-        $this->listener->onKernelResponse($this->prepareFilterResponseEvent($transaction));
+        $this->listener->onKernelView($this->prepareGetResponseForControllerResultEvent($transaction));
         $this->assertGreaterThan(0, $transaction->getResponseTime());
     }
 
     /**
-     * Prepare FilterResponseEvent
+     * Prepare GetResponseForControllerResultEvent
      *
      * @param Transaction $transaction
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function prepareFilterResponseEvent(Transaction $transaction)
+    private function prepareGetResponseForControllerResultEvent(Transaction $transaction)
     {
-        $attributes = $this->getMockBuilder('\Symfony\Component\HttpFoundation\ParameterBag')
-            ->getMock();
-        $attributes->expects($this->once())
-            ->method('get')
-            ->willReturn($transaction);
-
         $request = $this->getMockBuilder('\Symfony\Component\HttpFoundation\Request')
             ->disableOriginalConstructor()
             ->getMock();
-        $request->attributes = $attributes;
+        $request->expects($this->at(0))
+            ->method('get')
+            ->with('transaction')
+            ->willReturn($transaction);
+        $request->expects($this->at(1))
+            ->method('get')
+            ->with('violations')
+            ->willReturn(null);
         $request->server = new ParameterBag(array('REQUEST_TIME_FLOAT' => microtime(true) - 0.5));
+        $request->attributes = new ParameterBag();
 
-        $filterResponseEvent = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\FilterResponseEvent')
+        $event = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
             ->disableOriginalConstructor()
             ->getMock();
-        $filterResponseEvent->expects($this->once())
+        $event->expects($this->once())
             ->method('getRequest')
             ->willReturn($request);
+        $event->expects($this->once())
+            ->method('getControllerResult')
+            ->willReturn(new View());
 
-        return $filterResponseEvent;
+        return $event;
     }
 
 }
