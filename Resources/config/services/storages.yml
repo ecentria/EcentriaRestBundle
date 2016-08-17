@@ -1,6 +1,7 @@
 parameters:
 
     ecentria.api.transaction.storage.doctrine.class: Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\Doctrine
+    ecentria.api.transaction.storage.monolog.class: Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\Monolog
 
 services:
 
@@ -9,3 +10,8 @@ services:
         arguments:
             - @doctrine
         class: %ecentria.api.transaction.storage.doctrine.class%
+    ecentria.api.transaction.storage.monolog:
+        arguments:
+            - @logger
+            - @jms_serializer
+        class: %ecentria.api.transaction.storage.monolog.class%

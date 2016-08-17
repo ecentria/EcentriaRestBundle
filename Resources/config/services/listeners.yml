@@ -31,7 +31,7 @@ services:
         arguments:
             - @annotation_reader
             - @ecentria.api.builder.transaction
-            - @ecentria.api.transaction.storage.doctrine
+            - @=service(parameter('ecentria_rest.transaction_storage'))
             - @ecentria.api.transaction.manager
 
     ecentria.api.listener.requester:

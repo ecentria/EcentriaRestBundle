@@ -10,6 +10,7 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Controller;
 
+use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\TransactionStorageInterface;
 use FOS\RestBundle\Controller\Annotations as FOS,
     FOS\RestBundle\Controller\FOSRestController,
     FOS\RestBundle\Routing\ClassResourceInterface,
@@ -20,8 +21,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration as Sensio,
     Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 use Symfony\Component\HttpFoundation\Request;
-
-use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\Doctrine;
 
 /**
  * Contact Controller
@@ -57,9 +56,10 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      */
     public function getAction(Request $request, $id)
     {
-        /** @var Doctrine $doctrineStorage */
-        $doctrineStorage = $this->get('ecentria.api.transaction.storage.doctrine');
-        $transaction = $doctrineStorage->read($id);
+        /** @var TransactionStorageInterface $doctrineStorage */
+        $storageParam = $this->getParameter('ecentria_rest.transaction_storage');
+        $storage = $this->get($storageParam);
+        $transaction = $storage->read($id);
 
         return $this->view($transaction);
     }

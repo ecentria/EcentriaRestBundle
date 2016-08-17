@@ -29,8 +29,15 @@ class EcentriaRestExtension extends Extension
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $config = $this->processConfiguration(new Configuration(), $configs);
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
+        $providedType = $config['transaction_storage'];
+        $storageType = 'ecentria.api.transaction.storage.' . $providedType;
+        $container->setParameter(
+            'ecentria_rest.transaction_storage',
+            $storageType
+        );
     }
 
     /**
