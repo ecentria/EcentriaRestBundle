@@ -29,7 +29,8 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
  *          @ORM\Index(columns={"status"}),
  *          @ORM\Index(columns={"success"}),
  *          @ORM\Index(columns={"created_at"}),
- *          @ORM\Index(columns={"updated_at"})
+ *          @ORM\Index(columns={"updated_at"}),
+ *          @ORM\Index(columns={"response_time"})
  *      }
  * )
  * @EcentriaAssert\TransactionSuccess()
@@ -192,6 +193,17 @@ class Transaction
      * @ORM\Column(name="message", type="json_array")
      */
     private $messages = [];
+
+    /**
+     * Response time in milliseconds
+     *
+     * @var int
+     *
+     * @ORM\Column(name="response_time", type="integer", nullable=false)
+     *
+     * @Assert\NotNull()
+     */
+    private $responseTime;
 
     /**
      * Id getter
@@ -466,5 +478,28 @@ class Transaction
     public function getMessages()
     {
         return new ArrayCollection($this->messages);
+    }
+
+    /**
+     * ResponseTime setter
+     *
+     * @param int $milliseconds
+     *
+     * @return Transaction
+     */
+    public function setResponseTime($milliseconds)
+    {
+        $this->responseTime = $milliseconds;
+        return $this;
+    }
+
+    /**
+     * ResponseTime getter
+     *
+     * @return int
+     */
+    public function getResponseTime()
+    {
+        return $this->responseTime;
     }
 }

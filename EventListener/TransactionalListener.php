@@ -20,6 +20,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionBuilder,
     Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionResponseManager,
+    Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionUpdater,
     Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage\TransactionStorageInterface;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
@@ -27,6 +28,7 @@ use FOS\RestBundle\View\View;
 
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent,
     Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent,
+    Symfony\Component\HttpKernel\Event\FilterResponseEvent,
     Symfony\Component\HttpKernel\Event\PostResponseEvent,
     Symfony\Component\HttpKernel\KernelEvents,
     Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -75,23 +77,33 @@ class TransactionalListener implements EventSubscriberInterface
     private $transactionStorage;
 
     /**
+     * Transaction Updater
+     *
+     * @var TransactionUpdater
+     */
+    private $transactionUpdater;
+
+    /**
      * Constructor.
      *
      * @param Reader $reader An Reader instance
      * @param TransactionBuilder $transactionBuilder
      * @param TransactionStorageInterface $transactionStorage
      * @param TransactionResponseManager $transactionResponseManager
+     * @param TransactionUpdater $transactionUpdater
      */
     public function __construct(
         Reader $reader,
         TransactionBuilder $transactionBuilder,
         TransactionStorageInterface $transactionStorage,
-        TransactionResponseManager $transactionResponseManager
+        TransactionResponseManager $transactionResponseManager,
+        TransactionUpdater $transactionUpdater
     ) {
         $this->reader = $reader;
         $this->transactionBuilder = $transactionBuilder;
         $this->transactionStorage = $transactionStorage;
         $this->transactionResponseManager = $transactionResponseManager;
+        $this->transactionUpdater = $transactionUpdater;
     }
 
     /**
@@ -178,6 +190,7 @@ class TransactionalListener implements EventSubscriberInterface
                 );
             }
 
+            $this->transactionUpdater->updateResponseTime($transaction, $request, microtime(true));
         }
     }
 
@@ -193,7 +206,6 @@ class TransactionalListener implements EventSubscriberInterface
         $request = $postResponseEvent->getRequest();
         $transaction = $request->attributes->get('transaction');
         if ($transaction) {
-
             // Hot fix, should be addressed another way
             $messages = $transaction->getMessages();
             foreach ($messages as $messageKey => $message) {
