@@ -85,7 +85,7 @@ services:
     ecentria.api.transaction.handler.post:
         class: %ecentria.api.transaction.handler.post.class%
         arguments:
-            - @ecentria.api.transaction.storage.doctrine
+            - @=service(parameter('ecentria_rest.transaction_storage'))
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
             - @ecentria.api.builder.info
@@ -95,7 +95,7 @@ services:
     ecentria.api.transaction.handler.put:
         class: %ecentria.api.transaction.handler.put.class%
         arguments:
-            - @ecentria.api.transaction.storage.doctrine
+            - @=service(parameter('ecentria_rest.transaction_storage'))
             - @ecentria.api.builder.error
             - @ecentria.api.builder.notice
             - @ecentria.api.builder.info
