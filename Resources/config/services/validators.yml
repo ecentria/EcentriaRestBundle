@@ -11,33 +11,32 @@ services:
 
     # Constraints
     ecentria.api.constraint.circular_reference:
-        class: %ecentria.api.constraint.circular_reference.class%
+        class: "%ecentria.api.constraint.circular_reference.class%"
         tags:
             - { name: validator.constraint_validator, alias: circular_reference }
         calls:
-            - [ setRegistry, [ @doctrine ] ]
+            - [ setRegistry, [ "@doctrine" ] ]
 
     ecentria.api.constraint.email:
-        class: %ecentria.api.constraint.email.class%
+        class: "%ecentria.api.constraint.email.class%"
         tags:
             - { name: validator.constraint_validator, alias: email }
 
     ecentria.api.constraint.in_array:
-        class: %ecentria.api.constraint.in_array.class%
+        class: "%ecentria.api.constraint.in_array.class%"
         tags:
             - { name: validator.constraint_validator, alias: in_array }
 
     ecentria.api.constraint.unique_entity:
-        class: %ecentria.api.constraint.unique_entity.class%
+        class: "%ecentria.api.constraint.unique_entity.class%"
         arguments:
-            - @doctrine
+            - "@doctrine"
         tags:
             - { name: validator.constraint_validator, alias: unique_entity }
         calls:
-            - [ setRegistry, [ @doctrine ] ]
+            - [ setRegistry, [ "@doctrine" ] ]
 
     # Validators
     ecentria.api.validator:
-        class: %ecentria.api.validator.class%
-        factory_service: validator.builder
-        factory_method: getValidator
+        class: "%ecentria.api.validator.class%"
+        factory: ["@validator.builder", getValidator]

@@ -23,94 +23,94 @@ services:
 
     # Builders
     ecentria.api.builder.error:
-        class: %ecentria.api.builder.error.class%
+        class: "%ecentria.api.builder.error.class%"
 
     ecentria.api.builder.notice:
-        class: %ecentria.api.builder.notice.class%
+        class: "%ecentria.api.builder.notice.class%"
 
     ecentria.api.builder.info:
-        class: %ecentria.api.builder.info.class%
+        class: "%ecentria.api.builder.info.class%"
 
     ecentria.api.builder.transaction:
-        class: %ecentria.api.builder.transaction.class%
+        class: "%ecentria.api.builder.transaction.class%"
 
     # Configuration
     ecentria.api.configuration.manager:
-        class: %ecentria.api.configuration.manager.class%
+        class: "%ecentria.api.configuration.manager.class%"
         arguments:
-            - @router
+            - "@router"
 
     # Crud
     ecentria.api.crud.manager:
-        class: %ecentria.api.crud.manager.class%
+        class: "%ecentria.api.crud.manager.class%"
         arguments:
-            - @doctrine
-            - @ecentria.api.validator
-            - @event_dispatcher
-            - @ecentria.api.crud.transformer
+            - "@doctrine"
+            - "@ecentria.api.validator"
+            - "@event_dispatcher"
+            - "@ecentria.api.crud.transformer"
 
     ecentria.api.crud.transformer:
-        class: %ecentria.api.crud.transformer.class%
+        class: "%ecentria.api.crud.transformer.class%"
         arguments:
-            - @doctrine
-            - @annotations.reader
-            - @jms_serializer
-            - @ecentria.api.validator
+            - "@doctrine"
+            - "@annotations.reader"
+            - "@jms_serializer"
+            - "@ecentria.api.validator"
 
     # Transaction
     ecentria.api.transaction.handler.get:
-        class: %ecentria.api.transaction.handler.get.class%
+        class: "%ecentria.api.transaction.handler.get.class%"
         arguments:
-            - @doctrine
-            - @ecentria.api.builder.error
+            - "@doctrine"
+            - "@ecentria.api.builder.error"
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
     ecentria.api.transaction.handler.patch:
-        class: %ecentria.api.transaction.handler.patch.class%
+        class: "%ecentria.api.transaction.handler.patch.class%"
         arguments:
-            - @doctrine
-            - @ecentria.api.builder.error
+            - "@doctrine"
+            - "@ecentria.api.builder.error"
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
     ecentria.api.transaction.handler.delete:
-        class: %ecentria.api.transaction.handler.delete.class%
+        class: "%ecentria.api.transaction.handler.delete.class%"
         arguments:
-            - @ecentria.api.builder.error
+            - "@ecentria.api.builder.error"
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
     ecentria.api.transaction.handler.post:
-        class: %ecentria.api.transaction.handler.post.class%
+        class: "%ecentria.api.transaction.handler.post.class%"
         arguments:
-            - @ecentria.api.transaction.storage.doctrine
-            - @ecentria.api.builder.error
-            - @ecentria.api.builder.notice
-            - @ecentria.api.builder.info
+            - "@ecentria.api.transaction.storage.doctrine"
+            - "@ecentria.api.builder.error"
+            - "@ecentria.api.builder.notice"
+            - "@ecentria.api.builder.info"
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
     ecentria.api.transaction.handler.put:
-        class: %ecentria.api.transaction.handler.put.class%
+        class: "%ecentria.api.transaction.handler.put.class%"
         arguments:
-            - @ecentria.api.transaction.storage.doctrine
-            - @ecentria.api.builder.error
-            - @ecentria.api.builder.notice
-            - @ecentria.api.builder.info
+            - "@ecentria.api.transaction.storage.doctrine"
+            - "@ecentria.api.builder.error"
+            - "@ecentria.api.builder.notice"
+            - "@ecentria.api.builder.info"
         tags:
             - { name: ecentria.api.tag.transaction_handler }
 
     ecentria.api.transaction.manager:
-            class: %ecentria.api.transaction.manager.class%
+            class: "%ecentria.api.transaction.manager.class%"
             arguments: [~]
 
     # Creator
     ecentria.api.request_creator:
-        class: %ecentria.api.request_creator.class%
+        class: "%ecentria.api.request_creator.class%"
         arguments:
-            - @ecentria.api.crud.manager
-            - @request_stack
-            - @router
-            - @kernel
-            - @ecentria.api.builder.info
+            - "@ecentria.api.crud.manager"
+            - "@request_stack"
+            - "@router"
+            - "@kernel"
+            - "@ecentria.api.builder.info"

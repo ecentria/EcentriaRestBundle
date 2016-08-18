@@ -7,36 +7,36 @@ parameters:
 
 services:
     ecentria.api.converter.model:
-        class: %ecentria.api.converter.model.class%
+        class: "%ecentria.api.converter.model.class%"
         arguments:
-            - @jms_serializer.serializer
-            - @ecentria.api.validator
+            - "@jms_serializer.serializer"
+            - "@ecentria.api.validator"
         tags:
             - { name: request.param_converter, converter: ecentria.api.converter.model }
 
     ecentria.api.converter.array_collection:
-        class: %ecentria.api.converter.array_collection.class%
+        class: "%ecentria.api.converter.array_collection.class%"
         arguments:
-            - @ecentria.api.crud.transformer
+            - "@ecentria.api.crud.transformer"
         tags:
             - { name: request.param_converter, converter: ecentria.api.converter.array_collection }
 
     ecentria.api.converter.json:
-        class: %ecentria.api.converter.json.class%
+        class: "%ecentria.api.converter.json.class%"
         tags:
             - { name: request.param_converter, converter: ecentria.api.converter.json }
 
     ecentria.api.converter.parameter:
-        class: %ecentria.api.converter.parameter.class%
+        class: "%ecentria.api.converter.parameter.class%"
         arguments:
-            - @doctrine
+            - "@doctrine"
         tags:
             - { name: request.param_converter, converter: ecentria.api.converter.parameter }
 
     ecentria.api.converter.entity:
-        class: %ecentria.api.converter.entity.class%
+        class: "%ecentria.api.converter.entity.class%"
         arguments:
-            - @ecentria.api.crud.transformer
-            - @doctrine
+            - "@ecentria.api.crud.transformer"
+            - "@doctrine"
         tags:
             - { name: request.param_converter, converter: ecentria.api.converter.entity }

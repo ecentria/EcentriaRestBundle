@@ -31,7 +31,7 @@ class ConfigurationController extends FOSRestController
      * @EcentriaAnnotation\AvoidTransaction()
      *
      * @FOS\Route(
-     *      pattern="configuration"
+     *      path="configuration"
      * )
      *
      * @Nelmio\ApiDoc(

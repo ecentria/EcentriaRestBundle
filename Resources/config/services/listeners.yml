@@ -12,38 +12,38 @@ services:
     # Ecentria
     ecentria.api.listener.exception:
         arguments:
-            - @ecentria.api.transaction.manager
-        class: %ecentria.api.listener.exception.class%
+            - "@ecentria.api.transaction.manager"
+        class: "%ecentria.api.listener.exception.class%"
         tags:
             - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
 
     ecentria.api.listener.response:
-        class: %ecentria.api.listener.response.class%
+        class: "%ecentria.api.listener.response.class%"
         arguments:
-            - @ecentria.utils.embedded_manager
+            - "@ecentria.utils.embedded_manager"
         tags:
             - { name: kernel.event_listener, event: kernel.view, method: onKernelView, priority: 200 }
 
     ecentria.api.listener.transactional:
-        class: %ecentria.api.listener.transactional.class%
+        class: "%ecentria.api.listener.transactional.class%"
         tags:
             - { name: kernel.event_subscriber }
         arguments:
-            - @annotation_reader
-            - @ecentria.api.builder.transaction
-            - @ecentria.api.transaction.storage.doctrine
-            - @ecentria.api.transaction.manager
+            - "@annotation_reader"
+            - "@ecentria.api.builder.transaction"
+            - "@ecentria.api.transaction.storage.doctrine"
+            - "@ecentria.api.transaction.manager"
 
     ecentria.api.listener.requester:
-        class: %ecentria.api.listener.requester.class%
-        arguments: [@stof_doctrine_extensions.listener.blameable]
+        class: "%ecentria.api.listener.requester.class%"
+        arguments: ["@stof_doctrine_extensions.listener.blameable"]
         tags:
             - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: -100 }
 
     # Gedmo
     gedmo.listener.timestampable:
-        class: %gedmo.listener.timestampable.class%
+        class: "%gedmo.listener.timestampable.class%"
         tags:
             - { name: doctrine.event_subscriber, connection: default }
         calls:
-            - [ setAnnotationReader, [ @annotation_reader ] ]
+            - [ setAnnotationReader, [ "@annotation_reader" ] ]

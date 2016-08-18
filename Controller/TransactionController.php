@@ -37,7 +37,7 @@ class TransactionController extends FOSRestController implements ClassResourceIn
      * @param string  $id      Transaction Id
      *
      * @FOS\Route(
-     *      pattern="transaction-service/{id}",
+     *      path="transaction-service/{id}",
      *      requirements = {
      *          "id" = ".+?"
      *      }

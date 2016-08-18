@@ -7,5 +7,5 @@ services:
     # Ecentria
     ecentria.api.transaction.storage.doctrine:
         arguments:
-            - @doctrine
-        class: %ecentria.api.transaction.storage.doctrine.class%
+            - "@doctrine"
+        class: "%ecentria.api.transaction.storage.doctrine.class%"
