@@ -124,7 +124,7 @@ class TransactionalListenerTest extends TestCase
             ->with('violations')
             ->willReturn(null);
         $request->server = new ParameterBag(array('REQUEST_TIME_FLOAT' => microtime(true) - 0.5));
-        $request->attributes = new ParameterBag();
+        $request->attributes = new ParameterBag(array('methodtimes' => array()));
 
         $event = $this->getMockBuilder('\Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
             ->disableOriginalConstructor()
