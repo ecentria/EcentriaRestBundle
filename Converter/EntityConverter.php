@@ -73,10 +73,10 @@ class EntityConverter extends BaseDoctrineParamConverter
             $this->crudTransformer->convertArrayToEntityAndValidate($data, $class, $mode, $object);
             $this->crudTransformer->setIdsFromRequest($object, $request, $mode, !empty($options['generated_id']));
             $stopWatch->lap('EntityConverter');
-            $times['findObject'] = $stopWatch->getEvent('crudTransformer')->getDuration();
+            $times['crudTransformer'] = $stopWatch->getEvent('crudTransformer')->getDuration();
             if (isset($options['references'])) {
                 $this->convertExternalReferences($request, $object, $options);
-                $times['findObject'] = $stopWatch->getEvent('convertExternalReferences')->getDuration();
+                $times['convertExternalReferences'] = $stopWatch->getEvent('convertExternalReferences')->getDuration();
                 $stopWatch->lap('EntityConverter');
             }
         }
