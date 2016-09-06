@@ -80,6 +80,7 @@ class EntityConverter extends BaseDoctrineParamConverter
                 $stopWatch->lap('EntityConverter');
             }
         }
+
         $stopWatch->stop('EntityConverter');
         $request->attributes->set('methodTimes', $times);
         $request->attributes->set($name, $object);
