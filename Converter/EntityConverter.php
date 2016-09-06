@@ -19,6 +19,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConve
 use Symfony\Component\HttpFoundation\Request;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Validator\Exception\RuntimeException;
 
 /**
@@ -56,21 +57,31 @@ class EntityConverter extends BaseDoctrineParamConverter
         $class   = $configuration->getClass();
         $options = $this->getOptions($configuration);
         $mode  = empty($options['mode']) ? CrudTransformer::MODE_RETRIEVE : $options['mode'];
+        $times = array();
 
         if (null === $request->attributes->get($name, false)) {
             $configuration->setIsOptional(true);
         }
 
+        $stopWatch = new Stopwatch();
+        $stopWatch->start('EntityConverter');
         $object = $mode == CrudTransformer::MODE_CREATE ? null : $this->findObject($class, $request, $options, $name);
+        $stopWatch->lap('EntityConverter');
+        $times['findObject'] = $stopWatch->getEvent('EntityConverter')->getDuration();
         if (empty($object) || $mode == CrudTransformer::MODE_UPDATE) {
             $data = $this->crudTransformer->getRequestData($request, $mode);
             $this->crudTransformer->convertArrayToEntityAndValidate($data, $class, $mode, $object);
             $this->crudTransformer->setIdsFromRequest($object, $request, $mode, !empty($options['generated_id']));
+            $stopWatch->lap('EntityConverter');
+            $times['findObject'] = $stopWatch->getEvent('crudTransformer')->getDuration();
             if (isset($options['references'])) {
                 $this->convertExternalReferences($request, $object, $options);
+                $times['findObject'] = $stopWatch->getEvent('convertExternalReferences')->getDuration();
+                $stopWatch->lap('EntityConverter');
             }
         }
-
+        $stopWatch->stop('EntityConverter');
+        $request->attributes->set('methodTimes', $times);
         $request->attributes->set($name, $object);
 
         /**

@@ -195,6 +195,15 @@ class Transaction
     private $messages = [];
 
     /**
+     * Method times - Json encoded
+     *
+     * @var array
+     *
+     * @ORM\Column(name="message", type="json_array")
+     */
+    private $methodTimes = [];
+
+    /**
      * Response time in milliseconds
      *
      * @var int
@@ -478,6 +487,29 @@ class Transaction
     public function getMessages()
     {
         return new ArrayCollection($this->messages);
+    }
+
+    /**
+     * methodTimes setter
+     *
+     * @param array $methodTimes
+     *
+     * @return Transaction
+     */
+    public function setMethodTimes($methodTimes)
+    {
+        $this->methodTimes = $methodTimes;
+        return $this;
+    }
+
+    /**
+     * methodTimes getter
+     *
+     * @return array
+     */
+    public function getMethodTimes()
+    {
+        return $this->methodTimes;
     }
 
     /**

@@ -36,4 +36,21 @@ class TransactionUpdater
         $transaction->setResponseTime($responseTime);
         return $transaction;
     }
+
+    /**
+     * Add method times
+     *
+     * @param Transaction $transaction
+     * @param Request $request
+     *
+     * @return Transaction
+     */
+    public function addMethodTimes(Transaction $transaction, Request $request)
+    {
+        $methodTimes = $request->attributes->get('methodTimes');
+        if ($methodTimes) {
+            $transaction->setMethodTimes($methodTimes);
+        }
+        return $transaction;
+    }
 }

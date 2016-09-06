@@ -191,6 +191,7 @@ class TransactionalListener implements EventSubscriberInterface
             }
 
             $this->transactionUpdater->updateResponseTime($transaction, $request, microtime(true));
+            $this->transactionUpdater->addMethodTimes($transaction, $request);
         }
     }
 
