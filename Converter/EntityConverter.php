@@ -53,6 +53,8 @@ class EntityConverter extends BaseDoctrineParamConverter
      */
     public function apply(Request $request, ParamConverter $configuration)
     {
+        $stopWatch = new Stopwatch();
+        $stopWatch->start('EntityConverter');
         $name    = $configuration->getName();
         $class   = $configuration->getClass();
         $options = $this->getOptions($configuration);
@@ -63,26 +65,25 @@ class EntityConverter extends BaseDoctrineParamConverter
             $configuration->setIsOptional(true);
         }
 
-        $stopWatch = new Stopwatch();
-        $stopWatch->start('EntityConverter');
+        $stopWatch->start('findObject');
         $object = $mode == CrudTransformer::MODE_CREATE ? null : $this->findObject($class, $request, $options, $name);
-        $stopWatch->lap('EntityConverter');
-        $times['findObject'] = $stopWatch->getEvent('EntityConverter')->getDuration();
+        $stopWatch->stop('findObject');
+        $times['findObject'] = $stopWatch->getEvent('findObject')->getDuration();
         if (empty($object) || $mode == CrudTransformer::MODE_UPDATE) {
+            $stopWatch->start('crudTransformer');
             $data = $this->crudTransformer->getRequestData($request, $mode);
             $this->crudTransformer->convertArrayToEntityAndValidate($data, $class, $mode, $object);
             $this->crudTransformer->setIdsFromRequest($object, $request, $mode, !empty($options['generated_id']));
-            $stopWatch->lap('EntityConverter');
+            $stopWatch->stop('crudTransformer');
             $times['crudTransformer'] = $stopWatch->getEvent('crudTransformer')->getDuration();
             if (isset($options['references'])) {
+                $stopWatch->start('convertExternalReferences');
                 $this->convertExternalReferences($request, $object, $options);
+                $stopWatch->stop('convertExternalReferences');
                 $times['convertExternalReferences'] = $stopWatch->getEvent('convertExternalReferences')->getDuration();
-                $stopWatch->lap('EntityConverter');
             }
         }
 
-        $stopWatch->stop('EntityConverter');
-        $request->attributes->set('methodTimes', $times);
         $request->attributes->set($name, $object);
 
         /**
@@ -91,6 +92,9 @@ class EntityConverter extends BaseDoctrineParamConverter
          */
         $request->attributes->set(Alias::DATA, $name);
 
+        $stopWatch->stop('EntityConverter');
+        $times['EntityConverter'] = $stopWatch->getEvent('EntityConverter')->getDuration();
+        $request->attributes->set('methodTimes', $times);
         return true;
     }
 
