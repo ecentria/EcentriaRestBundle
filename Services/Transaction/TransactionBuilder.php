@@ -56,6 +56,18 @@ class TransactionBuilder
     protected $relatedIds;
 
     /**
+     * Post Content
+     * @var array
+     */
+    private $postContent;
+
+    /**
+     * Get Parameters
+     * @var array
+     */
+    private $parameters;
+
+    /**
      * RequestMethod setter
      *
      * @param string $requestMethod
@@ -131,6 +143,52 @@ class TransactionBuilder
     }
 
     /**
+     * Post Content setter
+     *
+     * @param array $postContent
+     *
+     * @return TransactionBuilder
+     */
+    public function setPostContent($postContent)
+    {
+        $this->postContent = $postContent;
+        return $this;
+    }
+
+    /**
+     * Post Content getter
+     *
+     * @return array
+     */
+    public function getPostContent()
+    {
+        return $this->postContent;
+    }
+
+    /**
+     * Query Params setter
+     *
+     * @param array $parameters
+     *
+     * @return TransactionBuilder
+     */
+    public function setQueryParams($parameters)
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    /**
+     * Query Params getter
+     *
+     * @return array
+     */
+    public function getQueryParams()
+    {
+        return $this->parameters;
+    }
+
+    /**
      * Building transaction
      *
      * @return Transaction
@@ -148,7 +206,9 @@ class TransactionBuilder
             ->setModel($this->model)
             ->setCreatedAt($datetime)
             ->setUpdatedAt($datetime)
-            ->setResponseTime(0);
+            ->setResponseTime(0)
+            ->setPostContent($this->postContent)
+            ->setQueryParams($this->parameters);
         return $transaction;
     }
 }
