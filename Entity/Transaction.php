@@ -199,7 +199,7 @@ class Transaction
      *
      * @var array
      *
-     * @ORM\Column(name="message", type="json_array")
+     * @ORM\Column(name="method_times", type="json_array")
      */
     private $methodTimes = [];
 
