@@ -110,8 +110,10 @@ class Doctrine implements TransactionStorageInterface {
             ->setStatus($transactionModel->getStatus())
             ->setSuccess($transactionModel->getSuccess())
             ->setMessages($transactionModel->getMessages())
+            ->setResponseTime($transactionModel->getResponseTime())
             ->setMethodTimes($transactionModel->getMethodTimes())
-            ->setResponseTime($transactionModel->getResponseTime());
+            ->setQueryParams($transactionModel->getQueryParams())
+            ->setPostContent($transactionModel->getPostContent());
 
         return $transactionEntity;
     }
@@ -137,8 +139,10 @@ class Doctrine implements TransactionStorageInterface {
             ->setStatus($transactionEntity->getStatus())
             ->setSuccess($transactionEntity->getSuccess())
             ->setMessages($transactionEntity->getMessages())
+            ->setResponseTime($transactionEntity->getResponseTime())
             ->setMethodTimes($transactionEntity->getMethodTimes())
-            ->setResponseTime($transactionEntity->getResponseTime());
+            ->setQueryParams($transactionEntity->getQueryParams())
+            ->setPostContent($transactionEntity->getPostContent());
 
         return $transactionModel;
     }

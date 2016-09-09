@@ -139,6 +139,20 @@ class Transaction
     private $responseTime;
 
     /**
+     * Request Content
+     *
+     * @var array
+     */
+    private $postContent;
+
+    /**
+     * Request Parameters
+     *
+     * @var array
+     */
+    private $parameters;
+
+    /**
      * Id getter
      *
      * @return int
@@ -457,5 +471,51 @@ class Transaction
     public function getResponseTime()
     {
         return $this->responseTime;
+    }
+
+    /**
+     * Post Content setter
+     *
+     * @param array $postContent
+     *
+     * @return $this
+     */
+    public function setPostContent($postContent)
+    {
+        $this->postContent = $postContent;
+        return $this;
+    }
+
+    /**
+     * Post Content getter
+     *
+     * @return array
+     */
+    public function getPostContent()
+    {
+        return $this->postContent;
+    }
+
+    /**
+     * Query Params setter
+     *
+     * @param array $parameters
+     *
+     * @return TransactionBuilder
+     */
+    public function setQueryParams($parameters)
+    {
+        $this->parameters = $parameters;
+        return $this;
+    }
+
+    /**
+     * Query Params getter
+     *
+     * @return array
+     */
+    public function getQueryParams()
+    {
+        return $this->parameters;
     }
 }
