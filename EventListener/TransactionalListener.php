@@ -151,6 +151,8 @@ class TransactionalListener implements EventSubscriberInterface
             $ids[$field] = $request->attributes->get($field);
         }
         $this->transactionBuilder->setRelatedIds($ids);
+        $this->transactionBuilder->setPostContent(json_decode($request->getContent(), true));
+        $this->transactionBuilder->setQueryParams(($request->query->all()));
         $this->transactionBuilder->setModel($this->transactional->model);
 
         $transaction = $this->transactionBuilder->build();
