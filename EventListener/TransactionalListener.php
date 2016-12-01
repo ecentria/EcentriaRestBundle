@@ -16,6 +16,7 @@ use Doctrine\Common\Annotations\Reader,
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Ecentria\Libraries\EcentriaRestBundle\Annotation\AvoidTransaction,
+    Ecentria\Libraries\EcentriaRestBundle\Annotation\RelatedRouteForAction,
     Ecentria\Libraries\EcentriaRestBundle\Annotation\Transactional,
     Ecentria\Libraries\EcentriaRestBundle\Model\Transaction,
     Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionBuilder,
@@ -139,13 +140,23 @@ class TransactionalListener implements EventSubscriberInterface
             return;
         }
 
+        $relatedRouteAnnotation = $this->reader->getMethodAnnotation(
+            $object->getMethod($controller[1]),
+            RelatedRouteForAction::NAME
+        );
+
+        $relatedRoute = $this->transactional->relatedRoute;
+        if (!is_null($relatedRouteAnnotation)) {
+            $relatedRoute = $relatedRouteAnnotation->routeName;
+        }
+
         $request = $event->getRequest();
         $modelName = $this->transactional->model;
         $model = new $modelName();
 
         $this->transactionBuilder->setRequestMethod($request->getRealMethod());
         $this->transactionBuilder->setRequestSource(Transaction::SOURCE_REST);
-        $this->transactionBuilder->setRelatedRoute($this->transactional->relatedRoute);
+        $this->transactionBuilder->setRelatedRoute($relatedRoute);
         $ids = [];
         foreach ($model->getIds() as $field => $value) {
             $ids[$field] = $request->attributes->get($field);
