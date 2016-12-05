@@ -30,7 +30,7 @@
         "jms/serializer-bundle": "~0.13",
         "willdurand/rest-extra-bundle": "@stable",
         "willdurand/hateoas-bundle": "~0.3",
-        "gedmo/doctrine-extensions": "v2.3.8",
+        "gedmo/doctrine-extensions": "~2.3",
         "egulias/email-validator": "~1.1",
         "nelmio/api-doc-bundle": "2.7.0",
         "doctrine/orm": "~2.3",
