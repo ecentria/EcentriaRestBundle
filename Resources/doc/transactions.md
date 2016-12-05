@@ -55,9 +55,19 @@ You can also add an annotation to an action in your controller if you would like
 that action.
 
 ```
+/**
 * @EcentriaAnnotation\AvoidTransaction()
 */
 public function fireAuthorAction(Author $author)
+```
+
+Another annotation you can add to a controller action is RelatedRouteForAction. This allows you to use a different related route for that controller method than the one set at the controller level. See the annotations documentation for more information.
+
+```
+/**
+ * @EcentriaAnnotation\RelatedRouteForAction(routeName="get_entity")
+ */
+public function getEntityAction(Request $request)
 ```
 
 Setting up transactional entities
