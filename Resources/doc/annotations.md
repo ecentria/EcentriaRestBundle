@@ -34,7 +34,21 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
  *   writeStatusCodes=true
  * )
  */
-```      
+```
+
+RelatedRouteForAction
+---------------------
+
+Used for controller action to override the related route set at the class level. This is useful if an action in the controller works with a different model than the primary model for the class so it needs a different route for the get action.
+
+```php
+use Ecentria\Libraries\EcentriaRestBundle\Annotation as EcentriaAnnotation;
+
+/**
+ * @EcentriaAnnotation\RelatedRouteForAction(routeName="get_entity")
+ */
+public function getEntityAction(Request $request)
+```
       
 AvoidTransaction
 ----------------
