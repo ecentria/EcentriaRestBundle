@@ -112,8 +112,7 @@ class CircularReferenceValidator extends ConstraintValidator
      */
     private function addViolationAt($parentId, $childId = null, $name = null, $message = null)
     {
-        $this->context->addViolationAt(
-            $name ? $name : 'Parent',
+        $this->context->addViolation(
             sprintf(
                 $message ? $message : 'You cannot set object #%s as parent for object #%s because of circular reference',
                 $parentId,
