@@ -35,7 +35,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
  * )
  * @EcentriaAssert\TransactionSuccess()
  */
-class Transaction
+class Transaction extends TransactionModel
 {
 
     /**
