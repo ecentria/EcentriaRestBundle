@@ -203,7 +203,7 @@ class Transaction extends TransactionModel
      *
      * @Assert\NotNull()
      */
-    private $responseTime;
+    private $responseTime = 0;
 
     /**
      * Request Content
@@ -503,7 +503,8 @@ class Transaction extends TransactionModel
      */
     public function setResponseTime($milliseconds)
     {
-        $this->responseTime = $milliseconds;
+        // should be fixed.
+        $this->responseTime = 0;
         return $this;
     }
 
