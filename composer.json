@@ -31,7 +31,7 @@
         "nelmio/api-doc-bundle": "~2.0",
         "jms/serializer-bundle": "~2.2",
         "doctrine/orm": "~2.5",
-        "gedmo/doctrine-extensions": "~3.0",
+        "gedmo/doctrine-extensions": "~2.4",
         "willdurand/hateoas-bundle": "~1.3"
     },
     "require-dev": {
