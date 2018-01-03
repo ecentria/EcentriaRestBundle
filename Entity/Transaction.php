@@ -199,9 +199,7 @@ class Transaction extends TransactionModel
      *
      * @var int
      *
-     * @ORM\Column(name="response_time", type="integer", nullable=false)
-     *
-     * @Assert\NotNull()
+     * @ORM\Column(name="response_time", type="integer", nullable=true)
      */
     private $responseTime = 0;
 
