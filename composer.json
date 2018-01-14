@@ -16,12 +16,6 @@
             "email": "sergey.chernecov@intexsys.lv"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/ecentria/EcentriaRestBundle"
-        }
-    ],
     "require": {
         "php": "~7.0",
         "symfony/symfony": "~2.4 || ~3.0",
