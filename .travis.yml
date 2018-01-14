@@ -4,7 +4,6 @@ php:
   - 7.0
   - 7.1
   - 7.2
-  - hhvm
 
 env:
   - SYMFONY_VERSION=2.5.*
@@ -14,12 +13,10 @@ env:
   - SYMFONY_VERSION=3.*
   - SYMFONY_VERSION=dev-master
 
-before_script:
+before_install:
   - echo "memory_limit=2048M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - phpenv config-rm xdebug.ini
   - composer self-update -v
-  - composer require symfony/symfony:${SYMFONY_VERSION} --no-update -v
-  - composer update -v
 
 script:
   - phpunit
@@ -31,4 +28,3 @@ notifications:
 matrix:
   allow_failures:
     - env: SYMFONY_VERSION=dev-master
-    - php: hhvm
