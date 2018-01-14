@@ -13,13 +13,11 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Converter;
 
 use Ecentria\Libraries\EcentriaRestBundle\Model\Alias;
 use Ecentria\Libraries\EcentriaRestBundle\Model\CRUD\CrudEntityInterface;
-use Ecentria\Libraries\EcentriaRestBundle\Model\Validatable\ValidatableInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\DoctrineParamConverter as BaseDoctrineParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use Doctrine\Common\Persistence\ManagerRegistry;
-use Symfony\Component\Validator\Exception\RuntimeException;
 
 /**
  * Modified DoctrineParamConverter.

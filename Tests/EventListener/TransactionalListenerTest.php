@@ -22,7 +22,7 @@ use FOS\RestBundle\View\View;
  *
  * @author Son Dang <son.dang@opticsplanet.com>
  */
-class TransactionalListenerTest extends TestCase
+class TransactionalListenerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Reader
@@ -71,10 +71,10 @@ class TransactionalListenerTest extends TestCase
      */
     public function setUp()
     {
-        $this->reader = $this->getMock('Doctrine\Common\Annotations\Reader');
+        $this->reader = $this->createMock('Doctrine\Common\Annotations\Reader');
 
         $erbNamespace = 'Ecentria\Libraries\EcentriaRestBundle';
-        $this->transactionBuilder = $this->getMock($erbNamespace . '\Services\Transaction\TransactionBuilder');
+        $this->transactionBuilder = $this->createMock($erbNamespace . '\Services\Transaction\TransactionBuilder');
         $this->transactionStorage = $this->getMockBuilder($erbNamespace . '\Services\Transaction\Storage\Doctrine')
             ->disableOriginalConstructor()
             ->getMock();

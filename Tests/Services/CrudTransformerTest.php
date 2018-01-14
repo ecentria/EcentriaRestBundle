@@ -28,7 +28,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CrudTransformerTest extends TestCase
+class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Entity manager
@@ -74,10 +74,7 @@ class CrudTransformerTest extends TestCase
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
-        $registry = $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getEntityManager', 'getManagerForClass'))
-            ->getMock();
+        $registry = $this->createMock('\Symfony\Bridge\Doctrine\ManagerRegistry');
         $registry->expects($this->any())
             ->method('getManagerForClass')
             ->will($this->returnValue($this->entityManager));

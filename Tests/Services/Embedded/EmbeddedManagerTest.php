@@ -22,14 +22,14 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class EmbeddedManagerTest extends TestCase
+class EmbeddedManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * {@inheritdoc}
      */
     public function setUp()
     {
-        $this->request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+        $this->request = $this->createMock('Symfony\Component\HttpFoundation\Request');
         $this->manager = new EmbeddedManager();
     }
 

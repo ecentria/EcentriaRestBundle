@@ -20,14 +20,14 @@ use Symfony\Component\Validator\ConstraintViolationList;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * Entity Converter test
  *
  * @author Ryan Wood <ryan.wood@opticsplanet.com>
  */
-class EntityConverterTest extends TestCase
+class EntityConverterTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Crud transformer
@@ -118,7 +118,7 @@ class EntityConverterTest extends TestCase
      */
     private function prepareManagerRegistry()
     {
-        return $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
+        return $this->getMockBuilder('\Symfony\Bridge\Doctrine\ManagerRegistry')
             ->disableOriginalConstructor()
             ->getMock();
     }

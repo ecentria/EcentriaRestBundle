@@ -14,6 +14,7 @@ use Doctrine\ORM\EntityManager;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReference;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReferenceValidator;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContext;
 
@@ -22,7 +23,7 @@ use Symfony\Component\Validator\Context\ExecutionContext;
  *
  * @author Sergey Chernecov <sergey.chenrnecov@intexsys.lv>
  */
-class CircularReferenceValidatorTest extends TestCase
+class CircularReferenceValidatorTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Context Mock
@@ -50,16 +51,14 @@ class CircularReferenceValidatorTest extends TestCase
      */
     protected function setUp()
     {
-        $this->entityManager = $this->getMock('\Doctrine\ORM\EntityManager', array(), array(), '', false);
-        $registry = $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getEntityManager', 'getManagerForClass'))
-            ->getMock();
+        $this->entityManager = $this->createMock(EntityManager::class);
+        $registry = $this->createMock(ManagerRegistry::class);
+
         $registry->expects($this->any())
             ->method('getManagerForClass')
             ->will($this->returnValue($this->entityManager));
-        $this->context = $this->getMock('\Symfony\Component\Validator\ExecutionContext', array(), array(), '', false);
-        $this->validator = new CircularReferenceValidator(false);
+        $this->context = $this->createMock(ExecutionContext::class);
+        $this->validator = new CircularReferenceValidator();
         $this->validator->setRegistry($registry);
         $this->validator->initialize($this->context);
     }
@@ -81,9 +80,8 @@ class CircularReferenceValidatorTest extends TestCase
     public function testItselfAsParent()
     {
         $this->context->expects($this->exactly(2))
-            ->method('addViolationAt')
+            ->method('addViolation')
             ->with(
-                'Parent',
                 sprintf(
                     'You cannot set object #%s as parent for object #%s because of circular reference',
                     'test',
@@ -92,9 +90,12 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel = new CircularReferenceEntity();
-        $channel->setIds(array('id' => 'test'));
+        $channel->setIds(['id' => 'test']);
         $channel->setParent($channel);
-        $this->validator->validate($channel, new CircularReference());
+        $this->validator->validate(
+            $channel,
+            new CircularReference()
+        );
     }
 
     /**
@@ -105,9 +106,8 @@ class CircularReferenceValidatorTest extends TestCase
     public function testCircularReference()
     {
         $this->context->expects($this->once())
-            ->method('addViolationAt')
+            ->method('addViolation')
             ->with(
-                'Parent',
                 sprintf(
                     'You cannot set object #%s as parent for object #%s because of circular reference',
                     'test1',
@@ -116,11 +116,11 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setIds(array('id' => 'test1'));
+        $channel1->setIds(['id' => 'test1']);
         $channel2 = new CircularReferenceEntity();
-        $channel2->setIds(array('id' => 'test2'));
+        $channel2->setIds(['id' => 'test2']);
         $channel3 = new CircularReferenceEntity();
-        $channel3->setIds(array('id' => 'test3'));
+        $channel3->setIds(['id' => 'test3']);
 
         $constraint = new CircularReference();
 
@@ -131,13 +131,22 @@ class CircularReferenceValidatorTest extends TestCase
          */
 
         $channel1->setParent($channel2);
-        $this->validator->validate($channel1, $constraint);
+        $this->validator->validate(
+            $channel1,
+            $constraint
+        );
 
         $channel2->setParent($channel3);
-        $this->validator->validate($channel2, $constraint);
+        $this->validator->validate(
+            $channel2,
+            $constraint
+        );
 
         $channel3->setParent($channel1);
-        $this->validator->validate($channel3, $constraint);
+        $this->validator->validate(
+            $channel3,
+            $constraint
+        );
     }
 
     /**
@@ -148,40 +157,37 @@ class CircularReferenceValidatorTest extends TestCase
     public function testCircularReferenceAllEntitiesAreWrong()
     {
         $this->context->expects($this->exactly(3))
-            ->method('addViolationAt')
+            ->method('addViolation')
             ->withConsecutive(
-                array(
-                    'Parent',
+                [
                     sprintf(
                         'You cannot set object #%s as parent for object #%s because of circular reference',
                         'test2',
                         'test1'
                     )
-                ),
-                array(
-                    'Parent',
+                ],
+                [
                     sprintf(
                         'You cannot set object #%s as parent for object #%s because of circular reference',
                         'test3',
                         'test2'
                     )
-                ),
-                array(
-                    'Parent',
+                ],
+                [
                     sprintf(
                         'You cannot set object #%s as parent for object #%s because of circular reference',
                         'test1',
                         'test3'
                     )
-                )
+                ]
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setIds(array('id' => 'test1'));
+        $channel1->setIds(['id' => 'test1']);
         $channel2 = new CircularReferenceEntity();
-        $channel2->setIds(array('id' => 'test2'));
+        $channel2->setIds(['id' => 'test2']);
         $channel3 = new CircularReferenceEntity();
-        $channel3->setIds(array('id' => 'test3'));
+        $channel3->setIds(['id' => 'test3']);
 
         $constraint = new CircularReference();
 
@@ -195,10 +201,18 @@ class CircularReferenceValidatorTest extends TestCase
         $channel2->setParent($channel3);
         $channel3->setParent($channel1);
 
-        $this->validator->validate($channel1, $constraint);
-        $this->validator->validate($channel2, $constraint);
-        $this->validator->validate($channel3, $constraint);
-
+        $this->validator->validate(
+            $channel1,
+            $constraint
+        );
+        $this->validator->validate(
+            $channel2,
+            $constraint
+        );
+        $this->validator->validate(
+            $channel3,
+            $constraint
+        );
     }
 
     /**
@@ -209,9 +223,8 @@ class CircularReferenceValidatorTest extends TestCase
     public function testCircularReference1()
     {
         $this->context->expects($this->once())
-            ->method('addViolationAt')
+            ->method('addViolation')
             ->with(
-                'Parent',
                 sprintf(
                     'You cannot set object #%s as parent for object #%s because of circular reference',
                     'test2',
@@ -220,9 +233,9 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setIds(array('id' => 'test1'));
+        $channel1->setIds(['id' => 'test1']);
         $channel2 = new CircularReferenceEntity();
-        $channel2->setIds(array('id' => 'test2'));
+        $channel2->setIds(['id' => 'test2']);
 
         $constraint = new CircularReference();
 
@@ -233,10 +246,16 @@ class CircularReferenceValidatorTest extends TestCase
          */
 
         $channel2->setParent($channel1);
-        $this->validator->validate($channel2, $constraint);
+        $this->validator->validate(
+            $channel2,
+            $constraint
+        );
 
         $channel1->setParent($channel2);
-        $this->validator->validate($channel1, $constraint);
+        $this->validator->validate(
+            $channel1,
+            $constraint
+        );
     }
 
     /**
@@ -247,8 +266,8 @@ class CircularReferenceValidatorTest extends TestCase
     public function testCircularReferenceFatalErrorOnGetParents()
     {
         $this->context->expects($this->once())
-            ->method('addViolationAt')->with(
-                'Parent',
+            ->method('addViolation')
+            ->with(
                 sprintf(
                     'You cannot set object #%s as parent for object #%s because of circular reference',
                     'test2',
@@ -257,11 +276,11 @@ class CircularReferenceValidatorTest extends TestCase
             );
 
         $channel1 = new CircularReferenceEntity();
-        $channel1->setIds(array('id' => 'test1'));
+        $channel1->setIds(['id' => 'test1']);
         $channel2 = new CircularReferenceEntity();
-        $channel2->setIds(array('id' => 'test2'));
+        $channel2->setIds(['id' => 'test2']);
         $channel3 = new CircularReferenceEntity();
-        $channel3->setIds(array('id' => 'test3'));
+        $channel3->setIds(['id' => 'test3']);
 
         $constraint = new CircularReference();
 
@@ -272,12 +291,21 @@ class CircularReferenceValidatorTest extends TestCase
          */
 
         $channel2->setParent($channel1);
-        $this->validator->validate($channel2, $constraint);
+        $this->validator->validate(
+            $channel2,
+            $constraint
+        );
 
         $channel1->setParent($channel2);
-        $this->validator->validate($channel1, $constraint);
+        $this->validator->validate(
+            $channel1,
+            $constraint
+        );
 
         $channel3->setParent($channel2);
-        $this->validator->validate($channel3, $constraint);
+        $this->validator->validate(
+            $channel3,
+            $constraint
+        );
     }
 }
