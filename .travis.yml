@@ -4,33 +4,31 @@ php:
   - 7.0
   - 7.1
   - 7.2
+  - hhvm
 
 env:
+  - SYMFONY_VERSION=2.5.*
+  - SYMFONY_VERSION=2.6.*
   - SYMFONY_VERSION=2.7.*
   - SYMFONY_VERSION=2.8.*
   - SYMFONY_VERSION=3.*
   - SYMFONY_VERSION=dev-master
 
+before_script:
+  - echo "memory_limit=2048M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+  - phpenv config-rm xdebug.ini
+  - composer self-update -v
+  - composer require symfony/symfony:${SYMFONY_VERSION} --no-update -v
+  - composer update -v
+
+script:
+  - phpunit
+
 notifications:
   email:
     - software@opticsplanet.com
 
-cache:
-  directories:
-    - $HOME/.composer/cache
-
 matrix:
-  fast_finish: true
   allow_failures:
     - env: SYMFONY_VERSION=dev-master
-
-before_install:
-  - echo "memory_limit=2048M" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - phpenv config-rm xdebug.ini || echo "xdebug not available";
-  - if [ "$SYMFONY_VERSION" != "" ]; then composer require --no-update symfony/framework-bundle "$SYMFONY_VERSION"; fi
-
-install:
-  - composer install --prefer-dist
-
-script:
-  - vendor/bin/phpunit
+    - php: hhvm
