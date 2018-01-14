@@ -15,12 +15,10 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Serializer;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity;
 
 /**
@@ -28,7 +26,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CrudTransformerTest extends TestCase
+class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Entity manager
@@ -74,10 +72,7 @@ class CrudTransformerTest extends TestCase
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
-        $registry = $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getEntityManager', 'getManagerForClass'))
-            ->getMock();
+        $registry = $this->createMock('\Symfony\Bridge\Doctrine\ManagerRegistry');
         $registry->expects($this->any())
             ->method('getManagerForClass')
             ->will($this->returnValue($this->entityManager));

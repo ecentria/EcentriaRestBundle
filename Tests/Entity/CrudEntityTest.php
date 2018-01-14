@@ -20,7 +20,7 @@ use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CrudEntityTest extends TestCase
+class CrudEntityTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * CRUD Entity

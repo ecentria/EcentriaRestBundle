@@ -35,7 +35,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
  * )
  * @EcentriaAssert\TransactionSuccess()
  */
-class Transaction
+class Transaction extends TransactionModel
 {
 
     /**
@@ -199,11 +199,9 @@ class Transaction
      *
      * @var int
      *
-     * @ORM\Column(name="response_time", type="integer", nullable=false)
-     *
-     * @Assert\NotNull()
+     * @ORM\Column(name="response_time", type="integer", nullable=true)
      */
-    private $responseTime;
+    private $responseTime = 0;
 
     /**
      * Request Content
@@ -503,7 +501,8 @@ class Transaction
      */
     public function setResponseTime($milliseconds)
     {
-        $this->responseTime = $milliseconds;
+        // should be fixed.
+        $this->responseTime = 0;
         return $this;
     }
 

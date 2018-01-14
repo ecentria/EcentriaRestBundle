@@ -12,7 +12,6 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Tests\EventListener;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Ecentria\Libraries\EcentriaRestBundle\EventListener\EmbeddedResponseListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 
@@ -25,14 +24,14 @@ use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class EmbeddedResponseListenerTest extends TestCase
+class EmbeddedResponseListenerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * {@inheritdoc}
      */
     public function setUp()
     {
-        $this->manager = $this->getMock('Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager');
+        $this->manager = $this->createMock('Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager');
         $this->event = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent')
             ->disableOriginalConstructor()
             ->getMock();
@@ -62,7 +61,7 @@ class EmbeddedResponseListenerTest extends TestCase
      */
     public function testSerializationGroupsArePassedToContext()
     {
-        $request = $this->getMock('Symfony\Component\HttpFoundation\Request');
+        $request = $this->createMock('Symfony\Component\HttpFoundation\Request');
         $view = new View();
         $groups = ['group1', 'group2'];
         $this->event->expects($this->once())
@@ -74,7 +73,9 @@ class EmbeddedResponseListenerTest extends TestCase
         $this->manager->expects($this->once())
             ->method('generateGroups')
             ->willReturn($groups);
+
         $this->listener->onKernelView($this->event);
-        $this->assertSame([$groups], $view->getSerializationContext()->attributes->values());
+
+        $this->assertSame($groups, $view->getContext()->getGroups());
     }
 }

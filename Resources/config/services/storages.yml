@@ -8,10 +8,10 @@ services:
     # Ecentria
     ecentria.api.transaction.storage.doctrine:
         arguments:
-            - @doctrine
-        class: %ecentria.api.transaction.storage.doctrine.class%
+            - '@doctrine'
+        class: '%ecentria.api.transaction.storage.doctrine.class%'
     ecentria.api.transaction.storage.monolog:
         arguments:
-            - @logger
-            - @jms_serializer
-        class: %ecentria.api.transaction.storage.monolog.class%
+            - '@logger'
+            - '@jms_serializer'
+        class: '%ecentria.api.transaction.storage.monolog.class%'
