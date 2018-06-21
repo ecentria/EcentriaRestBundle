@@ -10,17 +10,19 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Ecentria\Libraries\EcentriaRestBundle\Model\Error;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
 use JMS\Serializer\Serializer;
 use Monolog\Logger;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Monolog Transaction Storage
  *
  * @author Artem Petrov <artem.petrov@opticsplanet.com>
  */
-class Monolog implements TransactionStorageInterface {
+class Monolog implements TransactionStorageInterface
+{
 
     /**
      * Monolog logger
@@ -44,21 +46,23 @@ class Monolog implements TransactionStorageInterface {
     private $persistentTransactions;
 
     /**
-     * Constructor.
+     * Monolog constructor
      *
-     * @param Logger $logger
+     * @param Logger     $logger
+     * @param Serializer $serializer
      */
-    public function __construct(Logger $logger, Serializer $serializer) {
+    public function __construct(Logger $logger, Serializer $serializer)
+    {
         $this->logger = $logger;
         $this->serializer = $serializer;
         $this->persistentTransactions = new ArrayCollection();
     }
 
-
     /**
      * {@inheritDoc}
      */
-    public function persist(TransactionModel $transaction) {
+    public function persist(TransactionModel $transaction)
+    {
         if (!$this->persistentTransactions->contains($transaction)) {
             $this->persistentTransactions->add($transaction);
         }
@@ -84,6 +88,9 @@ class Monolog implements TransactionStorageInterface {
                 foreach ($transaction->getMessages()['errors'] as $error) {
                     if ($errorMessage != '') {
                         $errorMessage .= ', ';
+                    }
+                    if ($error instanceof Error) {
+                        $error = $error->toArray();
                     }
                     $errorMessage .= $error['message'];
                 }
