@@ -15,7 +15,6 @@ use Doctrine\ORM\UnitOfWork;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use JMS\Serializer\Exception\ValidationFailedException;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
 
@@ -24,7 +23,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  *
  * @author Sergey Chernecov <sergey.chernecov@intexsys.lv>
  */
-class CrudManagerTest extends TestCase
+class CrudManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Entity manager
@@ -70,19 +69,13 @@ class CrudManagerTest extends TestCase
     protected function setUp()
     {
         $this->entityManager = $this->prepareEntityManager();
-        $registry = $this->getMockBuilder('\Doctrine\Bundle\DoctrineBundle\Registry')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getEntityManager', 'getManagerForClass'))
-            ->getMock();
+        $registry = $this->createMock('\Symfony\Bridge\Doctrine\ManagerRegistry');
         $registry->expects($this->any())
             ->method('getManagerForClass')
             ->will($this->returnValue($this->entityManager));
 
         $this->recursiveValidator = $this->prepareRecursiveValidator();
-        $this->dispatcher = $this->getMock(
-            '\Symfony\Component\EventDispatcher\EventDispatcher',
-            array('dispatch')
-        );
+        $this->dispatcher = $this->createMock('\Symfony\Component\EventDispatcher\EventDispatcher');
         $this->crudTransformer = $this->prepareCRUDTransformer();
         $this->crudManager = new CrudManager(
             $registry,
@@ -223,10 +216,6 @@ class CrudManagerTest extends TestCase
             )
         );
 
-        $entity->expects($this->never())
-            ->method('setIds')
-            ->with($ids);
-
         $unitOfWorkMock = $this->prepareUnitOfWork();
 
         $unitOfWorkMock
@@ -339,30 +328,5 @@ class CrudManagerTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getId', 'getType', 'setType'))
             ->getMock();
-    }
-
-    /**
-     * Preparing Violation
-     *
-     * @return ConstraintViolation|\PHPUnit_Framework_MockObject_MockObject
-     */
-    private function prepareViolation()
-    {
-        return $this->getMockBuilder('\Symfony\Component\Validator\ConstraintViolation')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
-
-    /**
-     * Preparing Violation List
-     *
-     * @return ConstraintViolationList
-     */
-    private function prepareViolationList()
-    {
-        $violationList = new ConstraintViolationList();
-        $violation = $this->prepareViolation();
-        $violationList->add($violation);
-        return $violationList;
     }
 }

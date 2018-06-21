@@ -59,7 +59,7 @@ class UniqueEntityValidator extends BaseUniqueEntityValidator
             try {
                 $this->registry->getManagerForClass($entityClass)->initializeObject($object);
             } catch (EntityNotFoundException $exception) {
-                $this->context->addViolationAt($fieldName, $fieldName . ' does not exist');
+                $this->context->addViolation($fieldName . ' does not exist');
                 $criticalError = true;
             }
         }
@@ -67,6 +67,5 @@ class UniqueEntityValidator extends BaseUniqueEntityValidator
         if ($criticalError === false) {
             parent::validate($entity, $constraint);
         }
-
     }
 }

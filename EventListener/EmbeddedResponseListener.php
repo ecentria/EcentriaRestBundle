@@ -53,6 +53,6 @@ class EmbeddedResponseListener
         }
 
         $groups = $this->embeddedManager->generateGroups($event->getRequest());
-        $view->getSerializationContext()->setGroups($groups);
+        $view->getContext()->setGroups($groups);
     }
 }

@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
@@ -21,7 +20,7 @@ use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionUpdate
  *
  * @author Son Dang <son.dang@opticsplanet.com>
  */
-class TransactionUpdaterTest extends TestCase
+class TransactionUpdaterTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * Transaction Updater
