@@ -10,17 +10,11 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
 
-use Doctrine\ORM\UnitOfWork;
-use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudManager;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity;
-use Symfony\Component\Validator\ConstraintViolation;
-use Symfony\Component\Validator\ConstraintViolationList;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Ecentria\Libraries\EcentriaRestBundle\Converter\EntityConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
 
 /**
  * Entity Converter test

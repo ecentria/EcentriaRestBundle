@@ -15,12 +15,10 @@ use Ecentria\Libraries\EcentriaRestBundle\Annotation\PropertyRestriction;
 use Ecentria\Libraries\EcentriaRestBundle\Services\CRUD\CrudTransformer;
 use JMS\Serializer\Metadata\ClassMetadata;
 use JMS\Serializer\Serializer;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\Validator\RecursiveValidator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationList;
-use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\EntityConverterEntity;
 
 /**

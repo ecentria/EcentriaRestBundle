@@ -15,7 +15,6 @@ use Ecentria\Libraries\EcentriaRestBundle\Tests\Entity\CircularReferenceEntity;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReference;
 use Ecentria\Libraries\EcentriaRestBundle\Validator\Constraints\CircularReferenceValidator;
 use Symfony\Bridge\Doctrine\ManagerRegistry;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Validator\Context\ExecutionContext;
 
 /**

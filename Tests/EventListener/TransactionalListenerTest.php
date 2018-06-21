@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\EventListener;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
 use Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\TransactionUpdater;

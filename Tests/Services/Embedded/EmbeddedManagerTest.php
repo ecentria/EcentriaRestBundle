@@ -11,7 +11,6 @@
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\EventListener;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 
 /**

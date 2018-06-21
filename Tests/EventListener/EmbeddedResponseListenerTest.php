@@ -12,7 +12,6 @@ namespace Ecentria\Libraries\EcentriaRestBundle\Tests\EventListener;
 
 use Ecentria\Libraries\EcentriaRestBundle\Services\Embedded\EmbeddedManager;
 use FOS\RestBundle\View\View;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Ecentria\Libraries\EcentriaRestBundle\EventListener\EmbeddedResponseListener;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 

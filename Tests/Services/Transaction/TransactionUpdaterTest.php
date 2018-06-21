@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Tests\Services;
 
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction;
