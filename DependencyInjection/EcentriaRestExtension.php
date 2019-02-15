@@ -33,11 +33,14 @@ class EcentriaRestExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
         $providedType = $config['transaction_storage'];
+        $log404 = isset($config['log_404_as_warning']) ? $config['log_404_as_warning'] : false;
         $storageType = 'ecentria.api.transaction.storage.' . $providedType;
         $container->setParameter(
             'ecentria_rest.transaction_storage',
             $storageType
         );
+        $container->setParameter('ecentria_rest.log_404_as_warning',
+            $log404);
     }
 
     /**
