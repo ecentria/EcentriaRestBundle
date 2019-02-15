@@ -44,13 +44,24 @@ class Monolog implements TransactionStorageInterface {
     private $persistentTransactions;
 
     /**
+     * if true, 404 errors are logged as warning
+     * default value is false
+     *
+     * @var bool
+     */
+    private $log404AsWarning;
+
+    /**
      * Constructor.
      *
-     * @param Logger $logger
+     * @param Logger     $logger
+     * @param Serializer $serializer
+     * @param bool       $log404AsWarning
      */
-    public function __construct(Logger $logger, Serializer $serializer) {
+    public function __construct(Logger $logger, Serializer $serializer, bool $log404AsWarning) {
         $this->logger = $logger;
         $this->serializer = $serializer;
+        $this->log404AsWarning = $log404AsWarning;
         $this->persistentTransactions = new ArrayCollection();
     }
 
@@ -78,6 +89,9 @@ class Monolog implements TransactionStorageInterface {
                     break;
                 }
                 $level = $value;
+            }
+            if ($this->log404AsWarning) {
+                $level = Logger::WARNING;
             }
             $errorMessage = '';
             if (isset($transaction->getMessages()['errors'])) {
