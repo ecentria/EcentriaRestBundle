@@ -37,6 +37,9 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('transaction_storage')
                     ->defaultValue('doctrine')
                 ->end()
+                ->booleanNode('log_404_as_warning')
+                    ->defaultValue(false)
+                ->end()
             ->end();
 
         return $treeBuilder;
