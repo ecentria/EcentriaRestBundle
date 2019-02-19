@@ -90,7 +90,7 @@ class Monolog implements TransactionStorageInterface {
                 }
                 $level = $value;
             }
-            if ($this->log404AsWarning) {
+            if ($this->log404AsWarning && $transaction->getStatus() === 404) {
                 $level = Logger::WARNING;
             }
             $errorMessage = '';
