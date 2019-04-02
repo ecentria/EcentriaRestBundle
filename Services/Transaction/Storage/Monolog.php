@@ -10,7 +10,6 @@
 
 namespace Ecentria\Libraries\EcentriaRestBundle\Services\Transaction\Storage;
 
-use Ecentria\Libraries\ApiClientBundle\Model\Transaction;
 use Ecentria\Libraries\EcentriaRestBundle\Model\Transaction as TransactionModel;
 use JMS\Serializer\Serializer;
 use Monolog\Logger;
@@ -93,8 +92,8 @@ class Monolog implements TransactionStorageInterface {
             }
 
             if (
-                ($this->log404AsWarning && $transaction->getStatus() === Transaction::STATUS_NOT_FOUND) ||
-                $transaction->getStatus() === Transaction::STATUS_CONFLICT
+                ($this->log404AsWarning && $transaction->getStatus() === TransactionModel::STATUS_NOT_FOUND) ||
+                $transaction->getStatus() === TransactionModel::STATUS_CONFLICT
             ) {
                 $level = Logger::WARNING;
             }
