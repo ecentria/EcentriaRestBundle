@@ -236,6 +236,18 @@ class CrudManager
     }
 
     /**
+     * Remove
+     *
+     * @param CrudEntityInterface $entity
+     *
+     * @return void
+     */
+    public function remove(CrudEntityInterface $entity)
+    {
+        $this->getEntityManager($entity)->remove($entity);
+    }
+
+    /**
      * Creating collection
      *
      * @param ArrayCollection|CrudEntityInterface[] $collection        Collection
