@@ -6,7 +6,7 @@ parameters:
 services:
 
     ecentria.utils.embedded_manager:
-        class: %ecentria.utils.embedded_manager.class%
+        class: '%ecentria.utils.embedded_manager.class%'
 
     ecentria.fos_rest.native_json_encode_serializer:
-        class: %ecentria.fos_rest.native_json_encode_serializer.class%
+        class: '%ecentria.fos_rest.native_json_encode_serializer.class%'
