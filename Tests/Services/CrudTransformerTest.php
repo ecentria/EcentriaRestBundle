@@ -409,7 +409,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 
         $this->crudTransformer->initializeClassMetadata('className');
 
-        $classMetadata->expects($this->exactly(3))
+        $classMetadata->expects($this->exactly(4))
             ->method('hasAssociation')
             ->willReturn(true);
 
