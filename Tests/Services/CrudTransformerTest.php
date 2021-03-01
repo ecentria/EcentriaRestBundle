@@ -346,7 +346,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 
         $this->crudTransformer->initializeClassMetadata('className');
 
-        $classMetadata->expects($this->once())
+        $classMetadata->expects($this->any())
             ->method('hasAssociation')
             ->willReturn(false);
 
@@ -375,7 +375,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 
         $this->crudTransformer->initializeClassMetadata('className');
 
-        $classMetadata->expects($this->once())
+        $classMetadata->expects($this->any())
             ->method('hasAssociation')
             ->willReturn(true);
 
@@ -409,7 +409,7 @@ class CrudTransformerTest extends \PHPUnit_Framework_TestCase
 
         $this->crudTransformer->initializeClassMetadata('className');
 
-        $classMetadata->expects($this->exactly(2))
+        $classMetadata->expects($this->exactly(4))
             ->method('hasAssociation')
             ->willReturn(true);
 

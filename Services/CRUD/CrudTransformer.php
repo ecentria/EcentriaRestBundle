@@ -278,7 +278,11 @@ class CrudTransformer
     public function transformPropertyValue($property, $value, ArrayCollection $collection = null)
     {
         if ($this->transformationNeeded($property, $value)) {
-            $targetClass = $this->getClassMetadata()->getAssociationTargetClass(ucfirst($property));
+            if ($this->getClassMetadata()->hasAssociation(ucfirst($property))) {
+                $property = ucfirst($property);
+            }
+
+            $targetClass = $this->getClassMetadata()->getAssociationTargetClass($property);
 
             if ($value instanceof $targetClass) {
                 return $value;
@@ -493,7 +497,12 @@ class CrudTransformer
      */
     private function transformationNeeded($property, $value)
     {
-        return is_null($value) ? false : $this->getClassMetadata()->hasAssociation(ucfirst($property));
+        if (is_null($value)) {
+            return false;
+        }
+
+        return $this->getClassMetadata()->hasAssociation(ucfirst($property)) ||
+            $this->getClassMetadata()->hasAssociation($property);
     }
 
     /**
