@@ -1,4 +1,4 @@
-This project is deprecated
+This project is deprecated.
 
 Ecentria REST Bundle
 =========================
